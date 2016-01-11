@@ -32,13 +32,32 @@ Graphics::Graphics(Uint16 xSize, Uint16 tileOffset, Uint16 tileAmount) {
     }
     atexit(SDL_Quit);
     
-    screen = SDL_SetVideoMode(SCREEN_WIDTH,SCREEN_HEIGHT,32,SDL_HWSURFACE|SDL_DOUBLEBUF);
+    window = SDL_CreateWindow( "PlaneEd", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE );
+    if ( window == NULL )
+    {
+        fprintf( stderr, "Error - %s\n", SDL_GetError() );
+        exit(1);
+    }
+    
+    render = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED );
+    if ( render == NULL )
+    {
+        fprintf( stderr, "Error - %s\n", SDL_GetError() );
+        exit(1);
+    }
+    
+    SDL_RenderSetLogicalSize(render, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+    screen = SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0, 0, 0, 0);
     if(screen==NULL) {
         fprintf(stderr, "Unable to set 640x480 video: %s\n", SDL_GetError());
         exit(1);
     }
-    
-    SDL_WM_SetCaption("PlaneEd", NULL); 
+    texture = SDL_CreateTextureFromSurface(render, screen);
+    if(texture==NULL) {
+        fprintf( stderr, "Error - %s\n", SDL_GetError() );
+        exit(1);
+    }
 }
 
 void Graphics::ReadPalette(char* filename) {
@@ -61,7 +80,7 @@ void Graphics::ReadPalette(char* filename) {
     fclose(palfile);
     remove(filename);
 }
-
+#define getrgb(v) ((v&0xF000)>>8)|(v&0x0F0F|0xF000)	// Corrects G value, and sets alpha to max, so we can see
 void Graphics::ReadTiles(char* filename) {
     FILE* tilefile = fopen(filename,"rb");
     if(tilefile==NULL) {
@@ -77,14 +96,14 @@ void Graphics::ReadTiles(char* filename) {
             tileData[t][p] = new Uint16*[4];
             for(int f=0; f<4; f++) tileData[t][p][f] = new Uint16[64];
             for(int i=0; i<32; i++) {
-                tileData[t][p][0][2*i]   = palette[p][(tilebuffer[i] & 0xF0)>>4];
-                tileData[t][p][0][2*i+1] = palette[p][(tilebuffer[i] & 0x0F)];
-                tileData[t][p][1][8*(i/4)+7-2*(i%4)]   = palette[p][(tilebuffer[i] & 0xF0)>>4]; //X-flip
-                tileData[t][p][1][8*(i/4)+7-2*(i%4)-1] = palette[p][(tilebuffer[i] & 0x0F)];
-                tileData[t][p][2][56-8*(i/4)+2*(i%4)]   = palette[p][(tilebuffer[i] & 0xF0)>>4]; //Y-flip
-                tileData[t][p][2][56-8*(i/4)+2*(i%4)+1] = palette[p][(tilebuffer[i] & 0x0F)];
-                tileData[t][p][3][63-2*i]   = palette[p][(tilebuffer[i] & 0xF0)>>4]; //XY-flip
-                tileData[t][p][3][63-2*i-1] = palette[p][(tilebuffer[i] & 0x0F)];
+                tileData[t][p][0][2*i]   = getrgb(palette[p][(tilebuffer[i] & 0xF0)>>4]);
+                tileData[t][p][0][2*i+1] = getrgb(palette[p][(tilebuffer[i] & 0x0F)]);
+                tileData[t][p][1][8*(i/4)+7-2*(i%4)]   = getrgb(palette[p][(tilebuffer[i] & 0xF0)>>4]); //X-flip
+                tileData[t][p][1][8*(i/4)+7-2*(i%4)-1] = getrgb(palette[p][(tilebuffer[i] & 0x0F)]);
+                tileData[t][p][2][56-8*(i/4)+2*(i%4)]   = getrgb(palette[p][(tilebuffer[i] & 0xF0)>>4]); //Y-flip
+                tileData[t][p][2][56-8*(i/4)+2*(i%4)+1] = getrgb(palette[p][(tilebuffer[i] & 0x0F)]);
+                tileData[t][p][3][63-2*i]   = getrgb(palette[p][(tilebuffer[i] & 0xF0)>>4]); //XY-flip
+                tileData[t][p][3][63-2*i-1] = getrgb(palette[p][(tilebuffer[i] & 0x0F)]);
             }
         }
     }
@@ -109,7 +128,11 @@ void Graphics::CreateTiles(){
 SDL_Surface* Graphics::InitSurface(Uint16 *pixelsT, int width, int height, int bbp) {
     void* pixels = pixelsT;
     SDL_Surface *surface = SDL_CreateRGBSurfaceFrom (pixels, width,
-                         height, bbp, width*((bbp+7)/8), 0x0F00, 0xF000, 0x000F, 0);
+                         height, bbp, width*((bbp+7)/8), 0x0F00, 0x00F0, 0x000F, 0xF000);
+
+    if (surface == NULL)
+        fprintf(stderr, "Error - %s\n", SDL_GetError());
+
     return(surface);
 }
 
@@ -144,7 +167,16 @@ void Graphics::DrawSelector() {
     ClearSelector();
     for(int i=0; i<tileAmount; i++)
         DrawSurface(tiles[i][currentPal][0], this->screen, selXMin + 8*(i%selectorWidth), 8*(i/selectorWidth - selTileYOffset));
-    SDL_Flip(screen);
+    //SDL_Flip(screen);
+    ProcessDisplay();
+}
+
+void Graphics::ProcessDisplay()
+{
+	SDL_UpdateTexture(texture, NULL, screen->pixels, screen->pitch);
+	SDL_RenderClear(render);
+	SDL_RenderCopy(render, texture, NULL, NULL);
+	SDL_RenderPresent(render);
 }
 
 /* map coords */

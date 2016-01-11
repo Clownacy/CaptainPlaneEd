@@ -1,11 +1,14 @@
 #ifndef GRAPHICS_H
 #define GRAPHICS_H
 
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 class Graphics
 {
 private:
+    SDL_Window* window;
+    SDL_Renderer* render;
+    SDL_Texture* texture;
     SDL_Surface* screen;
     Uint16 (*palette)[16];
     SDL_Surface**** tiles;    //surface data: [tile][pal][flip]
@@ -38,7 +41,7 @@ public:
     void DrawTileFullColor(int x, int y, Uint32 color);
     void DrawTileNone(int x, int y);
     void DrawTileInvalid(int x, int y);
-    void ProcessDisplay() {SDL_Flip(screen);}
+    void ProcessDisplay();
     void SetCurrentPal(Uint8 currentPal) {this->currentPal = currentPal;}
     Uint8 GetCurrentPal() {return currentPal;}
     Uint8 GetPaletteLines() {return paletteLines;}

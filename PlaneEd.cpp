@@ -1,5 +1,6 @@
+#include <cstdio>
 #include <cstdlib>
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 #include "Tile.h"
 #include "LevMap.hpp"
@@ -38,7 +39,7 @@ int main(int argc, char *argv[])
     LevelMap.DrawMap();
     GfxStuff.DrawSelector();
     
-    SDL_EnableKeyRepeat(400,SDL_DEFAULT_REPEAT_INTERVAL);
+    //SDL_EnableKeyRepeat(400,SDL_DEFAULT_REPEAT_INTERVAL);
 
     //Main Loop including event Handling
     bool quit = false;
