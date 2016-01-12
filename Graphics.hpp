@@ -32,7 +32,7 @@ Graphics::Graphics(Uint16 xSize, Uint16 tileOffset, Uint16 tileAmount) {
     }
     atexit(SDL_Quit);
     
-    window = SDL_CreateWindow( "PlaneEd", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE );
+    window = SDL_CreateWindow( "Captain PlaneEd", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE );
     if ( window == NULL )
     {
         fprintf( stderr, "Error - %s\n", SDL_GetError() );
