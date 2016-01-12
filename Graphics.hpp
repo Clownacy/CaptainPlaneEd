@@ -32,17 +32,17 @@ Graphics::Graphics(Uint16 xSize, Uint16 tileOffset, Uint16 tileAmount) {
     }
     atexit(SDL_Quit);
     
-    window = SDL_CreateWindow( "Captain PlaneEd", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE );
-    if ( window == NULL )
+    window = SDL_CreateWindow("Captain PlaneEd", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+    if (window == NULL)
     {
-        fprintf( stderr, "Error - %s\n", SDL_GetError() );
+        fprintf(stderr, "Error - %s\n", SDL_GetError());
         exit(1);
     }
     
-    render = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED );
-    if ( render == NULL )
+    render = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    if (render == NULL)
     {
-        fprintf( stderr, "Error - %s\n", SDL_GetError() );
+        fprintf(stderr, "Error - %s\n", SDL_GetError());
         exit(1);
     }
     
@@ -55,7 +55,7 @@ Graphics::Graphics(Uint16 xSize, Uint16 tileOffset, Uint16 tileAmount) {
     }
     texture = SDL_CreateTextureFromSurface(render, screen);
     if(texture==NULL) {
-        fprintf( stderr, "Error - %s\n", SDL_GetError() );
+        fprintf(stderr, "Error - %s\n", SDL_GetError());
         exit(1);
     }
 }
