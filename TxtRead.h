@@ -4,15 +4,14 @@
 #include <cstdio>
 #include <cstring>
 
-#define COMP_TYPE_AMOUNT 5
-
 /* compression types */
 typedef enum {
-	NONE = 0,
-	ENIGMA = 1,
-	KOSINSKI = 2,
-	NEMESIS = 3,
-	KIDCHAMELEON = 4,
+	NONE,
+	ENIGMA,
+	KOSINSKI,
+	NEMESIS,
+	KIDCHAMELEON,
+	COMP_TYPE_AMOUNT,
 	INVALID = -1
 } fileCompression;
 
