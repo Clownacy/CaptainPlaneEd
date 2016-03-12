@@ -5,7 +5,7 @@ DEFINES	=
 LIBS	= `sdl2-config --libs`
 
 SOURCES	= PlaneEd.cpp TxtRead.cpp PrjHndl.cpp Tile.cpp Graphics.cpp LevMap.cpp SelRect.cpp
-SOURCES	+= compression/EniComp.cpp compression/EniDec.cpp compression/KidDec.cpp compression/KosDec.cpp compression/NemDec.cpp compression/ReadPlain.cpp
+SOURCES	+= compression/EniComp.c compression/EniDec.c compression/KidDec.cpp compression/KosDec.c compression/NemDec.c compression/ReadPlain.c
 
 $(NAME): $(SOURCES)
 	$(GCC) $(CFLAGS) $(DEFINES) $^ $(LIBS) -o $@
