@@ -21,10 +21,10 @@ public:
     SelRect(const SelRect& sr);
     ~SelRect();
     bool isActive();
-/*    Uint8 SetXStart(int xs) {xStart = xs;}
-    Uint8 SetYStart(int ys) {yStart = ys}
-    Uint8 GetXSize() {return xSize;}
-    Uint8 GetYSize() {return ySize;}*/
+/*    uint8_t SetXStart(int xs) {xStart = xs;}
+    uint8_t SetYStart(int ys) {yStart = ys}
+    uint8_t GetXSize() {return xSize;}
+    uint8_t GetYSize() {return ySize;}*/
     void AssignSection();
     void PasteSection();
     void TakeSection();

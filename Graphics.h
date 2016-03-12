@@ -10,27 +10,27 @@ private:
     SDL_Renderer* render;
     SDL_Texture* texture;
     SDL_Surface* screen;
-    Uint16 (*palette)[16];
+    uint16_t (*palette)[16];
     SDL_Surface**** tiles;    //surface data: [tile][pal][flip]
-    Uint16**** tileData;   //pixel data: [tile][pal][flip][64]
-    Uint8 paletteLines;
-    Uint8 currentPal;
-    Uint8 selectorWidth;
-    Uint16 tileAmount;
-    Uint16 selXMin;        //x position of left boundary of selector map
-    Uint16 xDisplaySize;        //x position of left boundary of selector map
-    Uint16 tileOffset;    //amount the non-empty tiles' ID will be offset
-    Uint16 screenTileYOffset;
-    Uint16 selTileYOffset;
-    Uint16 screenTileXOffset;
+    uint16_t**** tileData;   //pixel data: [tile][pal][flip][64]
+    uint8_t paletteLines;
+    uint8_t currentPal;
+    uint8_t selectorWidth;
+    uint16_t tileAmount;
+    uint16_t selXMin;        //x position of left boundary of selector map
+    uint16_t xDisplaySize;        //x position of left boundary of selector map
+    uint16_t tileOffset;    //amount the non-empty tiles' ID will be offset
+    uint16_t screenTileYOffset;
+    uint16_t selTileYOffset;
+    uint16_t screenTileXOffset;
     bool highPriorityDisplay;
     bool lowPriorityDisplay;
 public:
-    Graphics(Uint16 xSize, Uint16 tileOffset, Uint16 tileAmount);
+    Graphics(uint16_t xSize, uint16_t tileOffset, uint16_t tileAmount);
     void ReadPalette(const char* filename);
     void ReadTiles(const char* filename);
     void CreateTiles();
-    SDL_Surface* InitSurface(Uint16 *pixelsT, int width, int height, int bbp);
+    SDL_Surface* InitSurface(uint16_t *pixelsT, int width, int height, int bbp);
     void DrawSurface(SDL_Surface *img, SDL_Surface *screen, int x, int y);
     void ClearMap();
     void ClearSelector();
@@ -42,12 +42,12 @@ public:
     void DrawTileNone(int x, int y);
     void DrawTileInvalid(int x, int y);
     void ProcessDisplay();
-    void SetCurrentPal(Uint8 currentPal) {this->currentPal = currentPal;}
-    Uint8 GetCurrentPal() {return currentPal;}
-    Uint8 GetPaletteLines() {return paletteLines;}
-    Uint8 GetSelectorWidth() {return selectorWidth;}
-    Uint16 GetTileAmount() {return tileAmount;}
-    Uint16 GetTileOffset() {return tileOffset;}
+    void SetCurrentPal(uint8_t currentPal) {this->currentPal = currentPal;}
+    uint8_t GetCurrentPal() {return currentPal;}
+    uint8_t GetPaletteLines() {return paletteLines;}
+    uint8_t GetSelectorWidth() {return selectorWidth;}
+    uint16_t GetTileAmount() {return tileAmount;}
+    uint16_t GetTileOffset() {return tileOffset;}
     void ToggleHighPriority() {highPriorityDisplay = !highPriorityDisplay;}
     void ToggleLowPriority() {lowPriorityDisplay = !lowPriorityDisplay;}
     void DrawPixel(int x, int y);

@@ -7,7 +7,7 @@
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480   //minimum size to allow for 64x64 maps
 
-Graphics::Graphics(Uint16 xSize, Uint16 tileOffset, Uint16 tileAmount) {
+Graphics::Graphics(uint16_t xSize, uint16_t tileOffset, uint16_t tileAmount) {
     this->selXMin = std::min(8*64, 8*xSize) + 1;
     this->xDisplaySize = std::min(64, 0+xSize);
     this->tileOffset = tileOffset;
@@ -74,7 +74,7 @@ void Graphics::ReadPalette(const char* filename) {
         fprintf(stderr, "Palette file too small.\n");
         exit(1);        
     }
-    palette = new Uint16[paletteLines][16];
+    palette = new uint16_t[paletteLines][16];
     for(int i=0; i<paletteLines; i++)
         fread(palette[i], sizeof(unsigned char), 32, palfile);
     fclose(palfile);
@@ -88,13 +88,13 @@ void Graphics::ReadTiles(const char* filename) {
         exit(1);
     }
     unsigned char tilebuffer[32]; //space for one tile
-    tileData = new Uint16***[tileAmount];
+    tileData = new uint16_t***[tileAmount];
     for(int t=0; t<tileAmount; t++) {
         fread(tilebuffer, sizeof(unsigned char), 32, tilefile);
-        tileData[t] = new Uint16**[paletteLines];
+        tileData[t] = new uint16_t**[paletteLines];
         for(int p=0; p<paletteLines; p++) {
-            tileData[t][p] = new Uint16*[4];
-            for(int f=0; f<4; f++) tileData[t][p][f] = new Uint16[64];
+            tileData[t][p] = new uint16_t*[4];
+            for(int f=0; f<4; f++) tileData[t][p][f] = new uint16_t[64];
             for(int i=0; i<32; i++) {
                 tileData[t][p][0][2*i]   = getrgb(palette[p][(tilebuffer[i] & 0xF0)>>4]);
                 tileData[t][p][0][2*i+1] = getrgb(palette[p][(tilebuffer[i] & 0x0F)]);
@@ -125,7 +125,7 @@ void Graphics::CreateTiles(){
     }
 }
 
-SDL_Surface* Graphics::InitSurface(Uint16 *pixelsT, int width, int height, int bbp) {
+SDL_Surface* Graphics::InitSurface(uint16_t *pixelsT, int width, int height, int bbp) {
     void* pixels = pixelsT;
     SDL_Surface *surface = SDL_CreateRGBSurfaceFrom (pixels, width,
                          height, bbp, width*((bbp+7)/8), 0x0F00, 0x00F0, 0x000F, 0xF000);

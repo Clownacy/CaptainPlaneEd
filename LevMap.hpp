@@ -4,7 +4,7 @@
 #include "Graphics.h"
 #include "LevMap.h"
 
-LevMap::LevMap(Uint8 xSize, Uint8 ySize, Graphics* GfxStuff) {
+LevMap::LevMap(uint8_t xSize, uint8_t ySize, Graphics* GfxStuff) {
     if(xSize <= 0 || ySize <= 0) {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid map size. Must be more than 0.", NULL);
         exit(1);
@@ -62,7 +62,7 @@ void LevMap::DrawCurrentTile() {
     GfxStuff->DrawRect(CurX, CurY);
 }
 
-void LevMap::SelectTile(Uint8 x, Uint8 y) {
+void LevMap::SelectTile(uint8_t x, uint8_t y) {
     if(CheckValidPos(x, y)) {
         SelectedTile = MapData[y][x];
         RefreshTile(CurX, CurY, false);
@@ -88,7 +88,7 @@ void LevMap::SelectedTileDecrID() {
 }
 
 /* map coords */
-void LevMap::SetTile(Uint8 x, Uint8 y) {
+void LevMap::SetTile(uint8_t x, uint8_t y) {
     if(CheckValidPos(x, y)) {
         MapData[y][x] = SelectedTile;
         RefreshTile(CurX, CurY, false);
@@ -112,7 +112,7 @@ void LevMap::ClearCurrentTile() {
     DrawCurrentTile();
 }
 
-void LevMap::SetPalCurrent(Uint8 palette) {
+void LevMap::SetPalCurrent(uint8_t palette) {
     if(palette < GfxStuff->GetPaletteLines()) {
         SelectedTile.SetPal(palette);
         MapData[CurY][CurX].SetPal(palette);
@@ -135,7 +135,7 @@ void LevMap::CheckSelectTile(int x, int y) {
 
 /* if curFlag is set and the tile is CurrentTile, it will be re-drawn with boundary
  * Map position as parameter */
-void LevMap::RefreshTile(Uint8 x, Uint8 y, bool curFlag) {
+void LevMap::RefreshTile(uint8_t x, uint8_t y, bool curFlag) {
     if(CheckValidPos(x, y)) {
         if(x == CurX && y == CurY && curFlag) DrawCurrentTile();
         else GfxStuff->DrawTileSingle(x, y, MapData[y][x]);

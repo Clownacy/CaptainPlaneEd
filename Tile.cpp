@@ -1,5 +1,4 @@
 #include <cstdio>
-#include <SDL2/SDL.h>
 
 #include "Tile.h"
 
@@ -20,7 +19,7 @@ Tile::Tile(const Tile& tile) {
 }
 
 void Tile::ReadTile(FILE* file) {
-    Uint8 byte = fgetc(file);
+    uint8_t byte = fgetc(file);
     this->tileID = fgetc(file);
     this->paletteLine = (byte & 0x60) >> 5;
     this->xFlip = byte & 0x08;
@@ -46,7 +45,7 @@ void Tile::ClearTile() {
     this->priority = 0;
 }
 
-void Tile::SetPal(Uint8 paletteLine) {
+void Tile::SetPal(uint8_t paletteLine) {
     this->paletteLine = paletteLine;
 }
 
