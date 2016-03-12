@@ -1,7 +1,7 @@
 #ifndef READPLAIN_H
 #define READPLAIN_H
 
-long ReadPlain(char *srcfile, FILE* dst, long Pointer, int length)
+long ReadPlain(const char *srcfile, FILE* dst, long Pointer, int length)
 {
     FILE* src = fopen(srcfile, "rb");
     if(src == NULL) return -1;

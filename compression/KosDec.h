@@ -29,7 +29,7 @@
 // Name: KDecomp(char *SrcFile, char *DstFile, long Location, bool Moduled)
 // Desc: Decompresses the data using the Kosinski compression format
 //-----------------------------------------------------------------------------------------------
-long KosDec(char *SrcFile, FILE *Dst, long Location, int length)
+long KosDec(const char *SrcFile, FILE *Dst, long Location, int length)
 {
 // Files
 	FILE *Src;

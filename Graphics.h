@@ -27,8 +27,8 @@ private:
     bool lowPriorityDisplay;
 public:
     Graphics(Uint16 xSize, Uint16 tileOffset, Uint16 tileAmount);
-    void ReadPalette(char* filename);
-    void ReadTiles(char* filename);
+    void ReadPalette(const char* filename);
+    void ReadTiles(const char* filename);
     void CreateTiles();
     SDL_Surface* InitSurface(Uint16 *pixelsT, int width, int height, int bbp);
     void DrawSurface(SDL_Surface *img, SDL_Surface *screen, int x, int y);

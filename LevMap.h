@@ -16,8 +16,8 @@ private:
     friend class SelRect;
 public:
     LevMap(Uint8 xSize, Uint8 ySize, Graphics* GfxStuff);
-    void LoadMap(char* filename);
-    void SaveMap(char* filename);
+    void LoadMap(const char* filename);
+    void SaveMap(const char* filename);
     void DrawMap();
     void DrawMapSection(int xStart, int yStart, int xSize, int ySize);
     void DrawCurrentTile();

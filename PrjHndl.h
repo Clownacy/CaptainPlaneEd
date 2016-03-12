@@ -36,7 +36,7 @@ char infoTypes[TYPE_AMOUNT][32] = {
     "Save File:"
 };
 
-long (*ComprFunc[COMP_TYPE_AMOUNT])(char*, FILE*, long, int) = {
+long (*ComprFunc[COMP_TYPE_AMOUNT])(const char*, FILE*, long, int) = {
     ReadPlain,
     EniDec,
     KosDec,
@@ -69,10 +69,10 @@ public:
 public:
     ProjectData(char* prjtxt);
     void AssignInfo(int type, char* content);
-    void LoadArt(char* filename);
-    void LoadMap(char* filename);
-    void LoadPal(char* filename);
-    void SaveMap(char* filename);
+    void LoadArt(const char* filename);
+    void LoadMap(const char* filename);
+    void LoadPal(const char* filename);
+    void SaveMap(const char* filename);
 };
 
 ProjectData::ProjectData(char* prjtxt) {
@@ -122,7 +122,7 @@ void ProjectData::AssignInfo(int type, char* content) {
     }
 }
 
-void ProjectData::LoadArt(char* filename) {
+void ProjectData::LoadArt(const char* filename) {
     FILE* artfile = fopen(filename, "w+b");
     
     if(artCompr < 0 || artCompr > COMP_TYPE_AMOUNT) {
@@ -140,7 +140,7 @@ void ProjectData::LoadArt(char* filename) {
     fclose(artfile);
 }
 
-void ProjectData::LoadMap(char* filename) {
+void ProjectData::LoadMap(const char* filename) {
     FILE* mapfile = fopen(filename, "wb");
 
     if(mapCompr < 0 || mapCompr > 1) {
@@ -176,7 +176,7 @@ void ProjectData::LoadMap(char* filename) {
     }
 }
 
-void ProjectData::LoadPal(char* filename) {
+void ProjectData::LoadPal(const char* filename) {
     FILE* palfile = fopen(filename, "wb");
 
     palLength = ReadPlain(palName, palfile, palOffset, palLength);
@@ -188,7 +188,7 @@ void ProjectData::LoadPal(char* filename) {
     fclose(palfile);
 }
 
-void ProjectData::SaveMap(char* filename) {
+void ProjectData::SaveMap(const char* filename) {
     if(mapCompr == NONE) {
         remove(saveName);
         rename(filename, saveName);

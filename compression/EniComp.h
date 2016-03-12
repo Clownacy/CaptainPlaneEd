@@ -98,7 +98,7 @@ short incrementing_value_comp = 0x0000;
 /***************************************************************************************\
 |
 \***************************************************************************************/
-long EniComp(char *SrcFile, char *DstFile/*, bool padding*/)
+long EniComp(const char *SrcFile, char *DstFile/*, bool padding*/)
 {
 // Magus: The original code by Nemesis was command line based, so, in order to make as few
 // changes as possible I simply copied the arguments passed to the function into the variable

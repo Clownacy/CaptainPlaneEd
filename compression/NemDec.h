@@ -40,7 +40,7 @@
 int stage_1 (long *pointer, char *rompointer, char *bufferpointer);
 void stage_2 (long *pointer, char *rompointer, char *bufferpointer, unsigned long *tiles, short rtiles, bool alt_out, int *out_loc);
 
-long NemDec(char* srcfile, FILE* dst, long Pointer, int length)
+long NemDec(const char* srcfile, FILE* dst, long Pointer, int length)
 {
 // In the following code, I removed the declaration of the Pointer variable as it is now passed
 // as parameters. I also removed all console I/O operation as the function does not need to ask

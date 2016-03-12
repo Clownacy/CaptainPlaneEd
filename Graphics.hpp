@@ -60,7 +60,7 @@ Graphics::Graphics(Uint16 xSize, Uint16 tileOffset, Uint16 tileAmount) {
     }
 }
 
-void Graphics::ReadPalette(char* filename) {
+void Graphics::ReadPalette(const char* filename) {
     FILE* palfile = fopen(filename,"rb");
     if(palfile==NULL) {
         fprintf(stderr, "Cannot open palette file.\n");
@@ -81,7 +81,7 @@ void Graphics::ReadPalette(char* filename) {
     remove(filename);
 }
 #define getrgb(v) ((v&0xF000)>>8)|(v&0x0F0F|0xF000)	// Corrects G value, and sets alpha to max, so we can see
-void Graphics::ReadTiles(char* filename) {
+void Graphics::ReadTiles(const char* filename) {
     FILE* tilefile = fopen(filename,"rb");
     if(tilefile==NULL) {
         fprintf(stderr, "Cannot open tile graphics file.\n");

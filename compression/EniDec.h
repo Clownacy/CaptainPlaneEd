@@ -74,7 +74,7 @@ bool init = true;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //Program entry point
-long EniDec(char *srcfile, FILE* dst, long Pointer, int length)
+long EniDec(const char *srcfile, FILE* dst, long Pointer, int length)
 {
 // The original code by Nemesis was command line based, so, in order to make as few changes as
 // possible I simply copied the arguments passed to the function into the variable that is used
