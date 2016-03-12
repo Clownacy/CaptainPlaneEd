@@ -57,8 +57,8 @@ public:
     int palLength;
     int mapLength;
     int artLength;
-    int mapCompr;
-    int artCompr;
+    fileCompression mapCompr;
+    fileCompression artCompr;
     int xSize;
     int ySize;
     int tileOffset;
@@ -78,7 +78,7 @@ public:
 ProjectData::ProjectData(char* prjtxt) {
     palOffset = 0; mapOffset = 0; artOffset = 0;
     palLength = 0; mapLength = 0; artLength = 0;
-                   mapCompr = -1; artCompr = -1;
+                   mapCompr = INVALID; artCompr = INVALID;
     xSize = 0; ySize = 0;
     tileOffset = 0;
     letterOffset = 0; numberOffset = 0;
@@ -125,7 +125,7 @@ void ProjectData::AssignInfo(int type, char* content) {
 void ProjectData::LoadArt(const char* filename) {
     FILE* artfile = fopen(filename, "w+b");
     
-    if(artCompr < 0 || artCompr > COMP_TYPE_AMOUNT) {
+    if(artCompr == INVALID) {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid art compression format. Should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Nemesis'\n'Kid Chameleon'", NULL);
         exit(1);
     }
@@ -143,7 +143,7 @@ void ProjectData::LoadArt(const char* filename) {
 void ProjectData::LoadMap(const char* filename) {
     FILE* mapfile = fopen(filename, "wb");
 
-    if(mapCompr < 0 || mapCompr > 1) {
+    if(mapCompr != NONE && mapCompr != ENIGMA) {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid map compression format. Should be one of the following:\n\n'None'\n'Enigma'", NULL);
         exit(1);
     }

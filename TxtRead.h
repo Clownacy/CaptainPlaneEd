@@ -7,11 +7,14 @@
 #define COMP_TYPE_AMOUNT 5
 
 /* compression types */
-#define NONE 0
-#define ENIGMA 1
-#define KOSINSKI 2
-#define NEMESIS 3
-#define KIDCHAMELEON 4
+typedef enum {
+	NONE = 0,
+	ENIGMA = 1,
+	KOSINSKI = 2,
+	NEMESIS = 3,
+	KIDCHAMELEON = 4,
+	INVALID = -1
+} fileCompression;
 
 char comprTypes[COMP_TYPE_AMOUNT][32] = {
     "None",
@@ -36,12 +39,33 @@ char* strsrch(char* string, char* substring) {
     else return &string[position+sublength];
 }
 
-int readComprType(char* string) {
+fileCompression readComprType(char* string) {
     for(int i=0; i<COMP_TYPE_AMOUNT; i++) {
         if(strsrch(string, comprTypes[i]) != NULL)
-            return i;
+	{
+	    fileCompression ret;
+            switch (i)
+	    {
+		case 0:
+		    ret = NONE;
+		    break;
+		case 1:
+		    ret =  ENIGMA;
+		    break;
+		case 2:
+		    ret =  KOSINSKI;
+		    break;
+		case 3:
+		    ret =  NEMESIS;
+		    break;
+		case 4:
+		    ret =  KIDCHAMELEON;
+		    break;
+	    }
+            return ret;
+	}
     }
-    return -1;
+    return INVALID;
 }
 
 char* trimString(char* string) {
