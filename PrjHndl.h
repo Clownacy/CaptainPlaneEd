@@ -86,7 +86,7 @@ ProjectData::ProjectData(char* prjtxt) {
 
     FILE* prjfile = fopen(prjtxt, "r");
     if(prjfile == NULL) {
-        fprintf(stderr, "Usage: PlaneEd projectfile.ext\n");
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Please drag and drop your project file onto this program to start it", NULL);
         exit(1);
     }
 
@@ -126,14 +126,14 @@ void ProjectData::LoadArt(char* filename) {
     FILE* artfile = fopen(filename, "w+b");
     
     if(artCompr < 0 || artCompr > COMP_TYPE_AMOUNT) {
-        fprintf(stderr, "Invalid art compression format.\n");
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid art compression format. Should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Nemesis'\n'Kid Chameleon'", NULL);
         exit(1);
     }
 
     artLength = ComprFunc[artCompr](artName, artfile, artOffset, artLength);
 
     if(artLength < 0) {
-        fprintf(stderr, "Could not read art file.\n");
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not read art file. Are you sure the path is correct?", NULL);
         exit(1);
     }
     tileAmount = artLength/0x20;
@@ -144,7 +144,7 @@ void ProjectData::LoadMap(char* filename) {
     FILE* mapfile = fopen(filename, "wb");
 
     if(mapCompr < 0 || mapCompr > 1) {
-        fprintf(stderr, "Invalid map compression format.\n");
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid map compression format. Should be one of the following:\n\n'None'\n'Enigma'", NULL);
         exit(1);
     }
 
@@ -154,18 +154,18 @@ void ProjectData::LoadMap(char* filename) {
         mapLength = 2*xSize*ySize;
         if(!CheckCreateBlankFile(mapName, mapfile, mapOffset, mapLength)) {
             //file is existant but could not be decompressed
-            fprintf(stderr, "Could not read map file.\n");
+            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not read map file. Are you sure the path is correct?", NULL);
             exit(1);
         } else {
             //file non-existant, blank template created
-            fprintf(stderr, "No map file found, created blank template.\n");
+            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Information", "No map file found, created blank template.", NULL);
         }
     }
 
     fclose(mapfile);
 
     if(mapLength < 2*xSize*ySize) {
-        fprintf(stderr, "Warning: Specified size exceeds map size.\nField has been trimmed vertically.\n");
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Warning", "Specified size exceeds map size.\nField has been trimmed vertically.", NULL);
         ySize = (mapLength/xSize) / 2;
         if(ySize == 0) exit(1);
     }
@@ -181,7 +181,7 @@ void ProjectData::LoadPal(char* filename) {
 
     palLength = ReadPlain(palName, palfile, palOffset, palLength);
     if(palLength < 0) {
-        fprintf(stderr, "Could not read palette file.\n");
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not read palette file. Are you sure the path's correct?", NULL);
         exit(1);
     }
 
@@ -194,12 +194,12 @@ void ProjectData::SaveMap(char* filename) {
         rename(filename, saveName);
     } else if(mapCompr == ENIGMA) {
         if(EniComp(filename, saveName) < 0) {
-            fprintf(stderr, "Could not write map file.\n");
+            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not write map file.", NULL);
             exit(1);
         }
         remove(filename);
     } else {
-        fprintf(stderr, "Invalid map compression format.\n");
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid map compression format. Should be one of the following:\n\n'None'\n'Enigma'", NULL);
         exit(1);
     }
 }
