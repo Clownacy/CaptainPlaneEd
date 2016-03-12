@@ -38,7 +38,8 @@ char* strsrch(char* string, const char* const substring)
 		return &string[position+sublength];
 }
 
-fileCompression readComprType(char* string) {
+fileCompression readComprType(char* string)
+{
 	for (int i=0; i < COMP_TYPE_AMOUNT; ++i)
 		if (strsrch(string, comprTypes[i].string) != NULL)
 			return comprTypes[i].compression;

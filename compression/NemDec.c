@@ -76,7 +76,7 @@ long NemDec(const char* srcfile, FILE* dst, long Pointer, int length)
 	//result = _setmode(openrom, _O_BINARY);
 
     FILE* src = fopen(srcfile, "rb");
-	if(srcfile == NULL) return -1;
+	if (srcfile == NULL) return -1;
 
     fseek(src, 0, SEEK_END);
 	romsize = ftell(src);
@@ -103,7 +103,7 @@ long NemDec(const char* srcfile, FILE* dst, long Pointer, int length)
 	alt_out = (rtiles & 0x8000) / 0x8000; //ses the output mode based on the value of the first bit
 	rtiles = 0x7FFF & rtiles; //truncates the first bit as it is no longer significant
 	result = stage_1(&pointer, rompointer, bufferpointer); //calls the header decompression routine
-	if(result == -1)
+	if (result == -1)
 	{
 		return -1;
 	}
@@ -114,7 +114,7 @@ long NemDec(const char* srcfile, FILE* dst, long Pointer, int length)
 //Additional filehanding to read decompressed tiles from memory into file
 	//file = _creat(outfilename, _S_IWRITE);
 	rewind(dst);
-	for(loopcount = 0; loopcount < out_loc; loopcount++)
+	for (loopcount = 0; loopcount < out_loc; loopcount++)
 	{
 		tiles[loopcount] = ((tiles[loopcount] & 0xFF000000) / 0x1000000) + 
 						   ((tiles[loopcount] & 0xFF0000) / 0x100) + 
@@ -139,7 +139,7 @@ int stage_1 (long *pointer, char *rompointer, char *bufferpointer)
 	//main loop. Header is terminated by the value of 0xFF in the rom
 	for (in_val = (*((*pointer)++ + rompointer) & 0xFF); in_val != 0xFF; in_val = (*((*pointer)++ + rompointer) & 0xFF))
 	{
-		if(in_val > 0x7F) //if most significant bit is set, store the last 4 bits and discard the rest
+		if (in_val > 0x7F) //if most significant bit is set, store the last 4 bits and discard the rest
 		{
 			out_val = in_val; //last four bits set here are not changed until it enters here again
 			in_val = (*((*pointer)++ + rompointer) & 0xFF); //read another value from the rom
@@ -148,13 +148,13 @@ int stage_1 (long *pointer, char *rompointer, char *bufferpointer)
 		in_val = ((in_val & 0xF0) / 0x10) + ((in_val & 0x0F) * 0x10); //nibble swap the value from the rom
 		out_val = (out_val & 0x0F) + (in_val * 0x10); //multiply the input value by 0x10 and place it in front of the last 4 bits in the output value
 		offset = (*((*pointer)++ + rompointer) & 0xFF) * (short unsigned int) pow(2, (num_times + 1)); //read another value from the rom and use it to determine the offset
-		if(offset >= 0x200)
+		if (offset >= 0x200)
 		{
 			return -1;
 		}
 
 		num_times = (short unsigned int) pow(2, num_times); //finish setting the number of times the value is written to the buffer
-		for(; num_times != 0; num_times--,offset += 2) //loop for writing the values to the buffer
+		for (; num_times != 0; num_times--,offset += 2) //loop for writing the values to the buffer
 		{
 			*(bufferpointer + offset + 1) = (out_val & 0x00FF);
 			*(bufferpointer + offset) = ((out_val & 0xFF00) / 0x100); //wriiting the values to the buffer
@@ -181,7 +181,7 @@ void stage_2 (long *pointer, char *rompointer, char *bufferpointer, unsigned lon
 	short num_times = 0; //the number of times the value is repeated in the output
 	unsigned short rom_val = (*((*pointer)++ + rompointer) * 0x100); //value from the rom
 	rom_val += (*((*pointer)++ + rompointer) & 0xFF);
-	for(;rtiles > 0;rtiles--) //main loop for tiles
+	for (;rtiles > 0;rtiles--) //main loop for tiles
 	{
 		for (rlines = 8; rlines != 0; rlines--) //loop for lines in the tile
 		{

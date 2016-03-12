@@ -1,3 +1,4 @@
+#include <cstdint>
 #include <cstdio>
 
 #include "Tile.h"
@@ -36,8 +37,8 @@ void Tile::WriteTile(FILE* file)
 	fputc((char) (this->priority
 		    | this->xFlip
 		    | this->yFlip
-		    | (this->paletteLine << 5)
-		    | (this->tileID >> 8)), file);
+		   | (this->paletteLine << 5)
+		   | (this->tileID >> 8)), file);
 	fputc(this->tileID & 0xFF, file);
 }
 

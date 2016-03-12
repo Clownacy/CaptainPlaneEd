@@ -54,14 +54,14 @@ public:
     void DrawPixel(int x, int y);
     void DrawRect(int x, int y); //x, y = tile coordinates (not pixel)
     void DrawFreeRect(int x, int y, int xSize, int ySize);
-    void IncScreenOffset() {screenTileYOffset++;}
-    void DecScreenOffset() {if(screenTileYOffset>0) screenTileYOffset--;}
+    void IncScreenOffset() {++screenTileYOffset;}
+    void DecScreenOffset() {if (screenTileYOffset>0) --screenTileYOffset;}
     int GetScreenOffset() {return screenTileYOffset;}
-    void IncScreenXOffset() {screenTileXOffset++;}
-    void DecScreenXOffset() {if(screenTileXOffset>0) screenTileXOffset--;}
+    void IncScreenXOffset() {++screenTileXOffset;}
+    void DecScreenXOffset() {if (screenTileXOffset>0) --screenTileXOffset;}
     int GetScreenXOffset() {return screenTileXOffset;}
-    void IncSelOffset() {selTileYOffset++;}
-    void DecSelOffset() {if(selTileYOffset>0) selTileYOffset--;}
+    void IncSelOffset() {++selTileYOffset;}
+    void DecSelOffset() {if (selTileYOffset>0) --selTileYOffset;}
     int GetSelOffset() {return selTileYOffset;}
     void PosScreenToTile(int& x, int& y);
     void PosScreenToTileRound(int& x, int& y);

@@ -149,15 +149,15 @@ long EniComp(const char *SrcFile, char *DstFile/*, bool padding*/)
 	comp_pointer = (unsigned char *)calloc(infilelength, 0x01);
 	
 	dst = fopen(DstFile, "wb");
-	if(dst == NULL) return -1;
+	if (dst == NULL) return -1;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //Format conversion		- This section of code removes the surrounding areas if the stage
 //						- is stored in the full 80x80 block version
-	/*if(padding)
+	/*if (padding)
 	{
 		_lseek(infile, 0x1000, 0);
-		for(loopcount = 0; loopcount < 0x2000; loopcount += 0x80)
+		for (loopcount = 0; loopcount < 0x2000; loopcount += 0x80)
 		{
 			_lseek(infile, _tell(infile) + 0x20, 0);
 			_read(infile, (pointer + (loopcount / 2)), 0x40);
@@ -174,16 +174,16 @@ long EniComp(const char *SrcFile, char *DstFile/*, bool padding*/)
 
 	tempval_comp = *(comp_pointer);
 	unsigned short tempval_comp2 = 0;
-	for(int loopcount = 0; loopcount < infilelength; loopcount += 2)
+	for (int loopcount = 0; loopcount < infilelength; loopcount += 2)
 	{
 		tempval_comp2 |= (*(comp_pointer + loopcount) << 8);
 		tempval_comp2 |= *(comp_pointer + loopcount + 1);
 	}
 
 	bitmask_comp = (tempval_comp2 >> 0x0B);
-	for(int loopcount = 0; loopcount < 0x0A; loopcount++)
+	for (int loopcount = 0; loopcount < 0x0A; loopcount++)
 	{
-		if(((tempval_comp2 >> (0x0A - loopcount)) & 0x0001) == 0)
+		if (((tempval_comp2 >> (0x0A - loopcount)) & 0x0001) == 0)
 		{
 			packet_length_comp--;
 		}
@@ -217,9 +217,9 @@ long EniComp(const char *SrcFile, char *DstFile/*, bool padding*/)
 /////////////////////////////////////////////////////////////////////////////////////////
 //Main compression loop
 //	printf("Compressing file......");
-	for(;!done;)
+	for (;!done;)
 	{
-		if(comp_offset >= infilelength)
+		if (comp_offset >= infilelength)
 		{
 			writebit(1);
 			writebit(1);
@@ -235,35 +235,35 @@ long EniComp(const char *SrcFile, char *DstFile/*, bool padding*/)
 			continue;
 		}
 		
-		for(commonp = 0; (checkval(commonp * 2) == common_value_comp) && (commonp < 0x10); commonp++){}
-		for(incp = 0; (checkval(incp * 2) == (incrementing_value_comp + incp)) && (incp < 0x10); incp++){}
-		for(compinc = 0; (checkval(compinc * 2) == (checkval(0) + compinc)) && (compinc < 0x10); compinc++){}
-		for(compdec = 0; (checkval(compdec * 2) == (checkval(0) - compdec)) && (compdec < 0x10); compdec++){}
-		for(comp = 0; (checkval(comp * 2) == checkval(0)) && (comp < 0x10); comp++){}
-		for(comprep = 0; (comprep < 0x0F) && (checkval(comprep * 2) != common_value_comp) && (checkval(comprep * 2) != incrementing_value_comp) && (checkval(comprep * 2) != checkval(comprep * 2 + 2)) && (checkval(comprep * 2) != (checkval(comprep * 2 + 2) + 1)) && (checkval(comprep * 2) != (checkval(comprep * 2 + 2) - 1)); comprep++){}
+		for (commonp = 0; (checkval(commonp * 2) == common_value_comp) && (commonp < 0x10); commonp++){}
+		for (incp = 0; (checkval(incp * 2) == (incrementing_value_comp + incp)) && (incp < 0x10); incp++){}
+		for (compinc = 0; (checkval(compinc * 2) == (checkval(0) + compinc)) && (compinc < 0x10); compinc++){}
+		for (compdec = 0; (checkval(compdec * 2) == (checkval(0) - compdec)) && (compdec < 0x10); compdec++){}
+		for (comp = 0; (checkval(comp * 2) == checkval(0)) && (comp < 0x10); comp++){}
+		for (comprep = 0; (comprep < 0x0F) && (checkval(comprep * 2) != common_value_comp) && (checkval(comprep * 2) != incrementing_value_comp) && (checkval(comprep * 2) != checkval(comprep * 2 + 2)) && (checkval(comprep * 2) != (checkval(comprep * 2 + 2) + 1)) && (checkval(comprep * 2) != (checkval(comprep * 2 + 2) - 1)); comprep++){}
 
-		if(incp > 0)
+		if (incp > 0)
 		{
 			writeinc(incp);
 			incrementing_value_comp += incp;
 			continue;
 		}
-		if(commonp > 0)
+		if (commonp > 0)
 		{
 			writecommon(commonp);
 			continue;
 		}
-		if((comp > compinc) && (comp > compdec))
+		if ((comp > compinc) && (comp > compdec))
 		{
 			writecomp(comp);
 			continue;
 		}
-		if(compinc > compdec)
+		if (compinc > compdec)
 		{
 			writecompinc(compinc);
 			continue;
 		}
-		if(compdec > 1)
+		if (compdec > 1)
 		{
 			writecompdec(compdec);
 			continue;
@@ -274,7 +274,7 @@ long EniComp(const char *SrcFile, char *DstFile/*, bool padding*/)
 //	printf("\t\t\t\tDone!\n\n%s successfully compressed into file %s\nOriginal filesize:\t%i\nCompressed filesize:\t%i\nPercentage of original:\t%i", argv[1], argv[2], infilelength, _tell(outfile), (int)(((float)_tell(outfile) / (float)infilelength) * 100));
 
 	//if (_tell(outfile) & 1) _lseek(outfile, 1, SEEK_CUR);
-	if(ftell(dst) & 0x01) fputc(0x00, dst);
+	if (ftell(dst) & 0x01) fputc(0x00, dst);
 
 	free(comp_pointer);
 	//_close(infile);
@@ -293,7 +293,7 @@ unsigned char writebit(unsigned char bit)
 	bytebuffer <<= 1;
 	bytebuffer |= bit;
 
-	if(waitingbits >= 8)
+	if (waitingbits >= 8)
 	{
 		//_write(outfile, &bytebuffer, 0x1);
 		fputc(bytebuffer, dst);
@@ -351,14 +351,14 @@ int writecomp(int vcomp)
 	writebit((vcomp & 0x0002) >> 1);
 	writebit(vcomp & 0x0001);
 
-	for(int loopcount = 0; loopcount < 5; loopcount++)
+	for (int loopcount = 0; loopcount < 5; loopcount++)
 	{
-		if(((bitmask_comp << loopcount) & 0x80) != 0)
+		if (((bitmask_comp << loopcount) & 0x80) != 0)
 		{
 			writebit((checkval(0) >> (0x0F - loopcount)) & 0x0001);
 		}
 	}
-	for(int loopcount = 0; loopcount < packet_length_comp; loopcount++)
+	for (int loopcount = 0; loopcount < packet_length_comp; loopcount++)
 	{
 		writebit((checkval(0) >> ((packet_length_comp - 1) - loopcount)) & 0x0001);
 	}
@@ -378,14 +378,14 @@ int writecompinc(int vcompinc)
 	writebit((vcompinc & 0x0002) >> 1);
 	writebit(vcompinc & 0x0001);
 	
-	for(int loopcount = 0; loopcount < 5; loopcount++)
+	for (int loopcount = 0; loopcount < 5; loopcount++)
 	{
-		if(((bitmask_comp << loopcount) & 0x80) != 0)
+		if (((bitmask_comp << loopcount) & 0x80) != 0)
 		{
 			writebit((checkval(0) >> (0x0F - loopcount)) & 0x0001);
 		}
 	}
-	for(int loopcount = 0; loopcount < packet_length_comp; loopcount++)
+	for (int loopcount = 0; loopcount < packet_length_comp; loopcount++)
 	{
 		writebit((checkval(0) >> ((packet_length_comp - 1) - loopcount)) & 0x0001);
 	}
@@ -405,14 +405,14 @@ int writecompdec(int vcompdec)
 	writebit((vcompdec & 0x0002) >> 1);
 	writebit(vcompdec & 0x0001);
 	
-	for(int loopcount = 0; loopcount < 5; loopcount++)
+	for (int loopcount = 0; loopcount < 5; loopcount++)
 	{
-		if(((bitmask_comp << loopcount) & 0x80) != 0)
+		if (((bitmask_comp << loopcount) & 0x80) != 0)
 		{
 			writebit((checkval(0) >> (0x0F - loopcount)) & 0x0001);
 		}
 	}
-	for(int loopcount = 0; loopcount < packet_length_comp; loopcount++)
+	for (int loopcount = 0; loopcount < packet_length_comp; loopcount++)
 	{
 		writebit((checkval(0) >> ((packet_length_comp - 1) - loopcount)) & 0x0001);
 	}
@@ -432,16 +432,16 @@ int writecomprep(int vcomprep)
 	writebit((vcomprep & 0x0002) >> 1);
 	writebit(vcomprep & 0x0001);
 
-	for(; vcomprep >= 0; vcomprep--)
+	for (; vcomprep >= 0; vcomprep--)
 	{
-		for(int loopcount = 0; loopcount < 5; loopcount++)
+		for (int loopcount = 0; loopcount < 5; loopcount++)
 		{
-			if(((bitmask_comp << loopcount) & 0x80) != 0)
+			if (((bitmask_comp << loopcount) & 0x80) != 0)
 			{
 				writebit((checkval(0) >> (0x0F - loopcount)) & 0x0001);
 			}
 		}
-		for(int loopcount = 0; loopcount < packet_length_comp; loopcount++)
+		for (int loopcount = 0; loopcount < packet_length_comp; loopcount++)
 		{
 			writebit((checkval(0) >> ((packet_length_comp - 1) - loopcount)) & 0x0001);
 		}
@@ -464,41 +464,41 @@ bool calc_headerval(void)
 	unsigned short commontemp = 0;
 	unsigned short tempincval = 0;
 	unsigned short lowestval = 0xFFFF;
-	for(int loopcount = 0; loopcount < infilelength; loopcount += 2)
+	for (int loopcount = 0; loopcount < infilelength; loopcount += 2)
 	{
 		commontemp = (*(comp_pointer + commonoffset++) << 8);
 		commontemp |= *(comp_pointer + commonoffset++);
-		if(commontemp < lowestval)
+		if (commontemp < lowestval)
 		{
 			lowestval = commontemp;
 		}
 	}
 
-	for(int loopcount = lowestval; loopcount < 0x10000; loopcount++)
+	for (int loopcount = lowestval; loopcount < 0x10000; loopcount++)
 	{
 		commonoffset = 0;
 		inchitcount = 0;
 		comhitcount = 0;
 		tempincval = loopcount;
-		for(;commonoffset < infilelength;)
+		for (;commonoffset < infilelength;)
 		{
 			commontemp = (*(comp_pointer + commonoffset++) << 8);
 			commontemp |= *(comp_pointer + commonoffset++);
-			if(commontemp == (unsigned short)loopcount)
+			if (commontemp == (unsigned short)loopcount)
 			{
 				comhitcount++;
 			}
-			if(commontemp == tempincval)
+			if (commontemp == tempincval)
 			{
 				inchitcount++;
 				tempincval++;
 			}
-			if(comhitcount > comhighestcount)
+			if (comhitcount > comhighestcount)
 			{
 				comhighestcount++;
 				common_value_comp = (unsigned short)loopcount;
 			}
-			if(inchitcount > inchighestcount)
+			if (inchitcount > inchighestcount)
 			{
 				inchighestcount++;
 				incrementing_value_comp = (tempincval - inchitcount);

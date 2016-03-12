@@ -70,17 +70,17 @@ ProjectData::ProjectData(char* prjtxt) {
     strcpy(saveName, "");
 
     FILE* prjfile = fopen(prjtxt, "r");
-    if(prjfile == NULL) {
+    if (prjfile == NULL) {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Please drag and drop your project file onto this program to start it", NULL);
         exit(1);
     }
 
-    while(!feof(prjfile)) {
+    while (!feof(prjfile)) {
         char line[256];
         fgets(line, 256, prjfile);
-        for(int type=0; type<TYPE_AMOUNT; type++) {
+        for (int type=0; type < TYPE_AMOUNT; ++type) {
             char* content = strsrch(line, infoTypes[type]);
-            if(content != NULL) AssignInfo(type, content);
+            if (content != NULL) AssignInfo(type, content);
         }
     }
 }
@@ -110,14 +110,14 @@ void ProjectData::AssignInfo(int type, char* content) {
 void ProjectData::LoadArt(const char* filename) {
     FILE* artfile = fopen(filename, "w+b");
     
-    if(artCompr == INVALID) {
+    if (artCompr == INVALID) {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid art compression format. Should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Nemesis'\n'Kid Chameleon'", NULL);
         exit(1);
     }
 
     artLength = ComprFunc(artCompr, artName, artfile, artOffset, artLength);
 
-    if(artLength < 0) {
+    if (artLength < 0) {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not read art file. Are you sure the path is correct?", NULL);
         exit(1);
     }
@@ -128,16 +128,16 @@ void ProjectData::LoadArt(const char* filename) {
 void ProjectData::LoadMap(const char* filename) {
     FILE* mapfile = fopen(filename, "wb");
 
-    if(mapCompr != NONE && mapCompr != ENIGMA) {
+    if (mapCompr != NONE && mapCompr != ENIGMA) {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid map compression format. Should be one of the following:\n\n'None'\n'Enigma'", NULL);
         exit(1);
     }
 
     mapLength = ComprFunc(mapCompr, mapName, mapfile, mapOffset, mapLength);
-    if(mapLength < 0) {
+    if (mapLength < 0) {
         //file could not be decompressed or found
         mapLength = 2*xSize*ySize;
-        if(!CheckCreateBlankFile(mapName, mapfile, mapOffset, mapLength)) {
+        if (!CheckCreateBlankFile(mapName, mapfile, mapOffset, mapLength)) {
             //file is existant but could not be decompressed
             SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not read map file. Are you sure the path is correct?", NULL);
             exit(1);
@@ -149,14 +149,14 @@ void ProjectData::LoadMap(const char* filename) {
 
     fclose(mapfile);
 
-    if(mapLength < 2*xSize*ySize) {
+    if (mapLength < 2*xSize*ySize) {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Warning", "Specified size exceeds map size.\nField has been trimmed vertically.", NULL);
         ySize = (mapLength/xSize) / 2;
-        if(ySize == 0) exit(1);
+        if (ySize == 0) exit(1);
     }
     
-    if(strlen(saveName) == 0) {
-        if(mapOffset == 0) strcpy(saveName, mapName); //overwrite existing map
+    if (strlen(saveName) == 0) {
+        if (mapOffset == 0) strcpy(saveName, mapName); //overwrite existing map
         else strcpy(saveName, FILE_MAP_DEFAULT); //write to default file
     }
 }
@@ -165,7 +165,7 @@ void ProjectData::LoadPal(const char* filename) {
     FILE* palfile = fopen(filename, "wb");
 
     palLength = ReadPlain(palName, palfile, palOffset, palLength);
-    if(palLength < 0) {
+    if (palLength < 0) {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not read palette file. Are you sure the path's correct?", NULL);
         exit(1);
     }
@@ -174,11 +174,11 @@ void ProjectData::LoadPal(const char* filename) {
 }
 
 void ProjectData::SaveMap(const char* filename) {
-    if(mapCompr == NONE) {
+    if (mapCompr == NONE) {
         remove(saveName);
         rename(filename, saveName);
-    } else if(mapCompr == ENIGMA) {
-        if(EniComp(filename, saveName) < 0) {
+    } else if (mapCompr == ENIGMA) {
+        if (EniComp(filename, saveName) < 0) {
             SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not write map file.", NULL);
             exit(1);
         }

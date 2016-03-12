@@ -19,12 +19,12 @@ Graphics::Graphics(uint16_t xSize, uint16_t tileOffset, uint16_t tileAmount) {
     
     /* calculate selector width */
     this->selectorWidth = 8;
-    while(8*tileAmount / selectorWidth > SCREEN_HEIGHT) {
-        if(8 * (xSize+selectorWidth) < SCREEN_WIDTH) selectorWidth += 8;
+    while (8*tileAmount / selectorWidth > SCREEN_HEIGHT) {
+        if (8 * (xSize+selectorWidth) < SCREEN_WIDTH) selectorWidth += 8;
         else break;
     }
 
-    if(SDL_Init(SDL_INIT_VIDEO)<0) {
+    if (SDL_Init(SDL_INIT_VIDEO)<0) {
         fprintf(stderr, "Unable to init SDL: %s\n", SDL_GetError());
         exit(1);
     }
@@ -47,12 +47,12 @@ Graphics::Graphics(uint16_t xSize, uint16_t tileOffset, uint16_t tileAmount) {
     SDL_RenderSetLogicalSize(render, SCREEN_WIDTH, SCREEN_HEIGHT);
 
     screen = SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0, 0, 0, 0);
-    if(screen==NULL) {
+    if (screen==NULL) {
         fprintf(stderr, "Unable to set 640x480 video: %s\n", SDL_GetError());
         exit(1);
     }
     texture = SDL_CreateTextureFromSurface(render, screen);
-    if(texture==NULL) {
+    if (texture==NULL) {
         fprintf(stderr, "Error - %s\n", SDL_GetError());
         exit(1);
     }
@@ -60,20 +60,20 @@ Graphics::Graphics(uint16_t xSize, uint16_t tileOffset, uint16_t tileAmount) {
 
 void Graphics::ReadPalette(const char* filename) {
     FILE* palfile = fopen(filename,"rb");
-    if(palfile==NULL) {
+    if (palfile==NULL) {
         fprintf(stderr, "Cannot open palette file.\n");
         exit(1);
     }
     fseek(palfile, 0, SEEK_END);
     paletteLines = ftell(palfile)/0x20;
-    if(paletteLines > 4) paletteLines = 4;
+    if (paletteLines > 4) paletteLines = 4;
     rewind(palfile);
-    if(paletteLines == 0) {
+    if (paletteLines == 0) {
         fprintf(stderr, "Palette file too small.\n");
         exit(1);        
     }
     palette = new uint16_t[paletteLines][16];
-    for(int i=0; i<paletteLines; i++)
+    for (int i=0; i < paletteLines; ++i)
         fread(palette[i], sizeof(unsigned char), 32, palfile);
     fclose(palfile);
     remove(filename);
@@ -81,19 +81,19 @@ void Graphics::ReadPalette(const char* filename) {
 #define getrgb(v) ((v&0xF000)>>8)|(v&0x0F0F|0xF000)	// Corrects G value, and sets alpha to max, so we can see
 void Graphics::ReadTiles(const char* filename) {
     FILE* tilefile = fopen(filename,"rb");
-    if(tilefile==NULL) {
+    if (tilefile==NULL) {
         fprintf(stderr, "Cannot open tile graphics file.\n");
         exit(1);
     }
     unsigned char tilebuffer[32]; //space for one tile
     tileData = new uint16_t***[tileAmount];
-    for(int t=0; t<tileAmount; t++) {
+    for (int t=0; t < tileAmount; ++t) {
         fread(tilebuffer, sizeof(unsigned char), 32, tilefile);
         tileData[t] = new uint16_t**[paletteLines];
-        for(int p=0; p<paletteLines; p++) {
+        for (int p=0; p < paletteLines; ++p) {
             tileData[t][p] = new uint16_t*[4];
-            for(int f=0; f<4; f++) tileData[t][p][f] = new uint16_t[64];
-            for(int i=0; i<32; i++) {
+            for (int f=0; f < 4; ++f) tileData[t][p][f] = new uint16_t[64];
+            for (int i=0; i < 32; ++i) {
                 tileData[t][p][0][2*i]   = getrgb(palette[p][(tilebuffer[i] & 0xF0)>>4]);
                 tileData[t][p][0][2*i+1] = getrgb(palette[p][(tilebuffer[i] & 0x0F)]);
                 tileData[t][p][1][8*(i/4)+7-2*(i%4)]   = getrgb(palette[p][(tilebuffer[i] & 0xF0)>>4]); //X-flip
@@ -111,13 +111,13 @@ void Graphics::ReadTiles(const char* filename) {
 
 void Graphics::CreateTiles(){
     tiles = new SDL_Surface***[tileAmount];
-    for(int t=0; t<tileAmount; t++)
+    for (int t=0; t < tileAmount; ++t)
     {
         tiles[t] = new SDL_Surface**[paletteLines];
-        for(int p=0; p<paletteLines; p++)
+        for (int p=0; p < paletteLines; ++p)
         {
             tiles[t][p] = new SDL_Surface*[4];
-            for(int f=0; f<4; f++)
+            for (int f=0; f < 4; ++f)
                 tiles[t][p][f] = InitSurface(tileData[t][p][f], 8, 8, 16);
         }
     }
@@ -163,7 +163,7 @@ void Graphics::ClearSelector() {
 
 void Graphics::DrawSelector() {
     ClearSelector();
-    for(int i=0; i<tileAmount; i++)
+    for (int i=0; i < tileAmount; ++i)
         DrawSurface(tiles[i][currentPal][0], this->screen, selXMin + 8*(i%selectorWidth), 8*(i/selectorWidth - selTileYOffset));
     //SDL_Flip(screen);
     ProcessDisplay();
@@ -182,18 +182,18 @@ void Graphics::DrawTileSingle(int x, int y, Tile tile) {
     y -= screenTileYOffset;
     x -= screenTileXOffset;
     if (x >= xDisplaySize) return;
-    if((tile.priority && highPriorityDisplay) || (!tile.priority && lowPriorityDisplay)) {
-        if((tile.tileID) - tileOffset >= this->tileAmount) {
+    if ((tile.priority && highPriorityDisplay) || (!tile.priority && lowPriorityDisplay)) {
+        if ((tile.tileID) - tileOffset >= this->tileAmount) {
             DrawTileNone(x, y);
             DrawTileInvalid(x, y);
-        } else if((tile.tileID || !this->tileOffset) && tile.paletteLine < paletteLines)
+        } else if ((tile.tileID || !this->tileOffset) && tile.paletteLine < paletteLines)
             DrawSurface(tiles[(tile.tileID) - tileOffset][tile.paletteLine][(tile.xFlip | tile.yFlip)>>3], screen, 8*x, 8*y);
         else DrawTileBlank(x, y, tile);
     } else DrawTileNone(x, y);
 }
 
 bool Graphics::CheckSelValidPos(int x, int y) {
-    if(x>=selXMin && x<selXMin+8*selectorWidth && y>=0 && (x-selXMin)/8+selectorWidth*(y/8 + selTileYOffset)<GetTileAmount()) return true;
+    if (x>=selXMin && x<selXMin+8*selectorWidth && y>=0 && (x-selXMin)/8+selectorWidth*(y/8 + selTileYOffset)<GetTileAmount()) return true;
     else return false;
 }
 
@@ -223,14 +223,14 @@ void Graphics::DrawTileFullColor(int x, int y, Uint32 color) {
 
 void Graphics::DrawTileInvalid(int x, int y) {
     //PosTileToScreen(x, y);
-    for(int i=0; i<8; i++) {
+    for (int i=0; i < 8; ++i) {
         DrawPixel(8*x+i, 8*y+i);
         DrawPixel(8*x+i, 8*y+7-i);
     }
 }
 
 void Graphics::DrawPixel(int x, int y) {
-    if(x<0 || x>=SCREEN_WIDTH || y<0 || y>=SCREEN_HEIGHT) return;
+    if (x<0 || x>=SCREEN_WIDTH || y<0 || y>=SCREEN_HEIGHT) return;
     Uint32 color = SDL_MapRGB(screen->format, 0xE0, 0xB0, 0xD0);
 
     Uint32 *pixel;
@@ -241,7 +241,7 @@ void Graphics::DrawPixel(int x, int y) {
 /* map coords */
 void Graphics::DrawRect(int x, int y) {
     PosTileToScreen(x, y);
-    for(int i=0; i<8; i++) {
+    for (int i=0; i < 8; ++i) {
         DrawPixel(x+i, y);
         DrawPixel(x+i, y+7);
         DrawPixel(x, y+i);
@@ -252,11 +252,11 @@ void Graphics::DrawRect(int x, int y) {
 /* map coords */
 void Graphics::DrawFreeRect(int x, int y, int xSize, int ySize) {
     PosTileToScreen(x, y);
-    for(int i=0; i<8*ySize; i++) {
+    for (int i=0; i < 8*ySize; ++i) {
         DrawPixel(x, y+i);
         DrawPixel(x + 8*xSize - 1, y+i);
     }
-    for(int i=0; i<8*xSize; i++) {
+    for (int i=0; i < 8*xSize; ++i) {
         DrawPixel(x+i, y);
         DrawPixel(x+i, y + 8*ySize - 1);
     }

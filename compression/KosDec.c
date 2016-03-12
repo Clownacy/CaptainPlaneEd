@@ -76,9 +76,9 @@ start:
 	BFP=0;
 
 //------------------------------------------------------------------------------------------------
-	while(1)
+	while (1)
 	{
-		if(BITFIELD & (1<<BFP++)) Bit=1; else Bit=0;
+		if (BITFIELD & (1<<BFP++)) Bit=1; else Bit=0;
 		if (BFP>=16) { fread(&BITFIELD, 2, 1, Src); BFP=0; }
 //-- Direct Copy ---------------------------------------------------------------------------------
 		if (Bit)
@@ -89,7 +89,7 @@ start:
 		}
 		else
 		{
-			if(BITFIELD & (1<<BFP++)) Bit=1; else Bit=0;
+			if (BITFIELD & (1<<BFP++)) Bit=1; else Bit=0;
 			if (BFP>=16) { fread(&BITFIELD, 2, 1, Src); BFP=0; }
 //-- Embedded / Separate -------------------------------------------------------------------------
 			if (Bit)
@@ -115,9 +115,9 @@ start:
 //-- Inline --------------------------------------------------------------------------------------
 			else
 			{
-				if(BITFIELD & (1<<BFP++)) Low=1; else Low=0;
+				if (BITFIELD & (1<<BFP++)) Low=1; else Low=0;
 				if (BFP>=16) { fread(&BITFIELD, 2, 1, Src); BFP=0; }
-				if(BITFIELD & (1<<BFP++)) High=1; else High=0;
+				if (BITFIELD & (1<<BFP++)) High=1; else High=0;
 				if (BFP>=16) { fread(&BITFIELD, 2, 1, Src); BFP=0; }
 
 				Count = ((long)Low)*2 + ((long)High) + 1;

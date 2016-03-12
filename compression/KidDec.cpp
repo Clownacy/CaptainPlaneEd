@@ -24,7 +24,7 @@ unsigned short output_pos;
 
 long KidDec(const char *srcfile, FILE* dst, long Pointer, int length) {
     FILE* rom = fopen(srcfile, "rb");
-    if(rom == NULL) return -1;
+    if (rom == NULL) return -1;
 
     int offset = Pointer;
 
@@ -72,7 +72,7 @@ int Decompress(int address_data, unsigned short size, FILE* rom)
 	unit=0;
 	bitpos=0;
 	terminate = false;
-	for(int n=0; !terminate && unit < size && address_key_data < address_stop; n++){
+	for (int n=0; !terminate && unit < size && address_key_data < address_stop; n++){
 		fread(&key, 2, 1, rom);
 		key = swap_endian(key, 2);
 		fseek(rom, -2, SEEK_CUR);
@@ -108,8 +108,8 @@ int Decompress(int address_data, unsigned short size, FILE* rom)
 						#ifdef DEBUG
 						printf("%05X %05X %X  ref-short       u-%04X-%04X  s-%04X  c-%04X\n", address_key_data, address_input_data, bitpos, unit, ftell(dump), in1, keybit+2);// system("PAUSE");
 						#endif
-						if(in1 != 0){
-							for(count=keybit+2; count > 0; count--){
+						if (in1 != 0){
+							for (count=keybit+2; count > 0; count--){
 								SeekData(-in1, SEEK_CUR);
 								in3 = ReadData();
 								SeekData(in1-1, SEEK_CUR);
@@ -123,7 +123,7 @@ int Decompress(int address_data, unsigned short size, FILE* rom)
 						else{
 							unit--;
 							//in3=0;
-							for(count=0; count < keybit+1; count++)
+							for (count=0; count < keybit+1; count++)
 								WriteData(0);
 							//fwrite(&in3, 1, keybit+1, dump);
 						}
@@ -152,14 +152,14 @@ int Decompress(int address_data, unsigned short size, FILE* rom)
 								#ifdef DEBUG
 								printf("%05X %05X %X  ref-long-large  u-%04X-%04X  s-%04X  c-%04X\n", address_key_data, address_input_data, bitpos, unit, ftell(dump), in1+(keybit<<8), in2); //system("PAUSE");
 								#endif
-								if(count < 6) {
-                                    if(count == 0) terminate = true;
+								if (count < 6) {
+                                    if (count == 0) terminate = true;
 								    address_input_data += 2;
 								    fseek(rom, address_key_data, SEEK_SET);
                                     break;
                                 }
-								if(in1+(keybit<<8) != 0){
-									for(; count > 0; count--){
+								if (in1+(keybit<<8) != 0){
+									for (; count > 0; count--){
 										SeekData(-in1 - (keybit<<8), SEEK_CUR);
 										in3 = ReadData();
 										SeekData(in1-1 + (keybit<<8), SEEK_CUR);
@@ -170,11 +170,11 @@ int Decompress(int address_data, unsigned short size, FILE* rom)
 										//fwrite(&in3, 1, 1, dump);
 									}
 								}
-								else if(count > 0)
+								else if (count > 0)
 								{
 									unit--;
 									//fwrite(&in3, 1, count-1, dump);
-									for(; count > 1; count--)
+									for (; count > 1; count--)
 										WriteData(in3);
 								}
 								output_size += (in2);
@@ -193,8 +193,8 @@ int Decompress(int address_data, unsigned short size, FILE* rom)
 								#ifdef DEBUG
 								printf("%05X %05X %X  ref-long-small  u-%04X-%04X  s-%04X  c-%04X\n", address_key_data, address_input_data, bitpos, unit, ftell(dump), in1+(keybit<<8), in2);// system("PAUSE");
 								#endif
-								if(in1+(keybit<<8) != 0){
-									for(; count > 0; count--){
+								if (in1+(keybit<<8) != 0){
+									for (; count > 0; count--){
 										SeekData(-in1 - (keybit<<8), SEEK_CUR);
 										in3 = ReadData();
 										SeekData(in1-1 + (keybit<<8), SEEK_CUR);
@@ -208,7 +208,7 @@ int Decompress(int address_data, unsigned short size, FILE* rom)
 								else{
 									unit--;
 									//fwrite(&in3, 1, count-1, dump);
-									for(; count > 1; count--)
+									for (; count > 1; count--)
 										WriteData(in3);
 								}
 								output_size += in2;
@@ -220,7 +220,7 @@ int Decompress(int address_data, unsigned short size, FILE* rom)
 						};
 				};
 		};
-		if(bitpos > 7){
+		if (bitpos > 7){
 			bitpos &= 7;
 			fseek(rom, 1, SEEK_CUR);
 		}
@@ -233,10 +233,10 @@ int Decompress(int address_data, unsigned short size, FILE* rom)
 	}
 	
 	// Fill in the rest with zeros
-	/*if(unit < size){
+	/*if (unit < size){
 		//in3 = 0;
 		//fwrite(&in3, 1, size-unit, dump);
-		for(int i=unit; i < size; i++)
+		for (int i=unit; i < size; i++)
 			WriteData(0);
 	}*/
 	
@@ -270,7 +270,7 @@ int swap_endian(unsigned int in, char size){
 }
 
 int ReadData(){
-	if(output_pos >= output_size)
+	if (output_pos >= output_size)
 		return 0;
 	
 	output_pos++;
@@ -278,7 +278,7 @@ int ReadData(){
 }
 
 void WriteData(unsigned char var){
-	if(output_pos >= output_size){
+	if (output_pos >= output_size){
 		output_size++;
 		output_data = (unsigned char*)realloc(output_data, output_size);
 	}

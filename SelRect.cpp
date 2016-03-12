@@ -18,11 +18,11 @@ SelRect::SelRect(const SelRect& sr) {
     yStart = sr.yStart;
     xSize = sr.xSize;
     ySize = sr.ySize;
-    if(sr.MapData != NULL) {
+    if (sr.MapData != NULL) {
         MapData = new Tile**[ySize];
-        for(int y=0; y<ySize; y++) MapData[y] = new Tile*[xSize];
-        for(int y = 0; y < ySize; y++) {
-            for(int x = 0; x < xSize; x++) {
+        for (int y=0; y < ySize; ++y) MapData[y] = new Tile*[xSize];
+        for (int y=0; y < ySize; ++y) {
+            for (int x=0; x < xSize; ++x) {
                 MapData[y][x] = new Tile(*sr.MapData[y][x]);
             }
         }
@@ -36,18 +36,18 @@ SelRect::~SelRect() {
 
 /* returns true if the selected rectangle contains some data, false otherwise */
 bool SelRect::isActive() {
-    if(MapData == NULL) return false;
+    if (MapData == NULL) return false;
     else return true;
 }
 
 /* write selected content to map */
 void SelRect::AssignSection() {
-    if(isActive()) {
-        for(int y = 0; y < ySize; y++) {
-            for(int x = 0; x < xSize; x++) {
-                if((x+xStart < LevelMap->xSize) && (y+yStart < LevelMap->ySize)) {
+    if (isActive()) {
+        for (int y=0; y < ySize; ++y) {
+            for (int x=0; x < xSize; ++x) {
+                if ((x+xStart < LevelMap->xSize) && (y+yStart < LevelMap->ySize)) {
                     //condition to prevent weird crash
-                    if(xStart != 0) delete &LevelMap->MapData[y+yStart][x+xStart];
+                    if (xStart != 0) delete &LevelMap->MapData[y+yStart][x+xStart];
                     LevelMap->MapData[y+yStart][x+xStart] = *MapData[y][x];
                 }
             }
@@ -66,10 +66,10 @@ void SelRect::PasteSection() {
 void SelRect::TakeSection() {
     Kill();
     MapData = new Tile**[ySize];
-    for(int y=0; y<ySize; y++) MapData[y] = new Tile*[xSize];
-    for(int y = 0; y < ySize; y++) {
-        for(int x = 0; x < xSize; x++) {
-            if((x+xStart < LevelMap->xSize) && (y+yStart < LevelMap->ySize))
+    for (int y=0; y < ySize; ++y) MapData[y] = new Tile*[xSize];
+    for (int y=0; y < ySize; ++y) {
+        for (int x=0; x < xSize; ++x) {
+            if ((x+xStart < LevelMap->xSize) && (y+yStart < LevelMap->ySize))
                 MapData[y][x] = new Tile(LevelMap->MapData[y+yStart][x+xStart]);
         }
     }
@@ -78,7 +78,7 @@ void SelRect::TakeSection() {
 /* Sets the start position of the rectangle
    parameters: the cursor position */
 void SelRect::SelInit(int x, int y) {
-    if(MapData != NULL) SelClearRect();
+    if (MapData != NULL) SelClearRect();
     GfxStuff->PosScreenToTileRound(x, y);
     xStart = x;
     yStart = y;
@@ -89,12 +89,12 @@ void SelRect::SelInit(int x, int y) {
    parameters: the cursor position */
 void SelRect::SelFinalize(int x, int y) {
     GfxStuff->PosScreenToTileRound(x, y);
-    if(x < xStart) {int temp = x; x = xStart; xStart = temp;}
-    if(y < yStart) {int temp = y; y = yStart; yStart = temp;}
+    if (x < xStart) {int temp = x; x = xStart; xStart = temp;}
+    if (y < yStart) {int temp = y; y = yStart; yStart = temp;}
     xSize = x - xStart;
     ySize = y - yStart;
     AdaptBounds();
-    if(xSize > 0 && ySize > 0) {
+    if (xSize > 0 && ySize > 0) {
         TakeSection();
         SelDrawRect();
     }
@@ -102,7 +102,7 @@ void SelRect::SelFinalize(int x, int y) {
 
 /* draws the rectangle on screen */
 void SelRect::SelDrawRect() {
-    if(isActive())
+    if (isActive())
         GfxStuff->DrawFreeRect(xStart, yStart, xSize, ySize);
 }
 
@@ -114,19 +114,19 @@ void SelRect::SelClearRect() {
 
 /* unselects the currently selected area */
 void SelRect::Unselect() {
-    if(isActive()) SelClearRect();
+    if (isActive()) SelClearRect();
     Kill();
 }
 
 /* clears the memory occupied by the mapdata within the object */
 void SelRect::Kill() {
-    if(MapData != NULL) {
-        for(int y = 0; y < ySize; y++) {
-            for(int x = 0; x < xSize; x++) {
+    if (MapData != NULL) {
+        for (int y=0; y < ySize; ++y) {
+            for (int x=0; x < xSize; ++x) {
                 delete MapData[y][x];
             }
         }
-        for(int y=0; y<ySize; y++) delete MapData[y];
+        for (int y=0; y < ySize; ++y) delete MapData[y];
         delete MapData;
         MapData = NULL;
     }
@@ -140,8 +140,8 @@ void SelRect::CheckRedraw(int x, int y) {
 
 /* fills the selected rectangle with empty tiles */
 void SelRect::clear() {
-    for(int y=0; y<ySize; y++) {
-        for(int x=0; x<xSize; x++) {
+    for (int y=0; y < ySize; ++y) {
+        for (int x=0; x < xSize; ++x) {
             delete MapData[y][x];
             MapData[y][x] = new Tile;
         }
@@ -149,25 +149,25 @@ void SelRect::clear() {
 }
 
 void SelRect::AdaptBounds() {
-    if(xStart + xSize > LevelMap->xSize) xSize = LevelMap->xSize - xStart;
-    if(yStart + ySize > LevelMap->ySize) ySize = LevelMap->ySize - yStart;
+    if (xStart + xSize > LevelMap->xSize) xSize = LevelMap->xSize - xStart;
+    if (yStart + ySize > LevelMap->ySize) ySize = LevelMap->ySize - yStart;
 }
 
 void SelRect::AdaptStartBounds() {
-    if(xStart > LevelMap->xSize) xStart = LevelMap->xSize - 1;
-    if(yStart > LevelMap->ySize) yStart = LevelMap->ySize - 1;
-    if(xStart < 0) xStart = 0;
-    if(yStart < 0) yStart = 0;
+    if (xStart > LevelMap->xSize) xStart = LevelMap->xSize - 1;
+    if (yStart > LevelMap->ySize) yStart = LevelMap->ySize - 1;
+    if (xStart < 0) xStart = 0;
+    if (yStart < 0) yStart = 0;
 }
 
 /* xFlip selected content */
 void SelRect::FlipX() {
-    if(isActive()) {
-        for(int y = 0; y < ySize; y++) {
-            for(int x = 0; x < xSize; x++) {
-                if((x+xStart < LevelMap->xSize) && (y+yStart < LevelMap->ySize)) {
+    if (isActive()) {
+        for (int y=0; y < ySize; ++y) {
+            for (int x=0; x < xSize; ++x) {
+                if ((x+xStart < LevelMap->xSize) && (y+yStart < LevelMap->ySize)) {
                     //condition to prevent weird crash
-                    if(xStart != 0) delete &LevelMap->MapData[y+yStart][x+xStart];
+                    if (xStart != 0) delete &LevelMap->MapData[y+yStart][x+xStart];
                     LevelMap->MapData[y+yStart][x+xStart] = *MapData[y][xSize-x-1];
                     LevelMap->MapData[y+yStart][x+xStart].FlipX();
                 }
@@ -179,12 +179,12 @@ void SelRect::FlipX() {
 
 /* yFlip selected content */
 void SelRect::FlipY() {
-    if(isActive()) {
-        for(int y = 0; y < ySize; y++) {
-            for(int x = 0; x < xSize; x++) {
-                if((x+xStart < LevelMap->xSize) && (y+yStart < LevelMap->ySize)) {
+    if (isActive()) {
+        for (int y=0; y < ySize; ++y) {
+            for (int x=0; x < xSize; ++x) {
+                if ((x+xStart < LevelMap->xSize) && (y+yStart < LevelMap->ySize)) {
                     //condition to prevent weird crash
-                    if(xStart != 0) delete &LevelMap->MapData[y+yStart][x+xStart];
+                    if (xStart != 0) delete &LevelMap->MapData[y+yStart][x+xStart];
                     LevelMap->MapData[y+yStart][x+xStart] = *MapData[ySize-y-1][x];
                     LevelMap->MapData[y+yStart][x+xStart].FlipY();
                 }
@@ -195,10 +195,10 @@ void SelRect::FlipY() {
 }
 
 void SelRect::SwapPriority() {
-    if(isActive()) {
-        for(int y = 0; y < ySize; y++) {
-            for(int x = 0; x < xSize; x++) {
-                if((x+xStart < LevelMap->xSize) && (y+yStart < LevelMap->ySize)) {
+    if (isActive()) {
+        for (int y=0; y < ySize; ++y) {
+            for (int x=0; x < xSize; ++x) {
+                if ((x+xStart < LevelMap->xSize) && (y+yStart < LevelMap->ySize)) {
                     MapData[y][x]->SwapPriority();
                 }
             }
@@ -208,13 +208,13 @@ void SelRect::SwapPriority() {
 }
 
 void SelRect::IncrID() {
-    if(isActive()) {
-        for(int y = 0; y < ySize; y++) {
-            for(int x = 0; x < xSize; x++) {
-                if((x+xStart < LevelMap->xSize) && (y+yStart < LevelMap->ySize)) {
-                    if(MapData[y][x]->tileID == 0 && GfxStuff->GetTileOffset() != 0) MapData[y][x]->tileID = GfxStuff->GetTileOffset();
-                    else if(MapData[y][x]->tileID + 1 < GfxStuff->GetTileAmount() + GfxStuff->GetTileOffset())
-                        MapData[y][x]->tileID++;
+    if (isActive()) {
+        for (int y=0; y < ySize; ++y) {
+            for (int x=0; x < xSize; ++x) {
+                if ((x+xStart < LevelMap->xSize) && (y+yStart < LevelMap->ySize)) {
+                    if (MapData[y][x]->tileID == 0 && GfxStuff->GetTileOffset() != 0) MapData[y][x]->tileID = GfxStuff->GetTileOffset();
+                    else if (MapData[y][x]->tileID + 1 < GfxStuff->GetTileAmount() + GfxStuff->GetTileOffset())
+                        ++MapData[y][x]->tileID;
                 }
             }
         }
@@ -223,11 +223,11 @@ void SelRect::IncrID() {
 }
 
 void SelRect::DecrID() {
-    if(isActive()) {
-        for(int y = 0; y < ySize; y++) {
-            for(int x = 0; x < xSize; x++) {
-                if((x+xStart < LevelMap->xSize) && (y+yStart < LevelMap->ySize)) {
-                    if(MapData[y][x]->tileID > GfxStuff->GetTileOffset()) MapData[y][x]->tileID--;
+    if (isActive()) {
+        for (int y=0; y < ySize; ++y) {
+            for (int x=0; x < xSize; ++x) {
+                if ((x+xStart < LevelMap->xSize) && (y+yStart < LevelMap->ySize)) {
+                    if (MapData[y][x]->tileID > GfxStuff->GetTileOffset()) --MapData[y][x]->tileID;
                     else MapData[y][x]->tileID = 0;
                 }
             }
