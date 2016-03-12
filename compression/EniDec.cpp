@@ -22,6 +22,10 @@
 // s1 special stage decompressor.cpp : Defines the entry point for the console application.
 //
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 //#include "iostream.h"
 //#include <malloc.h>
 //#include <fcntl.h>
@@ -318,3 +322,7 @@ unsigned char getbits(int number, unsigned char* input, int *offset)
 
 	return value;
 }
+
+#ifdef __cplusplus
+}
+#endif

@@ -1,3 +1,7 @@
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -41,3 +45,7 @@ bool CheckCreateBlankFile(char *srcfile, FILE* dst, long Pointer, int length)
 
     return true;
 }
+
+#ifdef __cplusplus
+}
+#endif

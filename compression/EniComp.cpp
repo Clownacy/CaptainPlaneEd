@@ -40,6 +40,10 @@
 |											Created 6/8/2003  Last modified 14/6/2003
 \*-------------------------------------------------------------------------------------*/
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 //#include "iostream.h"
 //#include <malloc.h>
 //#include <fcntl.h>
@@ -503,3 +507,7 @@ bool calc_headerval(void)
 	}
 	return true;
 }
+
+#ifdef __cplusplus
+}
+#endif

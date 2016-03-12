@@ -19,6 +19,10 @@
 |																				|
 \*-----------------------------------------------------------------------------*/
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdio.h>
 
 #define SUCCESS										0x00
@@ -155,3 +159,7 @@ end:
 	fseek(Dst, 0, SEEK_END);
 	return ftell(Dst);
 }
+
+#ifdef __cplusplus
+}
+#endif

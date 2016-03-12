@@ -25,6 +25,10 @@
 // Programmed by Roger Sanders (AKA Nemesis) and William Sanders (AKA Milamber)
 // Created 4/11/02		Last modified 25/11/02
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 //#include "iostream.h"
 //#include <malloc.h>
 //#include <fcntl.h>
@@ -225,3 +229,7 @@ void stage_2 (long *pointer, char *rompointer, char *bufferpointer, unsigned lon
 		}
 	}
 }
+
+#ifdef __cplusplus
+}
+#endif
