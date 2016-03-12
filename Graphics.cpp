@@ -3,7 +3,7 @@
 #include "Graphics.h"
 
 #define SCREEN_WIDTH 640
-#define SCREEN_HEIGHT 480   //minimum size to allow for 64x64 maps
+#define SCREEN_HEIGHT 480	//minimum size to allow for 64x64 maps
 
 Graphics::Graphics(uint16_t xSize, uint16_t tileOffset, uint16_t tileAmount) {
     this->selXMin = std::min(8*64, 8*xSize) + 1;
