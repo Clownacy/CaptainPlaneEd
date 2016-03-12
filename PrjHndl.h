@@ -36,13 +36,29 @@ char infoTypes[TYPE_AMOUNT][32] = {
     "Save File:"
 };
 
-long (*ComprFunc[COMP_TYPE_AMOUNT])(const char* srcfile, FILE* dst, long Pointer, int length) = {
-    ReadPlain,
-    EniDec,
-    KosDec,
-    NemDec,
-    KidDec
-};
+long ComprFunc(const fileCompression compression, const char* srcfile, FILE* dst, long Pointer, int length)
+{
+	switch (compression)
+	{
+		case NONE:
+			length = ReadPlain(srcfile, dst, Pointer, length);
+			break;
+		case ENIGMA:
+			length = EniDec(srcfile, dst, Pointer, length);
+			break;
+		case KOSINSKI:
+			length = KosDec(srcfile, dst, Pointer, length);
+			break;
+		case NEMESIS:
+			length = NemDec(srcfile, dst, Pointer, length);
+			break;
+		case KIDCHAMELEON:
+			length = KidDec(srcfile, dst, Pointer, length);
+			break;
+	}
+
+	return length;
+}
 
 class ProjectData
 {
@@ -130,7 +146,7 @@ void ProjectData::LoadArt(const char* filename) {
         exit(1);
     }
 
-    artLength = ComprFunc[artCompr](artName, artfile, artOffset, artLength);
+    artLength = ComprFunc(artCompr, artName, artfile, artOffset, artLength);
 
     if(artLength < 0) {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not read art file. Are you sure the path is correct?", NULL);
@@ -148,7 +164,7 @@ void ProjectData::LoadMap(const char* filename) {
         exit(1);
     }
 
-    mapLength = ComprFunc[mapCompr](mapName, mapfile, mapOffset, mapLength);
+    mapLength = ComprFunc(mapCompr, mapName, mapfile, mapOffset, mapLength);
     if(mapLength < 0) {
         //file could not be decompressed or found
         mapLength = 2*xSize*ySize;

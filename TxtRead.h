@@ -15,16 +15,22 @@ typedef enum {
 	INVALID
 } fileCompression;
 
-char comprTypes[COMP_TYPE_AMOUNT][32] = {
-    "None",
-    "Enigma",
-    "Kosinski",
-    "Nemesis",
-    "Kid Chameleon"
+struct stringToEnum
+{
+	const char string[32];
+	fileCompression compression;
+};
+
+struct stringToEnum comprTypes[COMP_TYPE_AMOUNT] = {
+	{ "None", NONE },
+	{ "Enigma", ENIGMA },
+	{ "Kosinski", KOSINSKI },
+	{ "Nemesis", NEMESIS },
+	{ "Kid Chameleon", KIDCHAMELEON }
 };
 
 /* returns pointer to position after the found string */
-char* strsrch(char* string, char* substring) {
+char* strsrch(char* string, const char* const substring) {
     int length = strlen(string);
     int sublength = strlen(substring);
     int position = -1;
@@ -39,32 +45,11 @@ char* strsrch(char* string, char* substring) {
 }
 
 fileCompression readComprType(char* string) {
-    for(int i=0; i<COMP_TYPE_AMOUNT; i++) {
-        if(strsrch(string, comprTypes[i]) != NULL)
-        {
-            fileCompression ret;
-            switch (i)
-            {
-                case 0:
-                    ret = NONE;
-                    break;
-                case 1:
-                    ret =  ENIGMA;
-                    break;
-                case 2:
-                    ret =  KOSINSKI;
-                    break;
-                case 3:
-                    ret =  NEMESIS;
-                    break;
-                case 4:
-                    ret =  KIDCHAMELEON;
-                    break;
-            }
-            return ret;
-        }
-    }
-    return INVALID;
+	for(int i=0; i<COMP_TYPE_AMOUNT; i++)
+		if(strsrch(string, comprTypes[i].string) != NULL)
+			return comprTypes[i].compression;
+
+	return INVALID;
 }
 
 char* trimString(char* string) {
