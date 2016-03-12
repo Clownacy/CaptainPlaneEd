@@ -36,7 +36,7 @@ char infoTypes[TYPE_AMOUNT][32] = {
     "Save File:"
 };
 
-long (*ComprFunc[COMP_TYPE_AMOUNT])(const char*, FILE*, long, int) = {
+long (*ComprFunc[COMP_TYPE_AMOUNT])(const char* srcfile, FILE* dst, long Pointer, int length) = {
     ReadPlain,
     EniDec,
     KosDec,
