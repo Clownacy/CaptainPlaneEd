@@ -3,7 +3,7 @@
 #include <SDL2/SDL.h>
 
 #include "Tile.h"
-#include "LevMap.hpp"
+#include "LevMap.h"
 #include "Graphics.h"
 #include "SelRect.hpp"
 #include "PrjHndl.h"
