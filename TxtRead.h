@@ -42,28 +42,28 @@ char* strsrch(char* string, char* substring) {
 fileCompression readComprType(char* string) {
     for(int i=0; i<COMP_TYPE_AMOUNT; i++) {
         if(strsrch(string, comprTypes[i]) != NULL)
-	{
-	    fileCompression ret;
+        {
+            fileCompression ret;
             switch (i)
-	    {
-		case 0:
-		    ret = NONE;
-		    break;
-		case 1:
-		    ret =  ENIGMA;
-		    break;
-		case 2:
-		    ret =  KOSINSKI;
-		    break;
-		case 3:
-		    ret =  NEMESIS;
-		    break;
-		case 4:
-		    ret =  KIDCHAMELEON;
-		    break;
-	    }
+            {
+                case 0:
+                    ret = NONE;
+                    break;
+                case 1:
+                    ret =  ENIGMA;
+                    break;
+                case 2:
+                    ret =  KOSINSKI;
+                    break;
+                case 3:
+                    ret =  NEMESIS;
+                    break;
+                case 4:
+                    ret =  KIDCHAMELEON;
+                    break;
+            }
             return ret;
-	}
+        }
     }
     return INVALID;
 }
