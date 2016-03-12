@@ -4,7 +4,7 @@
 
 #include "Tile.h"
 #include "LevMap.hpp"
-#include "Graphics.hpp"
+#include "Graphics.h"
 #include "SelRect.hpp"
 #include "PrjHndl.h"
 

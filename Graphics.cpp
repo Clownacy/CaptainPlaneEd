@@ -1,7 +1,6 @@
-#pragma once
+#include <algorithm>
 
 #include "Graphics.h"
-#include <algorithm>
 
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480   //minimum size to allow for 64x64 maps
