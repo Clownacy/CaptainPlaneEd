@@ -1,5 +1,4 @@
-#ifndef LEVMAP_H
-#define LEVMAP_H
+#pragma once
 
 #include "Graphics.h"
 
@@ -49,5 +48,3 @@ public:
     uint8_t GetXSize() {return xSize;}
     uint8_t GetYSize() {return ySize;}
 };
-
-#endif

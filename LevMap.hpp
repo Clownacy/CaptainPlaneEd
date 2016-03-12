@@ -1,5 +1,4 @@
-#ifndef LEVMAP_HPP
-#define LEVMAP_HPP
+#pragma once
 
 #include "Graphics.h"
 #include "LevMap.h"
@@ -214,5 +213,3 @@ void LevMap::CurShiftUp() {
     if(CurY > 0) CurY--;
     DrawCurrentTile();
 }
-
-#endif

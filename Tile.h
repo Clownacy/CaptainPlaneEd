@@ -1,5 +1,4 @@
-#ifndef TILE_H
-#define TILE_H
+#pragma once
 
 #include <cstdint>
 
@@ -23,5 +22,3 @@ public:
     void SwapPriority() {this->priority ^= 0x80;}
     void SetID(int ID);
 };
-
-#endif

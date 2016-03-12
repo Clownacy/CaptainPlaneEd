@@ -1,5 +1,4 @@
-#ifndef SELRECT_H
-#define SELRECT_H
+#pragma once
 
 #include "Graphics.h"
 #include "LevMap.h"
@@ -45,5 +44,3 @@ private:
     void AdaptBounds();
     void AdaptStartBounds();
 };
-
-#endif

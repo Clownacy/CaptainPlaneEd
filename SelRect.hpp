@@ -1,5 +1,4 @@
-#ifndef SELRECT_HPP
-#define SELRECT_HPP
+#pragma once
 
 #include <string.h>
 
@@ -238,5 +237,3 @@ void SelRect::DecrID() {
         AssignSection();
     }
 }
-
-#endif

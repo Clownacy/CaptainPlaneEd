@@ -1,5 +1,4 @@
-#ifndef GRAPHICS_HPP
-#define GRAPHICS_HPP
+#pragma once
 
 #include "Graphics.h"
 #include <algorithm>
@@ -284,5 +283,3 @@ void Graphics::PosTileToScreen(int& x, int& y) {
     x *= 8;
     y *= 8;
 }
-
-#endif

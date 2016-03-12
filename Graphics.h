@@ -1,5 +1,4 @@
-#ifndef GRAPHICS_H
-#define GRAPHICS_H
+#pragma once
 
 #include <SDL2/SDL.h>
 
@@ -66,5 +65,3 @@ public:
     void PosScreenToTileRound(int& x, int& y);
     void PosTileToScreen(int& x, int& y);
 };
-
-#endif
