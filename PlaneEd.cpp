@@ -10,9 +10,9 @@
 
 using namespace std;
 
-const char FILE_MAP_TEMP[] = "tempmap.bin";
-const char FILE_ART_TEMP[] = "tempart.bin";
-const char FILE_PAL_TEMP[] = "temppal.bin";
+const char* const FILE_MAP_TEMP = "tempmap.bin";
+const char* const FILE_ART_TEMP = "tempart.bin";
+const char* const FILE_PAL_TEMP = "temppal.bin";
 
 int main(int argc, char *argv[])
 {
