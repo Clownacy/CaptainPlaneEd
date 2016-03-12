@@ -12,7 +12,7 @@ typedef enum {
 	NEMESIS,
 	KIDCHAMELEON,
 	COMP_TYPE_AMOUNT,
-	INVALID = -1
+	INVALID
 } fileCompression;
 
 char comprTypes[COMP_TYPE_AMOUNT][32] = {
