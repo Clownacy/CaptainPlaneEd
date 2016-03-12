@@ -25,10 +25,6 @@ extern "C" {
 
 #include <stdio.h>
 
-#define SUCCESS										0x00
-#define ERROR_UNKNOWN								  -2
-#define ERROR_SOURCE_FILE_DOES_NOT_EXIST			  -1
-
 //-----------------------------------------------------------------------------------------------
 // Name: KDecomp(char *SrcFile, char *DstFile, long Location, bool Moduled)
 // Desc: Decompresses the data using the Kosinski compression format
@@ -62,7 +58,7 @@ long KosDec(const char *SrcFile, FILE *Dst, long Location, int length)
 //------------------------------------------------------------------------------------------------
 
 	Src=fopen(SrcFile,"rb");	
-	if (Src==NULL) return ERROR_SOURCE_FILE_DOES_NOT_EXIST;
+	if (Src==NULL) return -1;
 	//Dst=fopen(DstFile,"w+b");
 	rewind(Dst);
 
