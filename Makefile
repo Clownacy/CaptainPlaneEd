@@ -4,5 +4,5 @@ CFLAGS	= `sdl2-config --cflags` -O3 -s -std=c++11
 DEFINES	= 
 LIBS	= `sdl2-config --libs`
 
-$(NAME): PlaneEd.cpp TxtRead.cpp PrjHndl.cpp Tile.cpp Graphics.cpp LevMap.cpp
+$(NAME): PlaneEd.cpp TxtRead.cpp PrjHndl.cpp Tile.cpp Graphics.cpp LevMap.cpp SelRect.cpp
 	$(GCC) $(CFLAGS) $(DEFINES) $^ $(LIBS) -o $@

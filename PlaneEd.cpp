@@ -5,7 +5,7 @@
 #include "Tile.h"
 #include "LevMap.h"
 #include "Graphics.h"
-#include "SelRect.hpp"
+#include "SelRect.h"
 #include "PrjHndl.h"
 
 using namespace std;
