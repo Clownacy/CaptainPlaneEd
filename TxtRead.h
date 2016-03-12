@@ -1,7 +1,6 @@
-#ifndef TXTREAD_H
-#define TXTREAD_H
+#pragma once
 
-/* compression types */
+// compression types
 typedef enum {
 	NONE,
 	ENIGMA,
@@ -15,5 +14,3 @@ typedef enum {
 char* strsrch(char* string, const char* const substring);
 fileCompression readComprType(char* string);
 char* trimString(char* string);
-
-#endif
