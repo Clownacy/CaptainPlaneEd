@@ -7,7 +7,6 @@
 #include "TxtRead.h"
 
 #include "compression/EniDec.h"
-#include "compression/KosDec.h"
 #include "compression/KidDec.h"
 #include "compression/ReadPlain.h"
 #include "compression/EniComp.h"
@@ -52,9 +51,6 @@ long ComprFunc(const fileCompression compression, const char* srcfile, FILE* dst
 			break;
 		case ENIGMA:
 			length = EniDec(srcfile, dst, Pointer, length);
-			break;
-		case KOSINSKI:
-			length = KosDec(srcfile, dst, Pointer, length);
 			break;
 		case KIDCHAMELEON:
 			length = KidDec(srcfile, dst, Pointer, length);
@@ -136,7 +132,7 @@ void ProjectData::AssignInfo(int type, char* content) {
 }
 
 void ProjectData::LoadArt(const char* const filename) {
-	if (artCompr != COMPER && artCompr != SAXMAN && artCompr != NEMESIS)
+	if (artCompr == NONE || artCompr == ENIGMA || artCompr == KIDCHAMELEON)
 	{
 	    FILE* artfile = fopen(filename, "w+b");
 	    
