@@ -179,7 +179,9 @@ int main(int argc, char *argv[])
                         SelectionRect->SelDrawRect(); break;
                     case SDLK_F9:
                         LevelMap.SaveMap(FILE_MAP_TEMP);
-                        PrjData.SaveMap(FILE_MAP_TEMP); break;
+                        PrjData.SaveMap(FILE_MAP_TEMP);
+			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Information", "Save complete.", NULL);
+			break;
                     case SDLK_F10: //redraw whole screen
                         LevelMap.DrawMap();
                         GfxStuff.DrawSelector();
