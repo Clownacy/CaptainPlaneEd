@@ -14,7 +14,8 @@ struct stringToEnum comprTypes[COMP_TYPE_AMOUNT] = {
 	{ "Enigma", ENIGMA },
 	{ "Kosinski", KOSINSKI },
 	{ "Nemesis", NEMESIS },
-	{ "Kid Chameleon", KIDCHAMELEON }
+	{ "Kid Chameleon", KIDCHAMELEON },
+	{ "Comper", COMPER }
 };
 
 /* returns pointer to position after the found string */

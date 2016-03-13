@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <fstream>
 
 #include <SDL2/SDL.h>
 
@@ -11,6 +12,9 @@
 #include "compression/KidDec.h"
 #include "compression/ReadPlain.h"
 #include "compression/EniComp.h"
+#include "FW_KENSC/comper.h"
+
+using namespace std;
 
 #define FILE_MAP_DEFAULT "MapDefault.bin"
 
@@ -108,21 +112,31 @@ void ProjectData::AssignInfo(int type, char* content) {
 }
 
 void ProjectData::LoadArt(const char* const filename) {
-    FILE* artfile = fopen(filename, "w+b");
-    
-    if (artCompr == INVALID) {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid art compression format. Should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Nemesis'\n'Kid Chameleon'", NULL);
-        exit(1);
-    }
+	if (artCompr != COMPER)
+	{
+	    FILE* artfile = fopen(filename, "w+b");
+	    
+	    if (artCompr == INVALID) {
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid art compression format. Should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Nemesis'\n'Kid Chameleon'", NULL);
+		exit(1);
+	    }
 
-    artLength = ComprFunc(artCompr, artName, artfile, artOffset, artLength);
+	    artLength = ComprFunc(artCompr, artName, artfile, artOffset, artLength);
 
-    if (artLength < 0) {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not decompress art file. Are you sure the compression is correct?", NULL);
-        exit(1);
-    }
-    tileAmount = artLength/0x20;
-    fclose(artfile);
+	    if (artLength < 0) {
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not decompress art file. Are you sure the compression is correct?", NULL);
+		exit(1);
+	    }
+	    tileAmount = artLength/0x20;
+	    fclose(artfile);
+	}
+	else
+	{
+		ifstream fin(artName, ios::in|ios::binary);
+		fstream fout(filename, ios::in|ios::out|ios::binary|ios::trunc);
+		artLength = comper::decode(fin, fout, 0);
+		tileAmount = artLength/0x20;
+	}
 }
 
 void ProjectData::LoadMap(const char* const filename) {
