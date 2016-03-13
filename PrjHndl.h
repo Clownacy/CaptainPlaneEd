@@ -25,10 +25,10 @@ public:
     
     int tileAmount;
 public:
-    ProjectData(char* prjtxt);
+    ProjectData(const char* const prjtxt);
     void AssignInfo(int type, char* content);
-    void LoadArt(const char* filename);
-    void LoadMap(const char* filename);
-    void LoadPal(const char* filename);
-    void SaveMap(const char* filename);
+    void LoadArt(const char* const filename);
+    void LoadMap(const char* const filename);
+    void LoadPal(const char* const filename);
+    void SaveMap(const char* const filename);
 };

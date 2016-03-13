@@ -58,7 +58,7 @@ Graphics::Graphics(uint16_t xSize, uint16_t tileOffset, uint16_t tileAmount) {
     }
 }
 
-void Graphics::ReadPalette(const char* filename) {
+void Graphics::ReadPalette(const char* const filename) {
     FILE* palfile = fopen(filename,"rb");
     if (palfile==NULL) {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Palette file not found. Are you sure the path is correct?", NULL);
@@ -79,7 +79,7 @@ void Graphics::ReadPalette(const char* filename) {
     remove(filename);
 }
 #define getrgb(v) ((v&0xF000)>>8)|(v&0x0F0F|0xF000)	// Corrects G value, and sets alpha to max, so we can see
-void Graphics::ReadTiles(const char* filename) {
+void Graphics::ReadTiles(const char* const filename) {
     FILE* tilefile = fopen(filename,"rb");
     if (tilefile==NULL) {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Art file not found. Are you sure the path is correct?", NULL);

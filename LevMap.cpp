@@ -16,7 +16,7 @@ LevMap::LevMap(uint8_t xSize, uint8_t ySize, Graphics* GfxStuff) {
     this->GfxStuff = GfxStuff;
 }
 
-void LevMap::LoadMap(const char* filename) {
+void LevMap::LoadMap(const char* const filename) {
     FILE* mapfile = fopen(filename, "rb");
     if (mapfile == NULL) {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Map file not found. Are you sure the path is correct?", NULL);
@@ -29,7 +29,7 @@ void LevMap::LoadMap(const char* filename) {
     remove(filename);
 }
 
-void LevMap::SaveMap(const char* filename) {
+void LevMap::SaveMap(const char* const filename) {
     FILE* mapfile = fopen(filename, "wb");
     if (mapfile == NULL) {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Unable to open map file for saving.", NULL);

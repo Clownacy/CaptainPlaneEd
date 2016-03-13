@@ -60,7 +60,7 @@ long ComprFunc(const fileCompression compression, const char* srcfile, FILE* dst
 	return length;
 }
 
-ProjectData::ProjectData(char* prjtxt) {
+ProjectData::ProjectData(const char* const prjtxt) {
     palOffset = 0; mapOffset = 0; artOffset = 0;
     palLength = 0; mapLength = 0; artLength = 0;
                    mapCompr = INVALID; artCompr = INVALID;
@@ -107,7 +107,7 @@ void ProjectData::AssignInfo(int type, char* content) {
     }
 }
 
-void ProjectData::LoadArt(const char* filename) {
+void ProjectData::LoadArt(const char* const filename) {
     FILE* artfile = fopen(filename, "w+b");
     
     if (artCompr == INVALID) {
@@ -125,7 +125,7 @@ void ProjectData::LoadArt(const char* filename) {
     fclose(artfile);
 }
 
-void ProjectData::LoadMap(const char* filename) {
+void ProjectData::LoadMap(const char* const filename) {
     FILE* mapfile = fopen(filename, "wb");
 
     if (mapCompr != NONE && mapCompr != ENIGMA) {
@@ -161,7 +161,7 @@ void ProjectData::LoadMap(const char* filename) {
     }
 }
 
-void ProjectData::LoadPal(const char* filename) {
+void ProjectData::LoadPal(const char* const filename) {
     FILE* palfile = fopen(filename, "wb");
 
     palLength = ReadPlain(palName, palfile, palOffset, palLength);
