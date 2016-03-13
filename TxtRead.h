@@ -13,6 +13,5 @@ typedef enum {
 	INVALID
 } fileCompression;
 
-char* strsrch(char* string, const char* const substring);
 fileCompression readComprType(char* string);
 char* trimString(char* string);

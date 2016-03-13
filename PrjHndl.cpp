@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <cstring>
 #include <fstream>
 
 #include <SDL2/SDL.h>
@@ -98,8 +99,8 @@ ProjectData::ProjectData(const char* const prjtxt) {
         char line[256];
         fgets(line, 256, prjfile);
         for (int type=0; type < TYPE_AMOUNT; ++type) {
-            char* content = strsrch(line, infoTypes[type]);
-            if (content != NULL) AssignInfo(type, content);
+            if (!strncmp(line, infoTypes[type], strlen(infoTypes[type])))
+		    AssignInfo(type, line+strlen(infoTypes[type]));
         }
     }
 }
@@ -115,8 +116,8 @@ void ProjectData::AssignInfo(int type, char* content) {
         case  6: palLength = strtol(content, NULL, 0); break;
         case  7: mapLength = strtol(content, NULL, 0); break;
         case  8: artLength = strtol(content, NULL, 0); break;
-        case  9: mapCompr = readComprType(content); break;
-        case 10: artCompr = readComprType(content); break;
+        case  9: mapCompr = readComprType(trimString(content)); break;
+        case 10: artCompr = readComprType(trimString(content)); break;
         case 11: xSize = strtol(content, NULL, 0); break;
         case 12: ySize = strtol(content, NULL, 0); break;
         case 13: tileOffset = strtol(content, NULL, 0); break;

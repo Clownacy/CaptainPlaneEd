@@ -19,31 +19,10 @@ struct stringToEnum comprTypes[COMP_TYPE_AMOUNT] = {
 	{ "Saxman", SAXMAN }
 };
 
-/* returns pointer to position after the found string */
-char* strsrch(char* string, const char* const substring)
-{
-	int length = strlen(string);
-	int sublength = strlen(substring);
-	int position = -1;
-	for (int i=0; i <= length-sublength; ++i)
-	{
-		if (!strncmp(&string[i], substring, sublength))
-		{
-			position = i;
-			break;
-		}
-	}
-
-	if (position < 0)
-		return NULL;
-	else
-		return &string[position+sublength];
-}
-
 fileCompression readComprType(char* string)
 {
 	for (int i=0; i < COMP_TYPE_AMOUNT; ++i)
-		if (strsrch(string, comprTypes[i].string) != NULL)
+		if (!strncmp(string, comprTypes[i].string, strlen(comprTypes[i].string)))
 			return comprTypes[i].compression;
 
 	return INVALID;
