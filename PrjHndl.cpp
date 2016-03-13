@@ -66,6 +66,9 @@ static long ComprFunc(const fileCompression compression, istream &fin, iostream 
 		case KOSINSKI:
 			length = kosinski::decode(fin, fout, Pointer, false, 16u);
 			break;
+		case MODULED_KOSINSKI:
+			length = kosinski::decode(fin, fout, Pointer, true, 16u);
+			break;
 		case NEMESIS:
 			length = nemesis::decode(fin, fout, Pointer, 0);
 			break;

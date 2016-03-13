@@ -13,6 +13,7 @@ struct stringToEnum comprTypes[COMP_TYPE_AMOUNT] = {
 	{ "None", NONE },
 	{ "Enigma", ENIGMA },
 	{ "Kosinski", KOSINSKI },
+	{ "Moduled Kosinski", MODULED_KOSINSKI },
 	{ "Nemesis", NEMESIS },
 	{ "Kid Chameleon", KIDCHAMELEON },
 	{ "Comper", COMPER },
