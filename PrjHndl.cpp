@@ -6,7 +6,6 @@
 #include "PrjHndl.h"
 #include "TxtRead.h"
 
-#include "compression/EniDec.h"
 #include "compression/KidDec.h"
 #include "compression/ReadPlain.h"
 #include "compression/EniComp.h"
@@ -48,9 +47,6 @@ long ComprFunc(const fileCompression compression, const char* srcfile, FILE* dst
 	{
 		case NONE:
 			length = ReadPlain(srcfile, dst, Pointer, length);
-			break;
-		case ENIGMA:
-			length = EniDec(srcfile, dst, Pointer, length);
 			break;
 		case KIDCHAMELEON:
 			length = KidDec(srcfile, dst, Pointer, length);
@@ -131,16 +127,18 @@ void ProjectData::AssignInfo(int type, char* content) {
     }
 }
 
-void ProjectData::LoadArt(const char* const filename) {
-	if (artCompr == NONE || artCompr == ENIGMA || artCompr == KIDCHAMELEON)
+void ProjectData::LoadArt(const char* const filename)
+{
+	if (artCompr == INVALID)
+	{
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid art compression format. Should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Nemesis'\n'Kid Chameleon'", NULL);
+		exit(1);
+	}
+
+	if (artCompr == NONE || artCompr == KIDCHAMELEON)
 	{
 	    FILE* artfile = fopen(filename, "w+b");
 	    
-	    if (artCompr == INVALID) {
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid art compression format. Should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Nemesis'\n'Kid Chameleon'", NULL);
-		exit(1);
-	    }
-
 	    artLength = ComprFunc(artCompr, artName, artfile, artOffset, artLength);
 
 	    if (artLength < 0) {
@@ -152,12 +150,6 @@ void ProjectData::LoadArt(const char* const filename) {
 	}
 	else
 	{
-		if (artCompr == INVALID)
-		{
-			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid art compression format. Should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Nemesis'\n'Kid Chameleon'", NULL);
-			exit(1);
-		}
-
 		ifstream fin(artName, ios::in|ios::binary);
 		fstream fout(filename, ios::in|ios::out|ios::binary|ios::trunc);
 
@@ -175,14 +167,30 @@ void ProjectData::LoadArt(const char* const filename) {
 }
 
 void ProjectData::LoadMap(const char* const filename) {
-    FILE* mapfile = fopen(filename, "wb");
-
     if (mapCompr != NONE && mapCompr != ENIGMA) {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid map compression format. Should be one of the following:\n\n'None'\n'Enigma'", NULL);
         exit(1);
     }
 
-    mapLength = ComprFunc(mapCompr, mapName, mapfile, mapOffset, mapLength);
+    FILE* mapfile;
+
+    if (mapCompr == NONE)
+    {
+	    mapfile = fopen(filename, "wb");
+	    mapLength = ComprFunc(mapCompr, mapName, mapfile, mapOffset, mapLength);
+	    fclose(mapfile);
+    }
+    else //if (mapCompr == ENIGMA)
+    {
+            ifstream fin(mapName, ios::in|ios::binary);
+            fstream fout(filename, ios::in|ios::out|ios::binary|ios::trunc);
+	    mapLength = ComprFunc_FW(mapCompr, fin, fout, mapOffset, mapLength);
+	    fin.close();
+	    fout.close();
+    }
+
+    mapfile = fopen(filename, "r+b");
+
     if (mapLength < 0) {
         //file could not be decompressed or found
         mapLength = 2*xSize*ySize;
