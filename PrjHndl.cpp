@@ -48,7 +48,7 @@ static long ComprFunc(const fileCompression compression, const char* const srcfi
 		case NONE:
 			length = ReadPlain(srcfile, dst, Pointer, length);
 			break;
-		case KIDCHAMELEON:
+		case KID_CHAMELEON:
 			length = KidDec(srcfile, dst, Pointer);
 			break;
 	}
@@ -139,7 +139,7 @@ void ProjectData::LoadArt(const char* const filename)
 		exit(1);
 	}
 
-	if (artCompr == NONE || artCompr == KIDCHAMELEON)
+	if (artCompr == NONE || artCompr == KID_CHAMELEON)
 	{
 		FILE* artfile = fopen(filename, "w+b");
 		artLength = ComprFunc(artCompr, artName, artfile, artOffset, artLength);
