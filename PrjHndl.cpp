@@ -49,15 +49,16 @@ static long ComprFunc(const fileCompression compression, const char* const srcfi
 			length = ReadPlain(srcfile, dst, Pointer, length);
 			break;
 		case KIDCHAMELEON:
-			length = KidDec(srcfile, dst, Pointer, length);
+			length = KidDec(srcfile, dst, Pointer);
 			break;
 	}
 
 	return length;
 }
 
-static long ComprFunc(const fileCompression compression, istream &fin, iostream &fout, long Pointer, int length)
+static long ComprFunc(const fileCompression compression, istream &fin, iostream &fout, long Pointer)
 {
+	int length;
 	switch (compression)
 	{
 		case ENIGMA:
@@ -148,7 +149,7 @@ void ProjectData::LoadArt(const char* const filename)
 	{
 		ifstream fin(artName, ios::in|ios::binary);
 		fstream fout(filename, ios::in|ios::out|ios::binary|ios::trunc);
-		artLength = ComprFunc(artCompr, fin, fout, artOffset, artLength);
+		artLength = ComprFunc(artCompr, fin, fout, artOffset);
 		fin.close();
 		fout.close();
 	}
@@ -179,7 +180,7 @@ void ProjectData::LoadMap(const char* const filename) {
     {
             ifstream fin(mapName, ios::in|ios::binary);
             fstream fout(filename, ios::in|ios::out|ios::binary|ios::trunc);
-	    mapLength = ComprFunc(mapCompr, fin, fout, mapOffset, mapLength);
+	    mapLength = ComprFunc(mapCompr, fin, fout, mapOffset);
 	    fin.close();
 	    fout.close();
     }

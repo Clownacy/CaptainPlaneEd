@@ -24,7 +24,7 @@ unsigned char *output_data;
 unsigned short output_size;
 unsigned short output_pos;
 
-long KidDec(const char *srcfile, FILE* dst, long Pointer, int length) {
+long KidDec(const char *srcfile, FILE* dst, long Pointer) {
     FILE* rom = fopen(srcfile, "rb");
     if (rom == NULL) return -1;
 
