@@ -136,6 +136,8 @@ void ProjectData::LoadArt(const char* const filename) {
 		fstream fout(filename, ios::in|ios::out|ios::binary|ios::trunc);
 		artLength = comper::decode(fin, fout, 0);
 		tileAmount = artLength/0x20;
+		fin.close();
+		fout.close();
 	}
 }
 
