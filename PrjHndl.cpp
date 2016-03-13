@@ -60,19 +60,19 @@ static long ComprFunc(const fileCompression compression, istream &fin, iostream 
 	switch (compression)
 	{
 		case ENIGMA:
-			length = enigma::decode(fin, fout, 0, false);
+			length = enigma::decode(fin, fout, Pointer, false);
 			break;
 		case KOSINSKI:
-			length = kosinski::decode(fin, fout, 0, false, 16u);
+			length = kosinski::decode(fin, fout, Pointer, false, 16u);
 			break;
 		case NEMESIS:
-			length = nemesis::decode(fin, fout, 0, 0);
+			length = nemesis::decode(fin, fout, Pointer, 0);
 			break;
 		case COMPER:
-			length = comper::decode(fin, fout, 0);
+			length = comper::decode(fin, fout, Pointer);
 			break;
 		case SAXMAN:
-			length = saxman::decode(fin, fout, 0, 0);
+			length = saxman::decode(fin, fout, Pointer, 0);
 			break;
 	}
 
@@ -136,33 +136,25 @@ void ProjectData::LoadArt(const char* const filename)
 
 	if (artCompr == NONE || artCompr == KIDCHAMELEON)
 	{
-	    FILE* artfile = fopen(filename, "w+b");
-	    
-	    artLength = ComprFunc(artCompr, artName, artfile, artOffset, artLength);
-
-	    if (artLength < 0) {
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not decompress art file. Are you sure the compression is correct?", NULL);
-		exit(1);
-	    }
-	    tileAmount = artLength/0x20;
-	    fclose(artfile);
+		FILE* artfile = fopen(filename, "w+b");
+		artLength = ComprFunc(artCompr, artName, artfile, artOffset, artLength);
+		fclose(artfile);
 	}
 	else
 	{
 		ifstream fin(artName, ios::in|ios::binary);
 		fstream fout(filename, ios::in|ios::out|ios::binary|ios::trunc);
-
 		artLength = ComprFunc(artCompr, fin, fout, artOffset, artLength);
-
-		if (artLength < 0)
-		{
-			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not decompress art file. Are you sure the compression is correct?", NULL);
-			exit(1);
-		}
-		tileAmount = artLength/0x20;
 		fin.close();
 		fout.close();
 	}
+
+	if (artLength < 0)
+	{
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not decompress art file. Are you sure the compression is correct?", NULL);
+		exit(1);
+	}
+	tileAmount = artLength/0x20;
 }
 
 void ProjectData::LoadMap(const char* const filename) {
