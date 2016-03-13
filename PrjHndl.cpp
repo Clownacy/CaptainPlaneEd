@@ -18,9 +18,9 @@ using namespace std;
 
 #define FILE_MAP_DEFAULT "MapDefault.bin"
 
-#define TYPE_AMOUNT 17
+#define TYPE_AMOUNT sizeof(infoTypes)/32
 
-char infoTypes[TYPE_AMOUNT][32] = {
+char infoTypes[][32] = {
     "Palette File:",
     "Mapping File:",
     "Art File:",
