@@ -7,10 +7,12 @@
  * for the use with PlaneEd.
  */
 
-#include <cstdio>
-#include <cstdlib>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-using namespace std;
+#include <stdio.h>
+#include <stdlib.h>
 
 int swap_endian(unsigned int in, char size);
 int Decompress(int address_data, unsigned short size, FILE* rom);
@@ -303,3 +305,7 @@ int SeekData(int pos, signed char seek){
 	
 	return 0;
 }
+
+#ifdef __cplusplus
+}
+#endif
