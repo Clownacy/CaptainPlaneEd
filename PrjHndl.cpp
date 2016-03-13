@@ -8,7 +8,6 @@
 
 #include "compression/KidDec.h"
 #include "compression/ReadPlain.h"
-#include "compression/EniComp.h"
 #include "FW_KENSC/comper.h"
 #include "FW_KENSC/enigma.h"
 #include "FW_KENSC/kosinski.h"
@@ -235,10 +234,11 @@ void ProjectData::SaveMap(const char* filename) {
         remove(saveName);
         rename(filename, saveName);
     } else if (mapCompr == ENIGMA) {
-        if (EniComp(filename, saveName) < 0) {
-            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not save map file.", NULL);
-            exit(1);
-        }
+        ifstream fin(filename, ios::in|ios::binary);
+        fstream fout(saveName, ios::in|ios::out|ios::binary|ios::trunc);
+        enigma::encode(fin, fout, false);
+        fin.close();
+        fout.close();
         remove(filename);
     } else {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid map compression format. Should be one of the following:\n\n'None'\n'Enigma'", NULL);
