@@ -166,7 +166,7 @@ void ProjectData::LoadPal(const char* const filename) {
 
     palLength = ReadPlain(palName, palfile, palOffset, palLength);
     if (palLength < 0) {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Palette file was found, but could not be read.", NULL);
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Palette file not found. Are you sure the path is correct?", NULL);
         exit(1);
     }
 
