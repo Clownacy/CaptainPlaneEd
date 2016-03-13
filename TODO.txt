@@ -1,1 +1,2 @@
 Enable plane map to use more compressions than Enigma/uncompressed 
+Add better string search feature, so 'Moduled Kosinski' isn't mistaked for 'Kosinski'
