@@ -13,6 +13,10 @@
 #include "compression/ReadPlain.h"
 #include "compression/EniComp.h"
 #include "FW_KENSC/comper.h"
+#include "FW_KENSC/enigma.h"
+#include "FW_KENSC/kosinski.h"
+#include "FW_KENSC/nemesis.h"
+#include "FW_KENSC/saxman.h"
 
 using namespace std;
 
@@ -58,6 +62,30 @@ long ComprFunc(const fileCompression compression, const char* srcfile, FILE* dst
 			break;
 		case KIDCHAMELEON:
 			length = KidDec(srcfile, dst, Pointer, length);
+			break;
+	}
+
+	return length;
+}
+
+long ComprFunc_FW(const fileCompression compression, istream &fin, iostream &fout, long Pointer, int length)
+{
+	switch (compression)
+	{
+		case ENIGMA:
+			length = enigma::decode(fin, fout, 0, false);
+			break;
+		case KOSINSKI:
+			length = kosinski::decode(fin, fout, 0, false, 16u);
+			break;
+		case NEMESIS:
+			length = nemesis::decode(fin, fout, 0, 0);
+			break;
+		case COMPER:
+			length = comper::decode(fin, fout, 0);
+			break;
+		case SAXMAN:
+			length = saxman::decode(fin, fout, 0, 0);
 			break;
 	}
 
@@ -112,7 +140,7 @@ void ProjectData::AssignInfo(int type, char* content) {
 }
 
 void ProjectData::LoadArt(const char* const filename) {
-	if (artCompr != COMPER)
+	if (artCompr != COMPER && artCompr != SAXMAN)
 	{
 	    FILE* artfile = fopen(filename, "w+b");
 	    
@@ -132,9 +160,22 @@ void ProjectData::LoadArt(const char* const filename) {
 	}
 	else
 	{
+		if (artCompr == INVALID)
+		{
+			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid art compression format. Should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Nemesis'\n'Kid Chameleon'", NULL);
+			exit(1);
+		}
+
 		ifstream fin(artName, ios::in|ios::binary);
 		fstream fout(filename, ios::in|ios::out|ios::binary|ios::trunc);
-		artLength = comper::decode(fin, fout, 0);
+
+		artLength = ComprFunc_FW(artCompr, fin, fout, artOffset, artLength);
+
+		if (artLength < 0)
+		{
+			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not decompress art file. Are you sure the compression is correct?", NULL);
+			exit(1);
+		}
 		tileAmount = artLength/0x20;
 		fin.close();
 		fout.close();

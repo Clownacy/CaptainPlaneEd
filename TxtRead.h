@@ -8,6 +8,7 @@ typedef enum {
 	NEMESIS,
 	KIDCHAMELEON,
 	COMPER,
+	SAXMAN,
 	COMP_TYPE_AMOUNT,
 	INVALID
 } fileCompression;

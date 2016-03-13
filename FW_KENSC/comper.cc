@@ -122,8 +122,7 @@ long comper::decode(istream &Src, iostream &Dst, streampos Location) {
 	in.seekg(0);
 	decode_internal(in, Dst);
 
-	int size = Dst.tellp();
-	return size;
+	return Dst.tellp();
 }
 
 void comper::encode_internal(ostream &Dst, unsigned char const *&Buffer,
