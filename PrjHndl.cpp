@@ -61,10 +61,10 @@ long ComprFunc(const fileCompression compression, const char* srcfile, FILE* dst
 }
 
 ProjectData::ProjectData(const char* const prjtxt) {
-    palOffset = 0; mapOffset = 0; artOffset = 0;
-    palLength = 0; mapLength = 0; artLength = 0;
-                   mapCompr = INVALID; artCompr = INVALID;
-    xSize = 0; ySize = 0;
+    palOffset = mapOffset = artOffset = 0;
+    palLength = mapLength = artLength = 0;
+                mapCompr =  artCompr = INVALID;
+    xSize = ySize = 0;
     tileOffset = 0;
     letterOffset = 0; numberOffset = 0;
     strcpy(saveName, "");
