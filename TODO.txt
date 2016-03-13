@@ -1,0 +1,1 @@
+Enable plane map to use more compressions than Enigma/uncompressed 
