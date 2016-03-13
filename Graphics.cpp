@@ -25,7 +25,7 @@ Graphics::Graphics(uint16_t xSize, uint16_t tileOffset, uint16_t tileAmount) {
     }
 
     if (SDL_Init(SDL_INIT_VIDEO)<0) {
-        fprintf(stderr, "Unable to init SDL: %s\n", SDL_GetError());
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unable to init SDL video", SDL_GetError(), NULL);
         exit(1);
     }
     atexit(SDL_Quit);
@@ -33,14 +33,14 @@ Graphics::Graphics(uint16_t xSize, uint16_t tileOffset, uint16_t tileAmount) {
     window = SDL_CreateWindow("Captain PlaneEd", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
     if (window == NULL)
     {
-        fprintf(stderr, "Error - %s\n", SDL_GetError());
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unable to init SDL Window", SDL_GetError(), NULL);
         exit(1);
     }
     
     render = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if (render == NULL)
     {
-        fprintf(stderr, "Error - %s\n", SDL_GetError());
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unable to init SDL Renderer", SDL_GetError(), NULL);
         exit(1);
     }
     
@@ -48,12 +48,12 @@ Graphics::Graphics(uint16_t xSize, uint16_t tileOffset, uint16_t tileAmount) {
 
     screen = SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0, 0, 0, 0);
     if (screen==NULL) {
-        fprintf(stderr, "Unable to set 640x480 video: %s\n", SDL_GetError());
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unable to init screen SDL Surface", SDL_GetError(), NULL);
         exit(1);
     }
     texture = SDL_CreateTextureFromSurface(render, screen);
     if (texture==NULL) {
-        fprintf(stderr, "Error - %s\n", SDL_GetError());
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unable to init screen SDL Texture", SDL_GetError(), NULL);
         exit(1);
     }
 }
@@ -61,7 +61,7 @@ Graphics::Graphics(uint16_t xSize, uint16_t tileOffset, uint16_t tileAmount) {
 void Graphics::ReadPalette(const char* filename) {
     FILE* palfile = fopen(filename,"rb");
     if (palfile==NULL) {
-        fprintf(stderr, "Cannot open palette file.\n");
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Palette file not found. Are you sure the path is correct?", NULL);
         exit(1);
     }
     fseek(palfile, 0, SEEK_END);
@@ -69,7 +69,7 @@ void Graphics::ReadPalette(const char* filename) {
     if (paletteLines > 4) paletteLines = 4;
     rewind(palfile);
     if (paletteLines == 0) {
-        fprintf(stderr, "Palette file too small.\n");
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Palette file too small. It must contain at least one palette line.", NULL);
         exit(1);        
     }
     palette = new uint16_t[paletteLines][16];
@@ -82,7 +82,7 @@ void Graphics::ReadPalette(const char* filename) {
 void Graphics::ReadTiles(const char* filename) {
     FILE* tilefile = fopen(filename,"rb");
     if (tilefile==NULL) {
-        fprintf(stderr, "Cannot open tile graphics file.\n");
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Art file not found. Are you sure the path is correct?", NULL);
         exit(1);
     }
     unsigned char tilebuffer[32]; //space for one tile
@@ -129,7 +129,7 @@ SDL_Surface* Graphics::InitSurface(uint16_t *pixelsT, int width, int height, int
                          height, bbp, width*((bbp+7)/8), 0x0F00, 0x00F0, 0x000F, 0xF000);
 
     if (surface == NULL)
-        fprintf(stderr, "Error - %s\n", SDL_GetError());
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Cannot make SDL Surface from tiles", SDL_GetError(), NULL);
 
     return(surface);
 }

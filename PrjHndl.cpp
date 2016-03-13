@@ -71,7 +71,7 @@ ProjectData::ProjectData(char* prjtxt) {
 
     FILE* prjfile = fopen(prjtxt, "r");
     if (prjfile == NULL) {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Please drag and drop your project file onto this program to start it", NULL);
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Please drag and drop your project file onto this program to start it.", NULL);
         exit(1);
     }
 
@@ -118,7 +118,7 @@ void ProjectData::LoadArt(const char* filename) {
     artLength = ComprFunc(artCompr, artName, artfile, artOffset, artLength);
 
     if (artLength < 0) {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not read art file. Are you sure the path is correct?", NULL);
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not decompress art file. Are you sure the compression is correct?", NULL);
         exit(1);
     }
     tileAmount = artLength/0x20;
@@ -139,7 +139,7 @@ void ProjectData::LoadMap(const char* filename) {
         mapLength = 2*xSize*ySize;
         if (!CheckCreateBlankFile(mapName, mapfile, mapOffset, mapLength)) {
             //file is existant but could not be decompressed
-            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not read map file. Are you sure the path is correct?", NULL);
+            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not decompress map file. Are you sure the compression is correct?", NULL);
             exit(1);
         } else {
             //file non-existant, blank template created
@@ -166,7 +166,7 @@ void ProjectData::LoadPal(const char* filename) {
 
     palLength = ReadPlain(palName, palfile, palOffset, palLength);
     if (palLength < 0) {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not read palette file. Are you sure the path's correct?", NULL);
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Palette file was found, but could not be read.", NULL);
         exit(1);
     }
 
@@ -179,7 +179,7 @@ void ProjectData::SaveMap(const char* filename) {
         rename(filename, saveName);
     } else if (mapCompr == ENIGMA) {
         if (EniComp(filename, saveName) < 0) {
-            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not write map file.", NULL);
+            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not save map file.", NULL);
             exit(1);
         }
         remove(filename);

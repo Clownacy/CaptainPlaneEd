@@ -3,7 +3,7 @@
 
 LevMap::LevMap(uint8_t xSize, uint8_t ySize, Graphics* GfxStuff) {
     if (xSize <= 0 || ySize <= 0) {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid map size. Must be more than 0.", NULL);
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid map size. Must be at least 1x1.", NULL);
         exit(1);
     }
     this->xSize=xSize;
@@ -19,7 +19,7 @@ LevMap::LevMap(uint8_t xSize, uint8_t ySize, Graphics* GfxStuff) {
 void LevMap::LoadMap(const char* filename) {
     FILE* mapfile = fopen(filename, "rb");
     if (mapfile == NULL) {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Cannot open map file.", NULL);
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Map file not found. Are you sure the path is correct?", NULL);
         exit(1);
     }
     for (int y=0; y < ySize; ++y)
@@ -32,7 +32,7 @@ void LevMap::LoadMap(const char* filename) {
 void LevMap::SaveMap(const char* filename) {
     FILE* mapfile = fopen(filename, "wb");
     if (mapfile == NULL) {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Cannot save map file.", NULL);
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Unable to open map file for saving.", NULL);
         exit(1);
     }
     for (int y=0; y < ySize; ++y)
