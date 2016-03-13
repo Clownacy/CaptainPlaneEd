@@ -41,7 +41,7 @@ char infoTypes[TYPE_AMOUNT][32] = {
     "Save File:"
 };
 
-long ComprFunc(const fileCompression compression, const char* srcfile, FILE* dst, long Pointer, int length)
+static long ComprFunc(const fileCompression compression, const char* const srcfile, FILE* dst, long Pointer, int length)
 {
 	switch (compression)
 	{
@@ -56,7 +56,7 @@ long ComprFunc(const fileCompression compression, const char* srcfile, FILE* dst
 	return length;
 }
 
-long ComprFunc_FW(const fileCompression compression, istream &fin, iostream &fout, long Pointer, int length)
+static long ComprFunc(const fileCompression compression, istream &fin, iostream &fout, long Pointer, int length)
 {
 	switch (compression)
 	{
@@ -153,7 +153,7 @@ void ProjectData::LoadArt(const char* const filename)
 		ifstream fin(artName, ios::in|ios::binary);
 		fstream fout(filename, ios::in|ios::out|ios::binary|ios::trunc);
 
-		artLength = ComprFunc_FW(artCompr, fin, fout, artOffset, artLength);
+		artLength = ComprFunc(artCompr, fin, fout, artOffset, artLength);
 
 		if (artLength < 0)
 		{
@@ -184,7 +184,7 @@ void ProjectData::LoadMap(const char* const filename) {
     {
             ifstream fin(mapName, ios::in|ios::binary);
             fstream fout(filename, ios::in|ios::out|ios::binary|ios::trunc);
-	    mapLength = ComprFunc_FW(mapCompr, fin, fout, mapOffset, mapLength);
+	    mapLength = ComprFunc(mapCompr, fin, fout, mapOffset, mapLength);
 	    fin.close();
 	    fout.close();
     }
