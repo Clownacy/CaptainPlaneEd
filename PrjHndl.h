@@ -31,4 +31,5 @@ public:
     void LoadMap(const char* const filename);
     void LoadPal(const char* const filename);
     void SaveMap(const char* const filename);
+    long DecompressFile(const fileCompression compression, const char* const srcfile, const char* const dstfile, long Pointer, int length);
 };

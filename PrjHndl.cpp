@@ -41,39 +41,6 @@ char infoTypes[][32] = {
     "Save File:"
 };
 
-static long ComprFunc(const fileCompression compression, const char* const srcfile, const char* const dstfile, long Pointer, int length)
-{
-	switch (compression)
-	{
-		case NONE:
-			length = ReadPlain(srcfile, dstfile, Pointer, length);
-			break;
-		case ENIGMA:
-			length = enigma::decode(srcfile, dstfile, Pointer, false);
-			break;
-		case KOSINSKI:
-			length = kosinski::decode(srcfile, dstfile, Pointer, false, 16u);
-			break;
-		case MODULED_KOSINSKI:
-			length = kosinski::decode(srcfile, dstfile, Pointer, true, 16u);
-			break;
-		case NEMESIS:
-			length = nemesis::decode(srcfile, dstfile, Pointer, 0);
-			break;
-		case KID_CHAMELEON:
-			length = KidDec(srcfile, dstfile, Pointer);
-			break;
-		case COMPER:
-			length = comper::decode(srcfile, dstfile, Pointer);
-			break;
-		case SAXMAN:
-			length = saxman::decode(srcfile, dstfile, Pointer, 0);
-			break;
-	}
-
-	return length;
-}
-
 ProjectData::ProjectData(const char* const prjtxt) {
     palOffset = mapOffset = artOffset = 0;
     palLength = mapLength = artLength = 0;
@@ -129,7 +96,7 @@ void ProjectData::LoadArt(const char* const filename)
 		exit(1);
 	}
 
-	artLength = ComprFunc(artCompr, artName, filename, artOffset, artLength);
+	artLength = DecompressFile(artCompr, artName, filename, artOffset, artLength);
 
 	if (artLength < 0)
 	{
@@ -145,11 +112,9 @@ void ProjectData::LoadMap(const char* const filename) {
         exit(1);
     }
 
-    FILE* mapfile;
+    mapLength = DecompressFile(mapCompr, mapName, filename, mapOffset, mapLength);
 
-    mapLength = ComprFunc(mapCompr, mapName, filename, mapOffset, mapLength);
-
-    mapfile = fopen(filename, "r+b");
+    FILE* mapfile = fopen(filename, "r+b");
 
     if (mapLength < 0) {
         //file could not be decompressed or found
@@ -201,4 +166,37 @@ void ProjectData::SaveMap(const char* filename) {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid map compression format. Should be one of the following:\n\n'None'\n'Enigma'", NULL);
         exit(1);
     }
+}
+
+long ProjectData::DecompressFile(const fileCompression compression, const char* const srcfile, const char* const dstfile, long Pointer, int length)
+{
+	switch (compression)
+	{
+		case NONE:
+			length = ReadPlain(srcfile, dstfile, Pointer, length);
+			break;
+		case ENIGMA:
+			length = enigma::decode(srcfile, dstfile, Pointer, false);
+			break;
+		case KOSINSKI:
+			length = kosinski::decode(srcfile, dstfile, Pointer, false, 16u);
+			break;
+		case MODULED_KOSINSKI:
+			length = kosinski::decode(srcfile, dstfile, Pointer, true, 16u);
+			break;
+		case NEMESIS:
+			length = nemesis::decode(srcfile, dstfile, Pointer, 0);
+			break;
+		case KID_CHAMELEON:
+			length = KidDec(srcfile, dstfile, Pointer);
+			break;
+		case COMPER:
+			length = comper::decode(srcfile, dstfile, Pointer);
+			break;
+		case SAXMAN:
+			length = saxman::decode(srcfile, dstfile, Pointer, 0);
+			break;
+	}
+
+	return length;
 }
