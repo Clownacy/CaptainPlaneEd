@@ -1,6 +1,7 @@
 *.c		text
 *.h		text
 *.cpp		text
+*.cc		text
 *.txt		text
 *.html		text
 *.exe		binary
