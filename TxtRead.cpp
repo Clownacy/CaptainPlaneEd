@@ -5,7 +5,7 @@
 
 struct stringToEnum
 {
-	const char string[32];
+	const char* const string;
 	fileCompression compression;
 };
 
