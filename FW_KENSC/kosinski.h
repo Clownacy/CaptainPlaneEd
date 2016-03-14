@@ -30,7 +30,7 @@ public:
 	static long decode(const char* const srcfile, const char* const dstfile,
 	                   std::streampos Location = 0, bool Moduled = false,
 	                   std::streamsize const ModulePadding = 16u);
-	static bool encode(std::istream &Src, std::ostream &Dst,
+	static bool encode(const char* const srcfile, const char* const dstfile,
 	                   bool Moduled = false, std::streamoff ModuleSize = 0x1000,
 	                   std::streamsize const ModulePadding = 16u);
 };

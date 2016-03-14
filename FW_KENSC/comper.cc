@@ -169,7 +169,10 @@ void comper::encode_internal(ostream &Dst, unsigned char const *&Buffer,
 	out.putbyte(0x00);
 }
 
-bool comper::encode(istream &Src, ostream &Dst) {
+bool comper::encode(const char* const srcfile, const char* const dstfile) {
+	ifstream Src(srcfile, ios::in|ios::binary);
+	fstream Dst(dstfile, ios::in|ios::out|ios::binary|ios::trunc);
+
 	Src.seekg(0, ios::end);
 	streamsize ISize = Src.tellg();
 	Src.seekg(0);
@@ -187,5 +190,7 @@ bool comper::encode(istream &Src, ostream &Dst) {
 	encode_internal(Dst, ptr, BSize);
 
 	delete [] Buffer;
+	Src.close();
+	Dst.close();
 	return true;
 }

@@ -107,8 +107,8 @@ void ProjectData::LoadArt(const char* const filename)
 }
 
 void ProjectData::LoadMap(const char* const filename) {
-    if (mapCompr != NONE && mapCompr != ENIGMA) {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid map compression format. Should be one of the following:\n\n'None'\n'Enigma'", NULL);
+    if (mapCompr == INVALID || mapCompr == KID_CHAMELEON) {
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid map compression format. Should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Moduled Kosinski'\n'Nemesis'\n'Comper'\n'Saxman'", NULL);
         exit(1);
     }
 
@@ -152,20 +152,7 @@ void ProjectData::LoadPal(const char* const filename) {
 }
 
 void ProjectData::SaveMap(const char* filename) {
-    if (mapCompr == NONE) {
-        remove(saveName);
-        rename(filename, saveName);
-    } else if (mapCompr == ENIGMA) {
-        ifstream fin(filename, ios::in|ios::binary);
-        fstream fout(saveName, ios::in|ios::out|ios::binary|ios::trunc);
-        enigma::encode(fin, fout, false);
-        fin.close();
-        fout.close();
-        remove(filename);
-    } else {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid map compression format. Should be one of the following:\n\n'None'\n'Enigma'", NULL);
-        exit(1);
-    }
+    CompressFile(mapCompr, filename, saveName);
 }
 
 long ProjectData::DecompressFile(const fileCompression compression, const char* const srcfile, const char* const dstfile, const long Pointer, const int length)
@@ -200,4 +187,33 @@ long ProjectData::DecompressFile(const fileCompression compression, const char* 
 	}
 
 	return decompressed_length;
+}
+
+void ProjectData::CompressFile(const fileCompression compression, const char* const srcfile, const char* const dstfile)
+{
+	switch (compression)
+	{
+		case NONE:
+			remove(dstfile);
+			rename(srcfile, dstfile);
+			break;
+		case ENIGMA:
+			enigma::encode(srcfile, dstfile, false);
+			break;
+		case KOSINSKI:
+			kosinski::encode(srcfile, dstfile, false, 0x1000, 16u);
+			break;
+		case MODULED_KOSINSKI:
+			kosinski::encode(srcfile, dstfile, true, 0x1000, 16u);
+			break;
+		case NEMESIS:
+			nemesis::encode(srcfile, dstfile);
+			break;
+		case COMPER:
+			comper::encode(srcfile, dstfile);
+			break;
+		case SAXMAN:
+			saxman::encode(srcfile, dstfile, false);
+			break;
+	}
 }

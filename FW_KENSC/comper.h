@@ -30,7 +30,7 @@ private:
 public:
 	static long decode(const char* const srcfile, const char* const dstfile,
 	                   std::streampos Location = 0);
-	static bool encode(std::istream &Src, std::ostream &Dst);
+	static bool encode(const char* const srcfile, const char* const dstfile);
 };
 
 #endif // _COMPER_H_

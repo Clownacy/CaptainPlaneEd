@@ -31,7 +31,7 @@ public:
 	static long decode(const char* const srcfile, const char* const dstfile,
 	                   std::streampos Location = 0,
 	                   std::streamsize const BSize = 0);
-	static bool encode(std::istream &Src, std::ostream &Dst, bool WithSize = true);
+	static bool encode(const char* const srcfile, const char* const dstfile, bool WithSize = true);
 };
 
 #endif // _SAXMAN_H_

@@ -303,8 +303,11 @@ void kosinski::encode_internal(ostream &Dst, unsigned char const *&Buffer,
 	out.putbyte(0x00);
 }
 
-bool kosinski::encode(istream &Src, ostream &Dst, bool Moduled, streamoff ModuleSize,
+bool kosinski::encode(const char* const srcfile, const char* const dstfile, bool Moduled, streamoff ModuleSize,
                       streamsize const ModulePadding) {
+	ifstream Src(srcfile, ios::in|ios::binary);
+	fstream Dst(dstfile, ios::in|ios::out|ios::binary|ios::trunc);
+
 	Src.seekg(0, ios::end);
 	streamsize BSize = Src.tellg();
 	Src.seekg(0);
@@ -356,5 +359,7 @@ bool kosinski::encode(istream &Src, ostream &Dst, bool Moduled, streamoff Module
 		Dst.put(0);
 
 	delete [] Buffer;
+	Src.close();
+	Dst.close();
 	return true;
 }

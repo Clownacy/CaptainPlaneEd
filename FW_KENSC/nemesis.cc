@@ -908,7 +908,10 @@ size_t nemesis::encode_internal(istream &Src, ostream &Dst, int mode,
 	return Dst.tellp();
 }
 
-bool nemesis::encode(istream &Src, ostream &Dst) {
+bool nemesis::encode(const char* const srcfile, const char* const dstfile) {
+	ifstream Src(srcfile, ios::in|ios::binary);
+	fstream Dst(dstfile, ios::in|ios::out|ios::binary|ios::trunc);
+
 	// We will use these as output buffers, as well as an input/output
 	// buffers for the padded Nemesis input.
 	stringstream src(ios::in | ios::out | ios::binary);
@@ -968,5 +971,7 @@ bool nemesis::encode(istream &Src, ostream &Dst) {
 	if ((Dst.tellp() & 1) != 0)
 		Dst.put(0);
 
+	Src.close();
+	Dst.close();
 	return true;
 }

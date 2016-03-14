@@ -426,7 +426,10 @@ void enigma::encode_internal(istream &Src, ostream &Dst) {
 	bits.flush();
 }
 
-bool enigma::encode(istream &Src, ostream &Dst, bool padding) {
+bool enigma::encode(const char* const srcfile, const char* const dstfile, bool padding) {
+	ifstream Src(srcfile, ios::in|ios::binary);
+	fstream Dst(dstfile, ios::in|ios::out|ios::binary|ios::trunc);
+
 	Src.seekg(0, ios::end);
 	streamsize sz = Src.tellg();
 	Src.seekg(0);
@@ -450,6 +453,8 @@ bool enigma::encode(istream &Src, ostream &Dst, bool padding) {
 			Dst.put(0);
 	}
 
+	Src.close();
+	Dst.close();
 	return true;
 }
 

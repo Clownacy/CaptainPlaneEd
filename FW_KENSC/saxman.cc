@@ -213,7 +213,10 @@ void saxman::encode_internal(ostream &Dst, unsigned char const *&Buffer,
 	}
 }
 
-bool saxman::encode(istream &Src, ostream &Dst, bool WithSize) {
+bool saxman::encode(const char* const srcfile, const char* const dstfile, bool WithSize) {
+	ifstream Src(srcfile, ios::in|ios::binary);
+	fstream Dst(dstfile, ios::in|ios::out|ios::binary|ios::trunc);
+
 	Src.seekg(0, ios::end);
 	streamsize BSize = Src.tellg();
 	Src.seekg(0);
@@ -232,5 +235,7 @@ bool saxman::encode(istream &Src, ostream &Dst, bool WithSize) {
 	Dst << outbuff.rdbuf();
 
 	delete [] Buffer;
+	Src.close();
+	Dst.close();
 	return true;
 }
