@@ -66,7 +66,7 @@ ProjectData::ProjectData(const char* const prjtxt) {
     }
 }
 
-void ProjectData::AssignInfo(int type, char* content) {
+void ProjectData::AssignInfo(const int type, char* content) {
     switch(type) {
         case  0: strcpy(palName, trimString(content)); break;
         case  1: strcpy(mapName, trimString(content)); break;
@@ -168,35 +168,36 @@ void ProjectData::SaveMap(const char* filename) {
     }
 }
 
-long ProjectData::DecompressFile(const fileCompression compression, const char* const srcfile, const char* const dstfile, long Pointer, int length)
+long ProjectData::DecompressFile(const fileCompression compression, const char* const srcfile, const char* const dstfile, const long Pointer, const int length)
 {
+	int decompressed_length;
 	switch (compression)
 	{
 		case NONE:
-			length = ReadPlain(srcfile, dstfile, Pointer, length);
+			decompressed_length = ReadPlain(srcfile, dstfile, Pointer, length);
 			break;
 		case ENIGMA:
-			length = enigma::decode(srcfile, dstfile, Pointer, false);
+			decompressed_length = enigma::decode(srcfile, dstfile, Pointer, false);
 			break;
 		case KOSINSKI:
-			length = kosinski::decode(srcfile, dstfile, Pointer, false, 16u);
+			decompressed_length = kosinski::decode(srcfile, dstfile, Pointer, false, 16u);
 			break;
 		case MODULED_KOSINSKI:
-			length = kosinski::decode(srcfile, dstfile, Pointer, true, 16u);
+			decompressed_length = kosinski::decode(srcfile, dstfile, Pointer, true, 16u);
 			break;
 		case NEMESIS:
-			length = nemesis::decode(srcfile, dstfile, Pointer, 0);
+			decompressed_length = nemesis::decode(srcfile, dstfile, Pointer, 0);
 			break;
 		case KID_CHAMELEON:
-			length = KidDec(srcfile, dstfile, Pointer);
+			decompressed_length = KidDec(srcfile, dstfile, Pointer);
 			break;
 		case COMPER:
-			length = comper::decode(srcfile, dstfile, Pointer);
+			decompressed_length = comper::decode(srcfile, dstfile, Pointer);
 			break;
 		case SAXMAN:
-			length = saxman::decode(srcfile, dstfile, Pointer, 0);
+			decompressed_length = saxman::decode(srcfile, dstfile, Pointer, 0);
 			break;
 	}
 
-	return length;
+	return decompressed_length;
 }

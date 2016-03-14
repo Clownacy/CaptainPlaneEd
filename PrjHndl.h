@@ -5,6 +5,20 @@
 class ProjectData
 {
 public:
+    int xSize;
+    int ySize;
+    int tileOffset;
+    int letterOffset;
+    int numberOffset;
+    
+    int tileAmount;
+
+    ProjectData(const char* const prjtxt);
+    void LoadArt(const char* const filename);
+    void LoadMap(const char* const filename);
+    void LoadPal(const char* const filename);
+    void SaveMap(const char* const filename);
+protected:
     char palName[128];
     char mapName[128];
     char artName[128];
@@ -17,19 +31,7 @@ public:
     int artLength;
     fileCompression mapCompr;
     fileCompression artCompr;
-    int xSize;
-    int ySize;
-    int tileOffset;
-    int letterOffset;
-    int numberOffset;
-    
-    int tileAmount;
-public:
-    ProjectData(const char* const prjtxt);
-    void AssignInfo(int type, char* content);
-    void LoadArt(const char* const filename);
-    void LoadMap(const char* const filename);
-    void LoadPal(const char* const filename);
-    void SaveMap(const char* const filename);
-    long DecompressFile(const fileCompression compression, const char* const srcfile, const char* const dstfile, long Pointer, int length);
+
+    void AssignInfo(const int type, char* content);
+    long DecompressFile(const fileCompression compression, const char* const srcfile, const char* const dstfile, const long Pointer, const int length);
 };
