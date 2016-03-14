@@ -24,9 +24,10 @@ unsigned char *output_data;
 unsigned short output_size;
 unsigned short output_pos;
 
-long KidDec(const char *srcfile, FILE* dst, long Pointer) {
+long KidDec(const char* const srcfile, const char* const dstfile, long Pointer) {
     FILE* rom = fopen(srcfile, "rb");
-    if (rom == NULL) return -1;
+    FILE* dst = fopen(dstfile, "w+b");
+    if (rom == NULL || dst == NULL) return -1;
 
     int offset = Pointer;
 
@@ -42,6 +43,7 @@ long KidDec(const char *srcfile, FILE* dst, long Pointer) {
     rewind(dst);
     fwrite(output_data, size, 1, dst);
     
+    fclose(dst);
     return size;
 }
 

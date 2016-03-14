@@ -21,6 +21,7 @@
 #include <istream>
 #include <ostream>
 #include <sstream>
+#include <fstream>
 #include <string>
 #include <map>
 #include <set>
@@ -213,8 +214,11 @@ void enigma::decode_internal(istream &Src, ostream &Dst) {
 	}
 }
 
-long enigma::decode(istream &Src, ostream &Dst, streampos Location,
+long enigma::decode(const char* const srcfile, const char* const dstfile, streampos Location,
                     bool padding) {
+	ifstream Src(srcfile, ios::in|ios::binary);
+	fstream Dst(dstfile, ios::in|ios::out|ios::binary|ios::trunc);
+
 	Src.seekg(Location);
 	if (padding) {
 		// This is a plane map into a full pattern name table.
@@ -237,7 +241,10 @@ long enigma::decode(istream &Src, ostream &Dst, streampos Location,
 	} else
 		decode_internal(Src, Dst);
 
-	return Dst.tellp();
+	long return_size = Dst.tellp();
+	Src.close();
+	Dst.close();
+	return return_size;
 }
 
 // Blazing fast function that gives the index of the MSB.

@@ -38,7 +38,7 @@ private:
 	static size_t encode_internal(std::istream &Src, std::ostream &Dst, int mode,
 	                              size_t sz, Compare const &comp);
 public:
-	static long decode(std::istream &Src, std::ostream &Dst, std::streampos Location = 0,
+	static long decode(const char* const srcfile, const char* const dstfile, std::streampos Location = 0,
 	                   int *endptr = 0);
 	static bool encode(std::istream &Src, std::ostream &Dst);
 };

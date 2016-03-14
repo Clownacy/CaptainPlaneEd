@@ -41,43 +41,33 @@ char infoTypes[][32] = {
     "Save File:"
 };
 
-static long ComprFunc(const fileCompression compression, const char* const srcfile, FILE* dst, long Pointer, int length)
+static long ComprFunc(const fileCompression compression, const char* const srcfile, const char* const dstfile, long Pointer, int length)
 {
 	switch (compression)
 	{
 		case NONE:
-			length = ReadPlain(srcfile, dst, Pointer, length);
+			length = ReadPlain(srcfile, dstfile, Pointer, length);
 			break;
-		case KID_CHAMELEON:
-			length = KidDec(srcfile, dst, Pointer);
-			break;
-	}
-
-	return length;
-}
-
-static long ComprFunc(const fileCompression compression, istream &fin, iostream &fout, long Pointer)
-{
-	int length;
-	switch (compression)
-	{
 		case ENIGMA:
-			length = enigma::decode(fin, fout, Pointer, false);
+			length = enigma::decode(srcfile, dstfile, Pointer, false);
 			break;
 		case KOSINSKI:
-			length = kosinski::decode(fin, fout, Pointer, false, 16u);
+			length = kosinski::decode(srcfile, dstfile, Pointer, false, 16u);
 			break;
 		case MODULED_KOSINSKI:
-			length = kosinski::decode(fin, fout, Pointer, true, 16u);
+			length = kosinski::decode(srcfile, dstfile, Pointer, true, 16u);
 			break;
 		case NEMESIS:
-			length = nemesis::decode(fin, fout, Pointer, 0);
+			length = nemesis::decode(srcfile, dstfile, Pointer, 0);
+			break;
+		case KID_CHAMELEON:
+			length = KidDec(srcfile, dstfile, Pointer);
 			break;
 		case COMPER:
-			length = comper::decode(fin, fout, Pointer);
+			length = comper::decode(srcfile, dstfile, Pointer);
 			break;
 		case SAXMAN:
-			length = saxman::decode(fin, fout, Pointer, 0);
+			length = saxman::decode(srcfile, dstfile, Pointer, 0);
 			break;
 	}
 
@@ -139,20 +129,7 @@ void ProjectData::LoadArt(const char* const filename)
 		exit(1);
 	}
 
-	if (artCompr == NONE || artCompr == KID_CHAMELEON)
-	{
-		FILE* artfile = fopen(filename, "w+b");
-		artLength = ComprFunc(artCompr, artName, artfile, artOffset, artLength);
-		fclose(artfile);
-	}
-	else
-	{
-		ifstream fin(artName, ios::in|ios::binary);
-		fstream fout(filename, ios::in|ios::out|ios::binary|ios::trunc);
-		artLength = ComprFunc(artCompr, fin, fout, artOffset);
-		fin.close();
-		fout.close();
-	}
+	artLength = ComprFunc(artCompr, artName, filename, artOffset, artLength);
 
 	if (artLength < 0)
 	{
@@ -170,20 +147,7 @@ void ProjectData::LoadMap(const char* const filename) {
 
     FILE* mapfile;
 
-    if (mapCompr == NONE)
-    {
-	    mapfile = fopen(filename, "wb");
-	    mapLength = ComprFunc(mapCompr, mapName, mapfile, mapOffset, mapLength);
-	    fclose(mapfile);
-    }
-    else //if (mapCompr == ENIGMA)
-    {
-            ifstream fin(mapName, ios::in|ios::binary);
-            fstream fout(filename, ios::in|ios::out|ios::binary|ios::trunc);
-	    mapLength = ComprFunc(mapCompr, fin, fout, mapOffset);
-	    fin.close();
-	    fout.close();
-    }
+    mapLength = ComprFunc(mapCompr, mapName, filename, mapOffset, mapLength);
 
     mapfile = fopen(filename, "r+b");
 
@@ -215,15 +179,11 @@ void ProjectData::LoadMap(const char* const filename) {
 }
 
 void ProjectData::LoadPal(const char* const filename) {
-    FILE* palfile = fopen(filename, "wb");
-
-    palLength = ReadPlain(palName, palfile, palOffset, palLength);
+    palLength = ReadPlain(palName, filename, palOffset, palLength);
     if (palLength < 0) {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Palette file not found. Are you sure the path is correct?", NULL);
         exit(1);
     }
-
-    fclose(palfile);
 }
 
 void ProjectData::SaveMap(const char* filename) {

@@ -19,6 +19,7 @@
 #include <istream>
 #include <ostream>
 #include <sstream>
+#include <fstream>
 
 #include "comper.h"
 #include "bigendian_io.h"
@@ -114,7 +115,10 @@ void comper::decode_internal(istream &in, iostream &Dst) {
 	}
 }
 
-long comper::decode(istream &Src, iostream &Dst, streampos Location) {
+long comper::decode(const char* const srcfile, const char* const dstfile, streampos Location) {
+	ifstream Src(srcfile, ios::in|ios::binary);
+	fstream Dst(dstfile, ios::in|ios::out|ios::binary|ios::trunc);
+
 	Src.seekg(Location);
 	stringstream in(ios::in | ios::out | ios::binary);
 	in << Src.rdbuf();
@@ -122,7 +126,10 @@ long comper::decode(istream &Src, iostream &Dst, streampos Location) {
 	in.seekg(0);
 	decode_internal(in, Dst);
 
-	return Dst.tellp();
+	long return_size = Dst.tellp();
+	Src.close();
+	Dst.close();
+	return return_size;
 }
 
 void comper::encode_internal(ostream &Dst, unsigned char const *&Buffer,

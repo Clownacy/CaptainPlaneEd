@@ -20,6 +20,7 @@
 #include <istream>
 #include <ostream>
 #include <sstream>
+#include <fstream>
 #include <cstdio>
 
 #include "saxman.h"
@@ -158,8 +159,11 @@ void saxman::decode_internal(istream &in, iostream &Dst,
 	}
 }
 
-long saxman::decode(istream &Src, iostream &Dst,
+long saxman::decode(const char* const srcfile, const char* const dstfile,
                     streampos Location, streamsize const BSize) {
+	ifstream Src(srcfile, ios::in|ios::binary);
+	fstream Dst(dstfile, ios::in|ios::out|ios::binary|ios::trunc);
+
 	Src.seekg(Location);
 	size_t size = BSize == 0 ? LittleEndian::Read2(Src) : BSize;
 
@@ -169,7 +173,10 @@ long saxman::decode(istream &Src, iostream &Dst,
 	in.seekg(0);
 	decode_internal(in, Dst, size);
 
-	return Dst.tellp();
+	long return_size = Dst.tellp();
+	Src.close();
+	Dst.close();
+	return return_size;
 }
 
 void saxman::encode_internal(ostream &Dst, unsigned char const *&Buffer,

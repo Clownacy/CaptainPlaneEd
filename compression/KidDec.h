@@ -4,7 +4,7 @@
 extern "C" {
 #endif
 
-long KidDec(const char *srcfile, FILE* dst, long Pointer);
+long KidDec(const char* const srcfile, const char* const dstfile, long Pointer);
 
 #ifdef __cplusplus
 }

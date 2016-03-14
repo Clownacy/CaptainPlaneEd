@@ -22,6 +22,7 @@
 #include <istream>
 #include <ostream>
 #include <sstream>
+#include <fstream>
 
 #ifdef COUNT_FREQUENCIES
 #include <iostream>
@@ -166,9 +167,12 @@ void kosinski::decode_internal(istream &in, iostream &Dst, size_t &DecBytes) {
 	}
 }
 
-long kosinski::decode(istream &Src, iostream &Dst,
+long kosinski::decode(const char* const srcfile, const char* const dstfile,
                       streampos Location, bool Moduled,
                       streamsize const ModulePadding) {
+	ifstream Src(srcfile, ios::in|ios::binary);
+	fstream Dst(dstfile, ios::in|ios::out|ios::binary|ios::trunc);
+
 	size_t DecBytes = 0;
 
 	Src.seekg(0, ios::end);
@@ -202,7 +206,10 @@ long kosinski::decode(istream &Src, iostream &Dst,
 	} else
 		decode_internal(in, Dst, DecBytes);
 
-	return Dst.tellp();
+	long return_size = Dst.tellp();
+	Src.close();
+	Dst.close();
+	return return_size;
 }
 
 void kosinski::encode_internal(ostream &Dst, unsigned char const *&Buffer,

@@ -22,6 +22,7 @@
 #include <istream>
 #include <ostream>
 #include <sstream>
+#include <fstream>
 #include <map>
 #include <set>
 #include <queue>
@@ -392,7 +393,10 @@ void nemesis::decode_internal(istream &Src, ostream &Dst,
 		Dst.write(dst.str().c_str(), rtiles << 5);
 }
 
-long nemesis::decode(istream &Src, ostream &Dst, streampos Location, int *endptr) {
+long nemesis::decode(const char* const srcfile, const char* const dstfile, streampos Location, int *endptr) {
+	ifstream Src(srcfile, ios::in|ios::binary);
+	fstream Dst(dstfile, ios::in|ios::out|ios::binary|ios::trunc);
+
 	Src.seekg(Location);
 
 	CodeNibbleMap codemap;
@@ -407,7 +411,10 @@ long nemesis::decode(istream &Src, ostream &Dst, streampos Location, int *endptr
 	} else if (endptr)
 		*endptr = Src.tellg();
 
-	return Dst.tellp();
+	long return_size = Dst.tellp();
+	Src.close();
+	Dst.close();
+	return return_size;
 }
 
 static size_t estimate_file_size(NibbleCodeMap &tempcodemap, RunCountMap &counts) {

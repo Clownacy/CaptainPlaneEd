@@ -5,10 +5,11 @@ extern "C" {
 #include <stdio.h>
 #include <stdlib.h>
 
-long ReadPlain(const char *srcfile, FILE* dst, long Pointer, int length)
+long ReadPlain(const char* const srcfile, const char* const dstfile, long Pointer, int length)
 {
     FILE* src = fopen(srcfile, "rb");
-    if (src == NULL) return -1;
+    FILE* dst = fopen(dstfile, "w+b");
+    if (src == NULL || dst == NULL) return -1;
 
     if (length == 0) {
         if (Pointer == 0) {
@@ -27,6 +28,7 @@ long ReadPlain(const char *srcfile, FILE* dst, long Pointer, int length)
     //free(buffer);
     
     fclose(src);
+    fclose(dst);
     return length;
 }
 

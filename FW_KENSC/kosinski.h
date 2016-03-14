@@ -27,7 +27,7 @@ private:
 	static void encode_internal(std::ostream &Dst, unsigned char const *&Buffer,
 	                            std::streamsize const BSize, std::streamsize const Padding);
 public:
-	static long decode(std::istream &Src, std::iostream &Dst,
+	static long decode(const char* const srcfile, const char* const dstfile,
 	                   std::streampos Location = 0, bool Moduled = false,
 	                   std::streamsize const ModulePadding = 16u);
 	static bool encode(std::istream &Src, std::ostream &Dst,
