@@ -1,4 +1,4 @@
-NAME	= PlaneEd.exe
+NAME	= CaptainPlaneEd
 GCC	= g++
 CFLAGS	= `sdl2-config --cflags` -O3 -s -std=c++11
 DEFINES	= 
