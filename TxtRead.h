@@ -14,5 +14,11 @@ typedef enum {
 	INVALID
 } fileCompression;
 
-fileCompression readComprType(char* string);
+struct stringToEnum
+{
+	const char* const string;
+	fileCompression compression;
+};
+
+int readComprType(char* string, struct stringToEnum*, int type_amount);
 char* trimString(char* string);

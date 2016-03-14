@@ -3,28 +3,12 @@
 
 #include "TxtRead.h"
 
-struct stringToEnum
+// Returned value should be cast to enum
+int readComprType(char* string, struct stringToEnum* string_to_enum, int type_amount)
 {
-	const char* const string;
-	fileCompression compression;
-};
-
-struct stringToEnum comprTypes[COMP_TYPE_AMOUNT] = {
-	{ "None", NONE },
-	{ "Enigma", ENIGMA },
-	{ "Kosinski", KOSINSKI },
-	{ "Moduled Kosinski", MODULED_KOSINSKI },
-	{ "Nemesis", NEMESIS },
-	{ "Kid Chameleon", KID_CHAMELEON },
-	{ "Comper", COMPER },
-	{ "Saxman", SAXMAN }
-};
-
-fileCompression readComprType(char* string)
-{
-	for (int i=0; i < COMP_TYPE_AMOUNT; ++i)
-		if (!strncmp(string, comprTypes[i].string, strlen(comprTypes[i].string)))
-			return comprTypes[i].compression;
+	for (int i=0; i < type_amount; ++i)
+		if (!strncmp(string, string_to_enum[i].string, strlen(string_to_enum[i].string)))
+			return string_to_enum[i].compression;
 
 	return INVALID;
 }
