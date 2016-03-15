@@ -66,8 +66,8 @@ char* getProjectInfo(char* string)
 	// Move pointer to beginning of text
 	while (string[0] != ':')
 		++string;
-	++string;	// Advance one more time to skip the ':'
-	return string;
+
+	return string+1;	// The '+1' is to skip the ':'
 }
 
 char* trimString(char* string)
