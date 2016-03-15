@@ -7,7 +7,7 @@ struct
 {
 	const char* const string;
 	const infoType info_type;
-} infoTypes[(int)infoType::INFO_TYPES_AMOUNT] = {
+} infoTypes[(int)infoType::INFO_TYPE_AMOUNT] = {
 	{ "Palette File:", infoType::PALETTE_FILE },
 	{ "Mapping File:", infoType::MAPPING_FILE },
 	{ "Art File:", infoType::ART_FILE },
@@ -44,7 +44,7 @@ struct
 
 infoType readInfoType(char* string)
 {
-	for (int i=0; i < (int)infoType::INFO_TYPES_AMOUNT; ++i)
+	for (int i=0; i < (int)infoType::INFO_TYPE_AMOUNT; ++i)
 		if (!strncmp(string, infoTypes[i].string, strlen(infoTypes[i].string)))
 			return infoTypes[i].info_type;
 	
