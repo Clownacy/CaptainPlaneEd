@@ -60,21 +60,13 @@ comprType readComprType(char* string)
 	return comprType::INVALID;
 }
 
-char* getProjectInfo(char* string)
-{
-	string[strcspn(string, "\n")] = '\0';
-	// Move pointer to beginning of text
-	while (string[0] != ':')
-		++string;
-
-	return string+1;	// The '+1' is to skip the ':'
-}
-
 char* trimString(char* string)
 {
-	string[strcspn(string, "\n")] = '\0';
+	string[strcspn(string, "\n")] = '\0';	// Replace newline with terminator character
+	// Move pointer to start of text
 	while (string[0] == ' ' || string[0] == '\n' || string[0] == '\t')
 		++string;
+	// Fill 'empty' characters after text with terminator characters
 	int i = strlen(string)-1;
 	while (string[i] == ' ' || string[i] == '\n' || string[i] == '\t')
 	{

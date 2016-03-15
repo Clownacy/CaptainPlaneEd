@@ -38,5 +38,4 @@ enum class comprType {
 
 infoType readInfoType(char* string);
 comprType readComprType(char* string);
-char* getProjectInfo(char* string);
 char* trimString(char* string);

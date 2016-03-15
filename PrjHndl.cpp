@@ -41,7 +41,7 @@ ProjectData::ProjectData(const char* const prjtxt) {
         fgets(line, 256, prjfile);
 	infoType info_type = readInfoType(line);
 	if (info_type != infoType::INVALID)
-		AssignInfo(info_type, getProjectInfo(line));
+		AssignInfo(info_type, line+strcspn(line, ":")+1);
     }
 }
 
