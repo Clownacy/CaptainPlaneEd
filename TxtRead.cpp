@@ -3,13 +3,11 @@
 
 #include "TxtRead.h"
 
-struct stringToEnum
+struct
 {
 	const char* const string;
 	const fileCompression compression;
-};
-
-struct stringToEnum comprTypes[(int)fileCompression::COMP_TYPE_AMOUNT] = {
+} comprTypes[(int)fileCompression::COMP_TYPE_AMOUNT] = {
 	{ "None", fileCompression::NONE },
 	{ "Enigma", fileCompression::ENIGMA },
 	{ "Kosinski", fileCompression::KOSINSKI },
