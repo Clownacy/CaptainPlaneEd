@@ -164,7 +164,7 @@ void ProjectData::LoadPal(const char* const filename) {
     }
 }
 
-void ProjectData::SaveMap(const char* filename) {
+void ProjectData::SaveMap(const char* const filename) {
     CompressFile(mapCompr, filename, saveName);
 }
 

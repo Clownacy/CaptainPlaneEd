@@ -42,7 +42,7 @@ struct
 	{ "Saxman", comprType::SAXMAN }
 };
 
-infoType readInfoType(char* string)
+infoType readInfoType(const char* const string)
 {
 	for (int i=0; i < (int)infoType::INFO_TYPE_AMOUNT; ++i)
 		if (!strncmp(string, infoTypes[i].string, strlen(infoTypes[i].string)))
@@ -51,7 +51,7 @@ infoType readInfoType(char* string)
 	return infoType::INVALID;
 }
 
-comprType readComprType(char* string)
+comprType readComprType(const char* const string)
 {
 	for (int i=0; i < (int)comprType::COMP_TYPE_AMOUNT; ++i)
 		if (!strncmp(string, comprTypes[i].string, strlen(comprTypes[i].string)))
