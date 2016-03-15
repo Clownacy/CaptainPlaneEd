@@ -41,21 +41,21 @@ char infoTypes[][32] = {
     "Save File:"
 };
 
-struct stringToEnum comprTypes[COMP_TYPE_AMOUNT] = {
-	{ "None", NONE },
-	{ "Enigma", ENIGMA },
-	{ "Kosinski", KOSINSKI },
-	{ "Moduled Kosinski", MODULED_KOSINSKI },
-	{ "Nemesis", NEMESIS },
-	{ "Kid Chameleon", KID_CHAMELEON },
-	{ "Comper", COMPER },
-	{ "Saxman", SAXMAN }
+struct stringToEnum comprTypes[(int)fileCompression::COMP_TYPE_AMOUNT] = {
+	{ "None", fileCompression::NONE },
+	{ "Enigma", fileCompression::ENIGMA },
+	{ "Kosinski", fileCompression::KOSINSKI },
+	{ "Moduled Kosinski", fileCompression::MODULED_KOSINSKI },
+	{ "Nemesis", fileCompression::NEMESIS },
+	{ "Kid Chameleon", fileCompression::KID_CHAMELEON },
+	{ "Comper", fileCompression::COMPER },
+	{ "Saxman", fileCompression::SAXMAN }
 };
 
 ProjectData::ProjectData(const char* const prjtxt) {
     palOffset = mapOffset = artOffset = 0;
     palLength = mapLength = artLength = 0;
-                mapCompr =  artCompr = INVALID;
+                mapCompr =  artCompr = fileCompression::INVALID;
     xSize = ySize = 0;
     tileOffset = 0;
     letterOffset = 0; numberOffset = 0;
@@ -88,8 +88,8 @@ void ProjectData::AssignInfo(const int type, char* content) {
         case  6: palLength = strtol(content, NULL, 0); break;
         case  7: mapLength = strtol(content, NULL, 0); break;
         case  8: artLength = strtol(content, NULL, 0); break;
-        case  9: mapCompr = (fileCompression)readComprType(trimString(content), comprTypes, COMP_TYPE_AMOUNT); break;
-        case 10: artCompr = (fileCompression)readComprType(trimString(content), comprTypes, COMP_TYPE_AMOUNT); break;
+        case  9: mapCompr = readComprType(trimString(content), comprTypes, (int)fileCompression::COMP_TYPE_AMOUNT); break;
+        case 10: artCompr = readComprType(trimString(content), comprTypes, (int)fileCompression::COMP_TYPE_AMOUNT); break;
         case 11: xSize = strtol(content, NULL, 0); break;
         case 12: ySize = strtol(content, NULL, 0); break;
         case 13: tileOffset = strtol(content, NULL, 0); break;
@@ -101,7 +101,7 @@ void ProjectData::AssignInfo(const int type, char* content) {
 
 void ProjectData::LoadArt(const char* const filename)
 {
-	if (artCompr == INVALID)
+	if (artCompr == fileCompression::INVALID)
 	{
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid art compression format. Should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Moduled Kosinski'\n'Nemesis'\n'Kid Chameleon'\n'Comper'\n'Saxman'", NULL);
 		exit(1);
@@ -118,7 +118,7 @@ void ProjectData::LoadArt(const char* const filename)
 }
 
 void ProjectData::LoadMap(const char* const filename) {
-    if (mapCompr == INVALID || mapCompr == KID_CHAMELEON) {
+    if (mapCompr == fileCompression::INVALID || mapCompr == fileCompression::KID_CHAMELEON) {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid map compression format. Should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Moduled Kosinski'\n'Nemesis'\n'Comper'\n'Saxman'", NULL);
         exit(1);
     }
@@ -171,28 +171,28 @@ long ProjectData::DecompressFile(const fileCompression compression, const char* 
 	int decompressed_length;
 	switch (compression)
 	{
-		case NONE:
+		case fileCompression::NONE:
 			decompressed_length = ReadPlain(srcfile, dstfile, Pointer, length);
 			break;
-		case ENIGMA:
+		case fileCompression::ENIGMA:
 			decompressed_length = enigma::decode(srcfile, dstfile, Pointer, false);
 			break;
-		case KOSINSKI:
+		case fileCompression::KOSINSKI:
 			decompressed_length = kosinski::decode(srcfile, dstfile, Pointer, false, 16u);
 			break;
-		case MODULED_KOSINSKI:
+		case fileCompression::MODULED_KOSINSKI:
 			decompressed_length = kosinski::decode(srcfile, dstfile, Pointer, true, 16u);
 			break;
-		case NEMESIS:
+		case fileCompression::NEMESIS:
 			decompressed_length = nemesis::decode(srcfile, dstfile, Pointer, 0);
 			break;
-		case KID_CHAMELEON:
+		case fileCompression::KID_CHAMELEON:
 			decompressed_length = KidDec(srcfile, dstfile, Pointer);
 			break;
-		case COMPER:
+		case fileCompression::COMPER:
 			decompressed_length = comper::decode(srcfile, dstfile, Pointer);
 			break;
-		case SAXMAN:
+		case fileCompression::SAXMAN:
 			decompressed_length = saxman::decode(srcfile, dstfile, Pointer, 0);
 			break;
 	}
@@ -204,26 +204,26 @@ void ProjectData::CompressFile(const fileCompression compression, const char* co
 {
 	switch (compression)
 	{
-		case NONE:
+		case fileCompression::NONE:
 			remove(dstfile);
 			rename(srcfile, dstfile);
 			break;
-		case ENIGMA:
+		case fileCompression::ENIGMA:
 			enigma::encode(srcfile, dstfile, false);
 			break;
-		case KOSINSKI:
+		case fileCompression::KOSINSKI:
 			kosinski::encode(srcfile, dstfile, false, 0x1000, 16u);
 			break;
-		case MODULED_KOSINSKI:
+		case fileCompression::MODULED_KOSINSKI:
 			kosinski::encode(srcfile, dstfile, true, 0x1000, 16u);
 			break;
-		case NEMESIS:
+		case fileCompression::NEMESIS:
 			nemesis::encode(srcfile, dstfile);
 			break;
-		case COMPER:
+		case fileCompression::COMPER:
 			comper::encode(srcfile, dstfile);
 			break;
-		case SAXMAN:
+		case fileCompression::SAXMAN:
 			saxman::encode(srcfile, dstfile, false);
 			break;
 	}

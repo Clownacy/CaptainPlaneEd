@@ -1,7 +1,7 @@
 #pragma once
 
 // compression types
-typedef enum {
+enum class fileCompression{
 	NONE,
 	ENIGMA,
 	KOSINSKI,
@@ -12,7 +12,7 @@ typedef enum {
 	SAXMAN,
 	COMP_TYPE_AMOUNT,
 	INVALID
-} fileCompression;
+};
 
 struct stringToEnum
 {
@@ -20,5 +20,5 @@ struct stringToEnum
 	fileCompression compression;
 };
 
-int readComprType(char* string, struct stringToEnum*, int type_amount);
+fileCompression readComprType(char* string, struct stringToEnum*, int type_amount);
 char* trimString(char* string);

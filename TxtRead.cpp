@@ -4,13 +4,13 @@
 #include "TxtRead.h"
 
 // Returned value should be cast to enum
-int readComprType(char* string, struct stringToEnum* string_to_enum, int type_amount)
+fileCompression readComprType(char* string, struct stringToEnum* string_to_enum, int type_amount)
 {
 	for (int i=0; i < type_amount; ++i)
 		if (!strncmp(string, string_to_enum[i].string, strlen(string_to_enum[i].string)))
 			return string_to_enum[i].compression;
 
-	return INVALID;
+	return fileCompression::INVALID;
 }
 
 char* trimString(char* string)
