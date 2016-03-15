@@ -8,23 +8,23 @@ struct
 	const char* const string;
 	const infoType info_type;
 } infoTypes[(int)infoType::INFO_TYPE_AMOUNT] = {
-	{ "Palette File:", infoType::PALETTE_FILE },
-	{ "Mapping File:", infoType::MAPPING_FILE },
-	{ "Art File:", infoType::ART_FILE },
-	{ "Palette Offset:", infoType::PALETTE_OFFSET },
-	{ "Mapping Offset:", infoType::MAPPING_OFFSET },
-	{ "Art Offset:", infoType::ART_OFFSET },
-	{ "Palette Length:", infoType::PALETTE_LENGTH },
-	{ "Mapping Length:", infoType::MAPPING_LENGTH },
-	{ "Art Length:", infoType::ART_LENGTH },
+	{ "Palette File:",        infoType::PALETTE_FILE },
+	{ "Mapping File:",        infoType::MAPPING_FILE },
+	{ "Art File:",            infoType::ART_FILE },
+	{ "Palette Offset:",      infoType::PALETTE_OFFSET },
+	{ "Mapping Offset:",      infoType::MAPPING_OFFSET },
+	{ "Art Offset:",          infoType::ART_OFFSET },
+	{ "Palette Length:",      infoType::PALETTE_LENGTH },
+	{ "Mapping Length:",      infoType::MAPPING_LENGTH },
+	{ "Art Length:",          infoType::ART_LENGTH },
 	{ "Mapping Compression:", infoType::MAPPING_COMPRESSION },
-	{ "Art Compression:", infoType::ART_COMPRESSION },
-	{ "x-Size:", infoType::X_SIZE },
-	{ "y-Size:", infoType::Y_SIZE },
-	{ "Tile Offset:", infoType::TILE_OFFSET },
-	{ "Letter Offset:", infoType::LETTER_OFFSET },
-	{ "Number Offset:", infoType::NUMBER_OFFSET },
-	{ "Save File:", infoType::SAVE_FILE }
+	{ "Art Compression:",     infoType::ART_COMPRESSION },
+	{ "x-Size:",              infoType::X_SIZE },
+	{ "y-Size:",              infoType::Y_SIZE },
+	{ "Tile Offset:",         infoType::TILE_OFFSET },
+	{ "Letter Offset:",       infoType::LETTER_OFFSET },
+	{ "Number Offset:",       infoType::NUMBER_OFFSET },
+	{ "Save File:",           infoType::SAVE_FILE }
 };
 
 struct
@@ -32,14 +32,14 @@ struct
 	const char* const string;
 	const comprType compression;
 } comprTypes[(int)comprType::COMP_TYPE_AMOUNT] = {
-	{ "None", comprType::NONE },
-	{ "Enigma", comprType::ENIGMA },
-	{ "Kosinski", comprType::KOSINSKI },
+	{ "None",             comprType::NONE },
+	{ "Enigma",           comprType::ENIGMA },
+	{ "Kosinski",         comprType::KOSINSKI },
 	{ "Moduled Kosinski", comprType::MODULED_KOSINSKI },
-	{ "Nemesis", comprType::NEMESIS },
-	{ "Kid Chameleon", comprType::KID_CHAMELEON },
-	{ "Comper", comprType::COMPER },
-	{ "Saxman", comprType::SAXMAN }
+	{ "Nemesis",          comprType::NEMESIS },
+	{ "Kid Chameleon",    comprType::KID_CHAMELEON },
+	{ "Comper",           comprType::COMPER },
+	{ "Saxman",           comprType::SAXMAN }
 };
 
 infoType readInfoType(const char* const string)
@@ -47,7 +47,7 @@ infoType readInfoType(const char* const string)
 	for (int i=0; i < (int)infoType::INFO_TYPE_AMOUNT; ++i)
 		if (!strncmp(string, infoTypes[i].string, strlen(infoTypes[i].string)))
 			return infoTypes[i].info_type;
-	
+
 	return infoType::INVALID;
 }
 
@@ -73,6 +73,6 @@ char* trimString(char* string)
 		string[i] = '\0';
 		--i;
 	}
-       
+
 	return string;
 }
