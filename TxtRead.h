@@ -14,11 +14,5 @@ enum class fileCompression{
 	INVALID
 };
 
-struct stringToEnum
-{
-	const char* const string;
-	fileCompression compression;
-};
-
-fileCompression readComprType(char* string, struct stringToEnum*, int type_amount);
+fileCompression readComprType(char* string);
 char* trimString(char* string);

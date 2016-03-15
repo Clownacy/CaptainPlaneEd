@@ -41,17 +41,6 @@ char infoTypes[][32] = {
     "Save File:"
 };
 
-struct stringToEnum comprTypes[(int)fileCompression::COMP_TYPE_AMOUNT] = {
-	{ "None", fileCompression::NONE },
-	{ "Enigma", fileCompression::ENIGMA },
-	{ "Kosinski", fileCompression::KOSINSKI },
-	{ "Moduled Kosinski", fileCompression::MODULED_KOSINSKI },
-	{ "Nemesis", fileCompression::NEMESIS },
-	{ "Kid Chameleon", fileCompression::KID_CHAMELEON },
-	{ "Comper", fileCompression::COMPER },
-	{ "Saxman", fileCompression::SAXMAN }
-};
-
 ProjectData::ProjectData(const char* const prjtxt) {
     palOffset = mapOffset = artOffset = 0;
     palLength = mapLength = artLength = 0;
@@ -88,8 +77,8 @@ void ProjectData::AssignInfo(const int type, char* content) {
         case  6: palLength = strtol(content, NULL, 0); break;
         case  7: mapLength = strtol(content, NULL, 0); break;
         case  8: artLength = strtol(content, NULL, 0); break;
-        case  9: mapCompr = readComprType(trimString(content), comprTypes, (int)fileCompression::COMP_TYPE_AMOUNT); break;
-        case 10: artCompr = readComprType(trimString(content), comprTypes, (int)fileCompression::COMP_TYPE_AMOUNT); break;
+        case  9: mapCompr = readComprType(trimString(content)); break;
+        case 10: artCompr = readComprType(trimString(content)); break;
         case 11: xSize = strtol(content, NULL, 0); break;
         case 12: ySize = strtol(content, NULL, 0); break;
         case 13: tileOffset = strtol(content, NULL, 0); break;
