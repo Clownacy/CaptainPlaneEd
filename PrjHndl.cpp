@@ -21,26 +21,6 @@ using namespace std;
 
 #define TYPE_AMOUNT sizeof(infoTypes)/32
 
-char infoTypes[][32] = {
-    "Palette File:",
-    "Mapping File:",
-    "Art File:",
-    "Palette Offset:",
-    "Mapping Offset:",
-    "Art Offset:",
-    "Palette Length:",
-    "Mapping Length:",
-    "Art Length:",
-    "Mapping Compression:",
-    "Art Compression:",
-    "x-Size:",
-    "y-Size:",
-    "Tile Offset:",
-    "Letter Offset:",
-    "Number Offset:",
-    "Save File:"
-};
-
 ProjectData::ProjectData(const char* const prjtxt) {
     palOffset = mapOffset = artOffset = 0;
     palLength = mapLength = artLength = 0;
@@ -59,32 +39,65 @@ ProjectData::ProjectData(const char* const prjtxt) {
     while (!feof(prjfile)) {
         char line[256];
         fgets(line, 256, prjfile);
-        for (int type=0; type < TYPE_AMOUNT; ++type) {
-            if (!strncmp(line, infoTypes[type], strlen(infoTypes[type])))
-		    AssignInfo(type, line+strlen(infoTypes[type]));
-        }
+	infoType info_type = readInfoType(line);
+	if (info_type != infoType::INVALID)
+		AssignInfo(info_type, getProjectInfo(line));
     }
 }
 
-void ProjectData::AssignInfo(const int type, char* content) {
+void ProjectData::AssignInfo(const infoType type, char* content) {
     switch(type) {
-        case  0: strcpy(palName, trimString(content)); break;
-        case  1: strcpy(mapName, trimString(content)); break;
-        case  2: strcpy(artName, trimString(content)); break;
-        case  3: palOffset = strtol(content, NULL, 0); break;
-        case  4: mapOffset = strtol(content, NULL, 0); break;
-        case  5: artOffset = strtol(content, NULL, 0); break;
-        case  6: palLength = strtol(content, NULL, 0); break;
-        case  7: mapLength = strtol(content, NULL, 0); break;
-        case  8: artLength = strtol(content, NULL, 0); break;
-        case  9: mapCompr = readComprType(trimString(content)); break;
-        case 10: artCompr = readComprType(trimString(content)); break;
-        case 11: xSize = strtol(content, NULL, 0); break;
-        case 12: ySize = strtol(content, NULL, 0); break;
-        case 13: tileOffset = strtol(content, NULL, 0); break;
-        case 14: letterOffset = strtol(content, NULL, 0); break;
-        case 15: numberOffset = strtol(content, NULL, 0); break;
-        case 16: strcpy(saveName, trimString(content)); break;
+        case infoType::PALETTE_FILE:
+		strcpy(palName, trimString(content));
+		break;
+        case infoType::MAPPING_FILE:
+		strcpy(mapName, trimString(content));
+		break;
+        case infoType::ART_FILE:
+		strcpy(artName, trimString(content));
+		break;
+        case infoType::PALETTE_OFFSET:
+		palOffset = strtol(content, NULL, 0);
+		break;
+        case infoType::MAPPING_OFFSET:
+		mapOffset = strtol(content, NULL, 0);
+		break;
+        case infoType::ART_OFFSET:
+		artOffset = strtol(content, NULL, 0);
+		break;
+        case infoType::PALETTE_LENGTH:
+		palLength = strtol(content, NULL, 0);
+		break;
+        case infoType::MAPPING_LENGTH:
+		mapLength = strtol(content, NULL, 0);
+		break;
+        case infoType::ART_LENGTH:
+		artLength = strtol(content, NULL, 0);
+		break;
+        case infoType::MAPPING_COMPRESSION:
+		mapCompr = readComprType(trimString(content));
+		break;
+        case infoType::ART_COMPRESSION:
+		artCompr = readComprType(trimString(content));
+		break;
+        case infoType::X_SIZE:
+		xSize = strtol(content, NULL, 0);
+		break;
+        case infoType::Y_SIZE:
+		ySize = strtol(content, NULL, 0);
+		break;
+        case infoType::TILE_OFFSET:
+		tileOffset = strtol(content, NULL, 0);
+		break;
+        case infoType::LETTER_OFFSET:
+		letterOffset = strtol(content, NULL, 0);
+		break;
+        case infoType::NUMBER_OFFSET:
+		numberOffset = strtol(content, NULL, 0);
+		break;
+        case infoType::SAVE_FILE:
+		strcpy(saveName, trimString(content));
+		break;
     }
 }
 

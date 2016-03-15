@@ -32,7 +32,7 @@ protected:
     fileCompression mapCompr;
     fileCompression artCompr;
 
-    void AssignInfo(const int type, char* content);
+    void AssignInfo(const infoType type, char* content);
     long DecompressFile(const fileCompression compression, const char* const srcfile, const char* const dstfile, const long Pointer, const int length);
     void CompressFile(const fileCompression compression, const char* const srcfile, const char* const dstfile);
 };
