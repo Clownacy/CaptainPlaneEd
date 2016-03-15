@@ -29,10 +29,10 @@ protected:
     int palLength;
     int mapLength;
     int artLength;
-    fileCompression mapCompr;
-    fileCompression artCompr;
+    comprType mapCompr;
+    comprType artCompr;
 
     void AssignInfo(const infoType type, char* content);
-    long DecompressFile(const fileCompression compression, const char* const srcfile, const char* const dstfile, const long Pointer, const int length);
-    void CompressFile(const fileCompression compression, const char* const srcfile, const char* const dstfile);
+    long DecompressFile(const comprType compression, const char* const srcfile, const char* const dstfile, const long Pointer, const int length);
+    void CompressFile(const comprType compression, const char* const srcfile, const char* const dstfile);
 };

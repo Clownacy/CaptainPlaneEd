@@ -30,16 +30,16 @@ struct
 struct
 {
 	const char* const string;
-	const fileCompression compression;
-} comprTypes[(int)fileCompression::COMP_TYPE_AMOUNT] = {
-	{ "None", fileCompression::NONE },
-	{ "Enigma", fileCompression::ENIGMA },
-	{ "Kosinski", fileCompression::KOSINSKI },
-	{ "Moduled Kosinski", fileCompression::MODULED_KOSINSKI },
-	{ "Nemesis", fileCompression::NEMESIS },
-	{ "Kid Chameleon", fileCompression::KID_CHAMELEON },
-	{ "Comper", fileCompression::COMPER },
-	{ "Saxman", fileCompression::SAXMAN }
+	const comprType compression;
+} comprTypes[(int)comprType::COMP_TYPE_AMOUNT] = {
+	{ "None", comprType::NONE },
+	{ "Enigma", comprType::ENIGMA },
+	{ "Kosinski", comprType::KOSINSKI },
+	{ "Moduled Kosinski", comprType::MODULED_KOSINSKI },
+	{ "Nemesis", comprType::NEMESIS },
+	{ "Kid Chameleon", comprType::KID_CHAMELEON },
+	{ "Comper", comprType::COMPER },
+	{ "Saxman", comprType::SAXMAN }
 };
 
 infoType readInfoType(char* string)
@@ -51,13 +51,13 @@ infoType readInfoType(char* string)
 	return infoType::INVALID;
 }
 
-fileCompression readComprType(char* string)
+comprType readComprType(char* string)
 {
-	for (int i=0; i < (int)fileCompression::COMP_TYPE_AMOUNT; ++i)
+	for (int i=0; i < (int)comprType::COMP_TYPE_AMOUNT; ++i)
 		if (!strncmp(string, comprTypes[i].string, strlen(comprTypes[i].string)))
 			return comprTypes[i].compression;
 
-	return fileCompression::INVALID;
+	return comprType::INVALID;
 }
 
 char* getProjectInfo(char* string)

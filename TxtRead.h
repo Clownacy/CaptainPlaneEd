@@ -23,7 +23,7 @@ enum class infoType {
 };
 
 // compression types
-enum class fileCompression {
+enum class comprType {
 	NONE,
 	ENIGMA,
 	KOSINSKI,
@@ -37,6 +37,6 @@ enum class fileCompression {
 };
 
 infoType readInfoType(char* string);
-fileCompression readComprType(char* string);
+comprType readComprType(char* string);
 char* getProjectInfo(char* string);
 char* trimString(char* string);

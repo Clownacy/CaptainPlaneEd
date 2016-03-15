@@ -24,7 +24,7 @@ using namespace std;
 ProjectData::ProjectData(const char* const prjtxt) {
     palOffset = mapOffset = artOffset = 0;
     palLength = mapLength = artLength = 0;
-                mapCompr =  artCompr = fileCompression::INVALID;
+                mapCompr =  artCompr = comprType::INVALID;
     xSize = ySize = 0;
     tileOffset = 0;
     letterOffset = 0; numberOffset = 0;
@@ -103,7 +103,7 @@ void ProjectData::AssignInfo(const infoType type, char* content) {
 
 void ProjectData::LoadArt(const char* const filename)
 {
-	if (artCompr == fileCompression::INVALID)
+	if (artCompr == comprType::INVALID)
 	{
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid art compression format. Should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Moduled Kosinski'\n'Nemesis'\n'Kid Chameleon'\n'Comper'\n'Saxman'", NULL);
 		exit(1);
@@ -120,7 +120,7 @@ void ProjectData::LoadArt(const char* const filename)
 }
 
 void ProjectData::LoadMap(const char* const filename) {
-    if (mapCompr == fileCompression::INVALID || mapCompr == fileCompression::KID_CHAMELEON) {
+    if (mapCompr == comprType::INVALID || mapCompr == comprType::KID_CHAMELEON) {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid map compression format. Should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Moduled Kosinski'\n'Nemesis'\n'Comper'\n'Saxman'", NULL);
         exit(1);
     }
@@ -168,33 +168,33 @@ void ProjectData::SaveMap(const char* filename) {
     CompressFile(mapCompr, filename, saveName);
 }
 
-long ProjectData::DecompressFile(const fileCompression compression, const char* const srcfile, const char* const dstfile, const long Pointer, const int length)
+long ProjectData::DecompressFile(const comprType compression, const char* const srcfile, const char* const dstfile, const long Pointer, const int length)
 {
 	int decompressed_length;
 	switch (compression)
 	{
-		case fileCompression::NONE:
+		case comprType::NONE:
 			decompressed_length = ReadPlain(srcfile, dstfile, Pointer, length);
 			break;
-		case fileCompression::ENIGMA:
+		case comprType::ENIGMA:
 			decompressed_length = enigma::decode(srcfile, dstfile, Pointer, false);
 			break;
-		case fileCompression::KOSINSKI:
+		case comprType::KOSINSKI:
 			decompressed_length = kosinski::decode(srcfile, dstfile, Pointer, false, 16u);
 			break;
-		case fileCompression::MODULED_KOSINSKI:
+		case comprType::MODULED_KOSINSKI:
 			decompressed_length = kosinski::decode(srcfile, dstfile, Pointer, true, 16u);
 			break;
-		case fileCompression::NEMESIS:
+		case comprType::NEMESIS:
 			decompressed_length = nemesis::decode(srcfile, dstfile, Pointer, 0);
 			break;
-		case fileCompression::KID_CHAMELEON:
+		case comprType::KID_CHAMELEON:
 			decompressed_length = KidDec(srcfile, dstfile, Pointer);
 			break;
-		case fileCompression::COMPER:
+		case comprType::COMPER:
 			decompressed_length = comper::decode(srcfile, dstfile, Pointer);
 			break;
-		case fileCompression::SAXMAN:
+		case comprType::SAXMAN:
 			decompressed_length = saxman::decode(srcfile, dstfile, Pointer, 0);
 			break;
 	}
@@ -202,30 +202,30 @@ long ProjectData::DecompressFile(const fileCompression compression, const char* 
 	return decompressed_length;
 }
 
-void ProjectData::CompressFile(const fileCompression compression, const char* const srcfile, const char* const dstfile)
+void ProjectData::CompressFile(const comprType compression, const char* const srcfile, const char* const dstfile)
 {
 	switch (compression)
 	{
-		case fileCompression::NONE:
+		case comprType::NONE:
 			remove(dstfile);
 			rename(srcfile, dstfile);
 			break;
-		case fileCompression::ENIGMA:
+		case comprType::ENIGMA:
 			enigma::encode(srcfile, dstfile, false);
 			break;
-		case fileCompression::KOSINSKI:
+		case comprType::KOSINSKI:
 			kosinski::encode(srcfile, dstfile, false, 0x1000, 16u);
 			break;
-		case fileCompression::MODULED_KOSINSKI:
+		case comprType::MODULED_KOSINSKI:
 			kosinski::encode(srcfile, dstfile, true, 0x1000, 16u);
 			break;
-		case fileCompression::NEMESIS:
+		case comprType::NEMESIS:
 			nemesis::encode(srcfile, dstfile);
 			break;
-		case fileCompression::COMPER:
+		case comprType::COMPER:
 			comper::encode(srcfile, dstfile);
 			break;
-		case fileCompression::SAXMAN:
+		case comprType::SAXMAN:
 			saxman::encode(srcfile, dstfile, false);
 			break;
 	}
