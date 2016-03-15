@@ -168,10 +168,10 @@ void ProjectData::SaveMap(const char* const filename) {
     CompressFile(mapCompr, filename, saveName);
 }
 
-long ProjectData::DecompressFile(const comprType compression, const char* const srcfile, const char* const dstfile, const long Pointer, const int length)
+long ProjectData::DecompressFile(const comprType compr_type, const char* const srcfile, const char* const dstfile, const long Pointer, const int length)
 {
 	int decompressed_length;
-	switch (compression)
+	switch (compr_type)
 	{
 		case comprType::NONE:
 			decompressed_length = ReadPlain(srcfile, dstfile, Pointer, length);
@@ -202,9 +202,9 @@ long ProjectData::DecompressFile(const comprType compression, const char* const 
 	return decompressed_length;
 }
 
-void ProjectData::CompressFile(const comprType compression, const char* const srcfile, const char* const dstfile)
+void ProjectData::CompressFile(const comprType compr_type, const char* const srcfile, const char* const dstfile)
 {
-	switch (compression)
+	switch (compr_type)
 	{
 		case comprType::NONE:
 			remove(dstfile);

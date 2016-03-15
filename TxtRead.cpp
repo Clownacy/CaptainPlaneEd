@@ -30,8 +30,8 @@ struct
 struct
 {
 	const char* const string;
-	const comprType compression;
-} comprTypes[(int)comprType::COMP_TYPE_AMOUNT] = {
+	const comprType compr_type;
+} comprTypes[(int)comprType::COMPR_TYPE_AMOUNT] = {
 	{ "None",             comprType::NONE },
 	{ "Enigma",           comprType::ENIGMA },
 	{ "Kosinski",         comprType::KOSINSKI },
@@ -53,9 +53,9 @@ infoType readInfoType(const char* const string)
 
 comprType readComprType(const char* const string)
 {
-	for (int i=0; i < (int)comprType::COMP_TYPE_AMOUNT; ++i)
+	for (int i=0; i < (int)comprType::COMPR_TYPE_AMOUNT; ++i)
 		if (!strncmp(string, comprTypes[i].string, strlen(comprTypes[i].string)))
-			return comprTypes[i].compression;
+			return comprTypes[i].compr_type;
 
 	return comprType::INVALID;
 }

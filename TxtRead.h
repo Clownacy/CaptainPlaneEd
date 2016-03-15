@@ -32,10 +32,10 @@ enum class comprType {
 	KID_CHAMELEON,
 	COMPER,
 	SAXMAN,
-	COMP_TYPE_AMOUNT,
+	COMPR_TYPE_AMOUNT,
 	INVALID
 };
 
-infoType readInfoType(char* string);
-comprType readComprType(char* string);
+infoType readInfoType(const char* const string);
+comprType readComprType(const char* const string);
 char* trimString(char* string);
