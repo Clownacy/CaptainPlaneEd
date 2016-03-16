@@ -10,7 +10,7 @@ public:
     int tileOffset;
     int letterOffset;
     int numberOffset;
-    
+
     int tileAmount;
 
     ProjectData(const char* const prjtxt);
@@ -18,7 +18,7 @@ public:
     void LoadMap(const char* const filename);
     void LoadPal(const char* const filename);
     void SaveMap(const char* const filename);
-protected:
+private:
     char palName[128];
     char mapName[128];
     char artName[128];
