@@ -33,3 +33,9 @@ public:
 
 	int Load(const char* const filename);
 };
+
+class ResourcePal : public Resource
+{
+public:
+	int Load(const char* const filename);
+};

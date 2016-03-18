@@ -14,6 +14,7 @@ public:
 
     ResourceArt art;
     ResourceMap map;
+    ResourcePal pal;
     ProjectData(const char* const prjtxt);
     void LoadPal(const char* const filename);
 private:

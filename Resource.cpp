@@ -151,3 +151,13 @@ int ResourceMap::Load(const char* const filename)
 			strcpy(saveName, FILE_MAP_DEFAULT); //write to default file
 	}
 }
+
+int ResourcePal::Load(const char* const filename)
+{
+	length = ReadPlain(name, filename, offset, length);
+	if (length < 0)
+	{
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Palette file not found. Are you sure the path is correct?", NULL);
+		exit(1);
+	}
+}

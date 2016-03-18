@@ -23,10 +23,8 @@ using namespace std;
 #define TYPE_AMOUNT sizeof(infoTypes)/32
 
 ProjectData::ProjectData(const char* const prjtxt) {
-    palOffset = 0;
-    palLength = 0;
     tileOffset = 0;
-    letterOffset = 0; numberOffset = 0;
+    letterOffset = numberOffset = 0;
 
     FILE* prjfile = fopen(prjtxt, "r");
     if (prjfile == NULL) {
@@ -46,7 +44,7 @@ ProjectData::ProjectData(const char* const prjtxt) {
 void ProjectData::AssignInfo(const infoType type, char* content) {
     switch(type) {
         case infoType::PALETTE_FILE:
-		strcpy(palName, trimString(content));
+		strcpy(pal.name, trimString(content));
 		break;
         case infoType::MAPPING_FILE:
 		strcpy(map.name, trimString(content));
@@ -55,7 +53,7 @@ void ProjectData::AssignInfo(const infoType type, char* content) {
 		strcpy(art.name, trimString(content));
 		break;
         case infoType::PALETTE_OFFSET:
-		palOffset = strtol(content, NULL, 0);
+		pal.offset = strtol(content, NULL, 0);
 		break;
         case infoType::MAPPING_OFFSET:
 		map.offset = strtol(content, NULL, 0);
@@ -64,7 +62,7 @@ void ProjectData::AssignInfo(const infoType type, char* content) {
 		art.offset = strtol(content, NULL, 0);
 		break;
         case infoType::PALETTE_LENGTH:
-		palLength = strtol(content, NULL, 0);
+		pal.length = strtol(content, NULL, 0);
 		break;
         case infoType::MAPPING_LENGTH:
 		map.length = strtol(content, NULL, 0);
@@ -96,14 +94,6 @@ void ProjectData::AssignInfo(const infoType type, char* content) {
         case infoType::SAVE_FILE:
 		strcpy(map.saveName, trimString(content));
 		break;
-    }
-}
-
-void ProjectData::LoadPal(const char* const filename) {
-    palLength = ReadPlain(palName, filename, palOffset, palLength);
-    if (palLength < 0) {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Palette file not found. Are you sure the path is correct?", NULL);
-        exit(1);
     }
 }
 
