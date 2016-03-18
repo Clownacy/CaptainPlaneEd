@@ -25,6 +25,8 @@ ProjectData::ProjectData(const char* const prjtxt) {
 	if (info_type != infoType::INVALID)
 		AssignInfo(info_type, line+strcspn(line, ":")+1);
     }
+
+    fclose(prjfile);
 }
 
 void ProjectData::AssignInfo(const infoType type, char* content) {
