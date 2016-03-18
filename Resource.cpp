@@ -14,12 +14,6 @@
 
 #define FILE_MAP_DEFAULT "MapDefault.bin"
 
-Resource::Resource(void)
-{
-	offset = length = 0;
-	compression = comprType::INVALID;
-}
-
 void Resource::Save(const char* const filename, const char* const dstfilename) {
     CompressFile(compression, filename, dstfilename);
 }

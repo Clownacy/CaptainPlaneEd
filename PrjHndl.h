@@ -10,8 +10,6 @@ public:
     int letterOffset;
     int numberOffset;
 
-    int tileAmount;
-
     ResourceArt art;
     ResourceMap map;
     ResourcePal pal;

@@ -5,12 +5,11 @@
 class Resource
 {
 public:
-	char name[128];
-	int offset;
-	int length;
-	comprType compression;
+	char name[128] = "";
+	int offset = 0;
+	int length = 0;
+	comprType compression = comprType::INVALID;
 
-	Resource(void);
 	virtual void Load(const char* const filename) = 0;
 	void Save(const char* const filename, const char* const dstfilename);
 
@@ -22,7 +21,7 @@ protected:
 class ResourceArt : public Resource
 {
 public:
-	int tileAmount;
+	int tileAmount = 0;
 
 	void Load(const char* const filename);
 };
@@ -30,8 +29,8 @@ public:
 class ResourceMap : public Resource
 {
 public:
-	int xSize;
-	int ySize;
+	int xSize = 0;
+	int ySize = 0;
 	char saveName[128] = "";
 
 	void Load(const char* const filename);
