@@ -17,12 +17,13 @@ int main(int argc, char *argv[])
 {
     ProjectData PrjData(argv[1]);
     PrjData.tileAmount = PrjData.art.Load(FILE_ART_TEMP);
+    PrjData.map.Load(FILE_MAP_TEMP);
   //  PrjData.LoadArt(FILE_ART_TEMP);
-    PrjData.LoadMap(FILE_MAP_TEMP);
+    //PrjData.LoadMap(FILE_MAP_TEMP);
     PrjData.LoadPal(FILE_PAL_TEMP);
 
-    Graphics GfxStuff(PrjData.xSize, PrjData.tileOffset, PrjData.tileAmount);
-    LevMap LevelMap(PrjData.xSize, PrjData.ySize, &GfxStuff);
+    Graphics GfxStuff(PrjData.map.xSize, PrjData.tileOffset, PrjData.tileAmount);
+    LevMap LevelMap(PrjData.map.xSize, PrjData.map.ySize, &GfxStuff);
 
     GfxStuff.ReadPalette(FILE_PAL_TEMP);
     GfxStuff.ReadTiles(FILE_ART_TEMP);
@@ -181,7 +182,7 @@ int main(int argc, char *argv[])
                         SelectionRect->SelDrawRect(); break;
                     case SDLK_F9:
                         LevelMap.SaveMap(FILE_MAP_TEMP);
-                        PrjData.SaveMap(FILE_MAP_TEMP);
+			PrjData.map.Save(FILE_MAP_TEMP, PrjData.map.saveName);
 			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Information", "Save complete.", NULL);
 			break;
                     case SDLK_F10: //redraw whole screen

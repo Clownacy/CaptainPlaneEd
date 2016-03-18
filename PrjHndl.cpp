@@ -23,13 +23,10 @@ using namespace std;
 #define TYPE_AMOUNT sizeof(infoTypes)/32
 
 ProjectData::ProjectData(const char* const prjtxt) {
-    palOffset = mapOffset = artOffset = 0;
-    palLength = mapLength = artLength = 0;
-                mapCompr =  artCompr = comprType::INVALID;
-    xSize = ySize = 0;
+    palOffset = 0;
+    palLength = 0;
     tileOffset = 0;
     letterOffset = 0; numberOffset = 0;
-    strcpy(saveName, "");
 
     FILE* prjfile = fopen(prjtxt, "r");
     if (prjfile == NULL) {
@@ -52,7 +49,7 @@ void ProjectData::AssignInfo(const infoType type, char* content) {
 		strcpy(palName, trimString(content));
 		break;
         case infoType::MAPPING_FILE:
-		strcpy(mapName, trimString(content));
+		strcpy(map.name, trimString(content));
 		break;
         case infoType::ART_FILE:
 		strcpy(art.name, trimString(content));
@@ -61,7 +58,7 @@ void ProjectData::AssignInfo(const infoType type, char* content) {
 		palOffset = strtol(content, NULL, 0);
 		break;
         case infoType::MAPPING_OFFSET:
-		mapOffset = strtol(content, NULL, 0);
+		map.offset = strtol(content, NULL, 0);
 		break;
         case infoType::ART_OFFSET:
 		art.offset = strtol(content, NULL, 0);
@@ -70,22 +67,22 @@ void ProjectData::AssignInfo(const infoType type, char* content) {
 		palLength = strtol(content, NULL, 0);
 		break;
         case infoType::MAPPING_LENGTH:
-		mapLength = strtol(content, NULL, 0);
+		map.length = strtol(content, NULL, 0);
 		break;
         case infoType::ART_LENGTH:
 		art.length = strtol(content, NULL, 0);
 		break;
         case infoType::MAPPING_COMPRESSION:
-		mapCompr = readComprType(trimString(content));
+		map.compression = readComprType(trimString(content));
 		break;
         case infoType::ART_COMPRESSION:
 		art.compression = readComprType(trimString(content));
 		break;
         case infoType::X_SIZE:
-		xSize = strtol(content, NULL, 0);
+		map.xSize = strtol(content, NULL, 0);
 		break;
         case infoType::Y_SIZE:
-		ySize = strtol(content, NULL, 0);
+		map.ySize = strtol(content, NULL, 0);
 		break;
         case infoType::TILE_OFFSET:
 		tileOffset = strtol(content, NULL, 0);
@@ -97,63 +94,8 @@ void ProjectData::AssignInfo(const infoType type, char* content) {
 		numberOffset = strtol(content, NULL, 0);
 		break;
         case infoType::SAVE_FILE:
-		strcpy(saveName, trimString(content));
+		strcpy(map.saveName, trimString(content));
 		break;
-    }
-}
-
-void ProjectData::LoadArt(const char* const filename)
-{
-	if (artCompr == comprType::INVALID)
-	{
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid art compression format. Should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Moduled Kosinski'\n'Nemesis'\n'Kid Chameleon'\n'Comper'\n'Saxman'", NULL);
-		exit(1);
-	}
-
-	artLength = DecompressFile(artCompr, artName, filename, artOffset, artLength);
-
-	if (artLength < 0)
-	{
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not decompress art file. Are you sure the compression is correct?", NULL);
-		exit(1);
-	}
-	tileAmount = artLength/0x20;
-}
-
-void ProjectData::LoadMap(const char* const filename) {
-    if (mapCompr == comprType::INVALID || mapCompr == comprType::KID_CHAMELEON) {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid map compression format. Should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Moduled Kosinski'\n'Nemesis'\n'Comper'\n'Saxman'", NULL);
-        exit(1);
-    }
-
-    mapLength = DecompressFile(mapCompr, mapName, filename, mapOffset, mapLength);
-
-    FILE* mapfile = fopen(filename, "r+b");
-
-    if (mapLength < 0) {
-        //file could not be decompressed or found
-        mapLength = 2*xSize*ySize;
-        if (!CheckCreateBlankFile(mapName, mapfile, mapOffset, mapLength)) {
-            //file is existant but could not be decompressed
-            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not decompress map file. Are you sure the compression is correct?", NULL);
-            exit(1);
-        } else {
-            //file non-existant, blank template created
-            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Information", "No map file found, created blank template.", NULL);
-        }
-    }
-
-    fclose(mapfile);
-
-    if (mapLength < 2*xSize*ySize) {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Warning", "Specified size exceeds map size.\nField has been trimmed vertically.", NULL);
-        ySize = (mapLength/xSize) / 2;
-        if (ySize == 0) exit(1);
-    }
-    
-    if (strlen(saveName) == 0) {
-        if (mapOffset == 0) strcpy(saveName, mapName); //overwrite existing map
-        else strcpy(saveName, FILE_MAP_DEFAULT); //write to default file
     }
 }
 
@@ -163,10 +105,6 @@ void ProjectData::LoadPal(const char* const filename) {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Palette file not found. Are you sure the path is correct?", NULL);
         exit(1);
     }
-}
-
-void ProjectData::SaveMap(const char* const filename) {
-    CompressFile(mapCompr, filename, saveName);
 }
 
 long ProjectData::DecompressFile(const comprType compr_type, const char* const srcfile, const char* const dstfile, const long Pointer, const int length)

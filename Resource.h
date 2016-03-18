@@ -23,3 +23,13 @@ class ResourceArt : public Resource
 public:
 	int Load(const char* const filename);
 };
+
+class ResourceMap : public Resource
+{
+public:
+	int xSize;
+	int ySize;
+	char saveName[128] = "";
+
+	int Load(const char* const filename);
+};

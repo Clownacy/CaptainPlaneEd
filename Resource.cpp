@@ -12,6 +12,8 @@
 #include "FW_KENSC/nemesis.h"
 #include "FW_KENSC/saxman.h"
 
+#define FILE_MAP_DEFAULT "MapDefault.bin"
+
 Resource::Resource(void)
 {
 	offset = length = 0;
@@ -101,4 +103,51 @@ int ResourceArt::Load(const char* const filename)
 		exit(1);
 	}
 	return length/0x20;
+}
+
+int ResourceMap::Load(const char* const filename)
+{
+	if (compression == comprType::INVALID || compression == comprType::KID_CHAMELEON)
+	{
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid map compression format. Should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Moduled Kosinski'\n'Nemesis'\n'Comper'\n'Saxman'", NULL);
+		exit(1);
+	}
+
+	length = DecompressFile(compression, name, filename, offset, length);
+
+	FILE* mapfile = fopen(filename, "r+b");
+
+	if (length < 0) {
+		//file could not be decompressed or found
+		length = 2*xSize*ySize;
+		if (!CheckCreateBlankFile(name, mapfile, offset, length))
+		{
+			//file is existant but could not be decompressed
+			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not decompress map file. Are you sure the compression is correct?", NULL);
+			exit(1);
+		}
+		else
+		{
+			//file non-existant, blank template created
+			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Information", "No map file found, created blank template.", NULL);
+		}
+	}
+
+	fclose(mapfile);
+
+	if (length < 2*xSize*ySize)
+	{
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Warning", "Specified size exceeds map size.\nField has been trimmed vertically.", NULL);
+		ySize = (length/xSize) / 2;
+		if (ySize == 0)
+			exit(1);
+	}
+    
+	if (strlen(saveName) == 0)
+	{
+		if (offset == 0)
+			strcpy(saveName, name); //overwrite existing map
+		else
+			strcpy(saveName, FILE_MAP_DEFAULT); //write to default file
+	}
 }
