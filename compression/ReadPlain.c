@@ -8,13 +8,13 @@ extern "C" {
 long ReadPlain(const char* const srcfile, const char* const dstfile, const long Pointer, int length)
 {
     FILE* src = fopen(srcfile, "rb");
-    FILE* dst = fopen(dstfile, "w+b");
-    if (src == NULL || dst == NULL)
+    if (src == NULL)
+        return -1;
+
+    FILE* dst = fopen(dstfile, "wb");
+    if (dst == NULL)
     {
-        if (src != NULL)
-            fclose(src);
-        if (dst != NULL)
-            fclose(dst);
+        fclose(src);
         return -1;
     }
 

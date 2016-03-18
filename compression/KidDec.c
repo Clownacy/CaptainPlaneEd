@@ -26,14 +26,14 @@ unsigned short output_pos;
 
 long KidDec(const char* const srcfile, const char* const dstfile, const long Pointer) {
     FILE* rom = fopen(srcfile, "rb");
+    if (rom == NULL)
+	return -1;
+
     FILE* dst = fopen(dstfile, "w+b");
-    if (rom == NULL || dst == NULL)
+    if (dst == NULL)
     {
-        if (rom != NULL)
-            fclose(rom);
-        if (dst != NULL)
-            fclose(dst);
-        return -1;
+        fclose(rom);
+	return -1;
     }
 
     int offset = Pointer;
