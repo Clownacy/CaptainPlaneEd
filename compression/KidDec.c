@@ -14,17 +14,17 @@ extern "C" {
 #include <stdio.h>
 #include <stdlib.h>
 
-int swap_endian(unsigned int in, char size);
-int Decompress(int address_data, unsigned short size, FILE* rom);
-int ReadData();
-void WriteData(unsigned char var);
-int SeekData(int pos, signed char seek);
+int swap_endian(const unsigned int in, const char size);
+int Decompress(const int address_data, const unsigned short size, FILE* rom);
+int ReadData(void);
+void WriteData(const unsigned char var);
+int SeekData(const int pos, const signed char seek);
 
 unsigned char *output_data;
 unsigned short output_size;
 unsigned short output_pos;
 
-long KidDec(const char* const srcfile, const char* const dstfile, long Pointer) {
+long KidDec(const char* const srcfile, const char* const dstfile, const long Pointer) {
     FILE* rom = fopen(srcfile, "rb");
     FILE* dst = fopen(dstfile, "w+b");
     if (rom == NULL || dst == NULL)
@@ -54,7 +54,7 @@ long KidDec(const char* const srcfile, const char* const dstfile, long Pointer) 
     return size;
 }
 
-int Decompress(int address_data, unsigned short size, FILE* rom)
+int Decompress(const int address_data, const unsigned short size, FILE* rom)
 {
 	//int compressed_data_start;
 	//int compressed_data_size;
@@ -265,7 +265,7 @@ int Decompress(int address_data, unsigned short size, FILE* rom)
 	return unit;
 }
 
-int swap_endian(unsigned int in, char size){
+int swap_endian(const unsigned int in, const char size){
 	unsigned int out;
 	
 	switch(size){
@@ -280,7 +280,7 @@ int swap_endian(unsigned int in, char size){
 	return out;
 }
 
-int ReadData(){
+int ReadData(void){
 	if (output_pos >= output_size)
 		return 0;
 	
@@ -288,7 +288,7 @@ int ReadData(){
 	return output_data[output_pos-1];
 }
 
-void WriteData(unsigned char var){
+void WriteData(const unsigned char var){
 	if (output_pos >= output_size){
 		output_size++;
 		output_data = (unsigned char*)realloc(output_data, output_size);
@@ -297,7 +297,7 @@ void WriteData(unsigned char var){
 	output_pos++;
 }
 
-int SeekData(int pos, signed char seek){
+int SeekData(const int pos, const signed char seek){
 	switch(seek){
 		case SEEK_CUR:
 			output_pos += pos;

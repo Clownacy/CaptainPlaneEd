@@ -5,7 +5,7 @@ extern "C" {
 #include <stdio.h>
 #include <stdlib.h>
 
-long ReadPlain(const char* const srcfile, const char* const dstfile, long Pointer, int length)
+long ReadPlain(const char* const srcfile, const char* const dstfile, const long Pointer, int length)
 {
     FILE* src = fopen(srcfile, "rb");
     FILE* dst = fopen(dstfile, "w+b");
@@ -43,7 +43,7 @@ long ReadPlain(const char* const srcfile, const char* const dstfile, long Pointe
     return length;
 }
 
-bool CheckCreateBlankFile(char *srcfile, FILE* dst, long Pointer, int length)
+bool CheckCreateBlankFile(char *srcfile, FILE* dst, const long Pointer, const int length)
 {
     FILE* src = fopen(srcfile, "rb");
     if (src != NULL) {
