@@ -27,7 +27,14 @@ unsigned short output_pos;
 long KidDec(const char* const srcfile, const char* const dstfile, long Pointer) {
     FILE* rom = fopen(srcfile, "rb");
     FILE* dst = fopen(dstfile, "w+b");
-    if (rom == NULL || dst == NULL) return -1;
+    if (rom == NULL || dst == NULL)
+    {
+        if (rom != NULL)
+            fclose(rom);
+        if (dst != NULL)
+            fclose(dst);
+        return -1;
+    }
 
     int offset = Pointer;
 
@@ -49,13 +56,13 @@ long KidDec(const char* const srcfile, const char* const dstfile, long Pointer) 
 
 int Decompress(int address_data, unsigned short size, FILE* rom)
 {
-	int compressed_data_start;
-	int compressed_data_size;
+	//int compressed_data_start;
+	//int compressed_data_size;
 	int address_input_data;
 	int address_stop;
 	int address_key_data;
-	unsigned char *input_data;		// compressed level data
-	unsigned char *key_data;		// store all the individual 1's and 0's of key data
+	//unsigned char *input_data;		// compressed level data
+	//unsigned char *key_data;		// store all the individual 1's and 0's of key data
 	unsigned short in1;	// input byte
 	unsigned short in2;	// extra input byte for long references
 	unsigned short in3;
@@ -67,7 +74,7 @@ int Decompress(int address_data, unsigned short size, FILE* rom)
 	bool terminate;
 	
 	fseek(rom, address_data, SEEK_SET);
-	compressed_data_start = ftell(rom);
+	//compressed_data_start = ftell(rom);
 	fread(&address_input_data, 2, 1, rom);
 	address_input_data = swap_endian(address_input_data, 2) + address_data + 2;
 	address_stop = address_input_data;
@@ -247,13 +254,13 @@ int Decompress(int address_data, unsigned short size, FILE* rom)
 	//output_data = realloc(output_data, size);
 	//output_size = size;
 	
-	compressed_data_size = address_input_data - compressed_data_start;
+	//compressed_data_size = address_input_data - compressed_data_start;
 	/*printf("  COMPRESSED DATA SIZE:   %i bytes\n", compressed_data_size);
 	printf("  DECOMPRESSED DATA SIZE: %i bytes\n", unit);
 	printf("  RATIO:                  %3.01f %c\n", (1 - (float)compressed_data_size/(float)unit) * 100, '%');
 	printf("\n");*/
 	//system("PAUSE");
-	free(key_data);
+	//free(key_data);
 	
 	return unit;
 }
