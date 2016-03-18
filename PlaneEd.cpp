@@ -16,14 +16,11 @@ const char* const FILE_PAL_TEMP = "temppal.bin";
 int main(int argc, char *argv[])
 {
     ProjectData PrjData(argv[1]);
-    PrjData.tileAmount = PrjData.art.Load(FILE_ART_TEMP);
+    PrjData.art.Load(FILE_ART_TEMP);
     PrjData.map.Load(FILE_MAP_TEMP);
     PrjData.pal.Load(FILE_PAL_TEMP);
-  //  PrjData.LoadArt(FILE_ART_TEMP);
-    //PrjData.LoadMap(FILE_MAP_TEMP);
-    //PrjData.LoadPal(FILE_PAL_TEMP);
 
-    Graphics GfxStuff(PrjData.map.xSize, PrjData.tileOffset, PrjData.tileAmount);
+    Graphics GfxStuff(PrjData.map.xSize, PrjData.tileOffset, PrjData.art.tileAmount);
     LevMap LevelMap(PrjData.map.xSize, PrjData.map.ySize, &GfxStuff);
 
     GfxStuff.ReadPalette(FILE_PAL_TEMP);

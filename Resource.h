@@ -11,8 +11,9 @@ public:
 	comprType compression;
 
 	Resource(void);
-	virtual int Load(const char* const filename) = 0;
+	virtual void Load(const char* const filename) = 0;
 	void Save(const char* const filename, const char* const dstfilename);
+
 protected:
 	long DecompressFile(const comprType compr_type, const char* const srcfile, const char* const dstfile, const long Pointer, const int length);
 	void CompressFile(const comprType compr_type, const char* const srcfile, const char* const dstfile);
@@ -21,7 +22,9 @@ protected:
 class ResourceArt : public Resource
 {
 public:
-	int Load(const char* const filename);
+	int tileAmount;
+
+	void Load(const char* const filename);
 };
 
 class ResourceMap : public Resource
@@ -31,11 +34,11 @@ public:
 	int ySize;
 	char saveName[128] = "";
 
-	int Load(const char* const filename);
+	void Load(const char* const filename);
 };
 
 class ResourcePal : public Resource
 {
 public:
-	int Load(const char* const filename);
+	void Load(const char* const filename);
 };

@@ -87,7 +87,7 @@ void Resource::CompressFile(const comprType compr_type, const char* const srcfil
 	}
 }
 
-int ResourceArt::Load(const char* const filename)
+void ResourceArt::Load(const char* const filename)
 {
 	if (compression == comprType::INVALID)
 	{
@@ -102,10 +102,10 @@ int ResourceArt::Load(const char* const filename)
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not decompress art file. Are you sure the compression is correct?", NULL);
 		exit(1);
 	}
-	return length/0x20;
+	tileAmount = length/0x20;
 }
 
-int ResourceMap::Load(const char* const filename)
+void ResourceMap::Load(const char* const filename)
 {
 	if (compression == comprType::INVALID || compression == comprType::KID_CHAMELEON)
 	{
@@ -152,7 +152,7 @@ int ResourceMap::Load(const char* const filename)
 	}
 }
 
-int ResourcePal::Load(const char* const filename)
+void ResourcePal::Load(const char* const filename)
 {
 	length = ReadPlain(name, filename, offset, length);
 	if (length < 0)

@@ -16,12 +16,6 @@
 #include "FW_KENSC/nemesis.h"
 #include "FW_KENSC/saxman.h"
 
-using namespace std;
-
-#define FILE_MAP_DEFAULT "MapDefault.bin"
-
-#define TYPE_AMOUNT sizeof(infoTypes)/32
-
 ProjectData::ProjectData(const char* const prjtxt) {
     tileOffset = 0;
     letterOffset = numberOffset = 0;
@@ -95,67 +89,4 @@ void ProjectData::AssignInfo(const infoType type, char* content) {
 		strcpy(map.saveName, trimString(content));
 		break;
     }
-}
-
-long ProjectData::DecompressFile(const comprType compr_type, const char* const srcfile, const char* const dstfile, const long Pointer, const int length)
-{
-	int decompressed_length;
-	switch (compr_type)
-	{
-		case comprType::NONE:
-			decompressed_length = ReadPlain(srcfile, dstfile, Pointer, length);
-			break;
-		case comprType::ENIGMA:
-			decompressed_length = enigma::decode(srcfile, dstfile, Pointer, false);
-			break;
-		case comprType::KOSINSKI:
-			decompressed_length = kosinski::decode(srcfile, dstfile, Pointer, false, 16u);
-			break;
-		case comprType::MODULED_KOSINSKI:
-			decompressed_length = kosinski::decode(srcfile, dstfile, Pointer, true, 16u);
-			break;
-		case comprType::NEMESIS:
-			decompressed_length = nemesis::decode(srcfile, dstfile, Pointer, 0);
-			break;
-		case comprType::KID_CHAMELEON:
-			decompressed_length = KidDec(srcfile, dstfile, Pointer);
-			break;
-		case comprType::COMPER:
-			decompressed_length = comper::decode(srcfile, dstfile, Pointer);
-			break;
-		case comprType::SAXMAN:
-			decompressed_length = saxman::decode(srcfile, dstfile, Pointer, 0);
-			break;
-	}
-
-	return decompressed_length;
-}
-
-void ProjectData::CompressFile(const comprType compr_type, const char* const srcfile, const char* const dstfile)
-{
-	switch (compr_type)
-	{
-		case comprType::NONE:
-			remove(dstfile);
-			rename(srcfile, dstfile);
-			break;
-		case comprType::ENIGMA:
-			enigma::encode(srcfile, dstfile, false);
-			break;
-		case comprType::KOSINSKI:
-			kosinski::encode(srcfile, dstfile, false, 0x1000, 16u);
-			break;
-		case comprType::MODULED_KOSINSKI:
-			kosinski::encode(srcfile, dstfile, true, 0x1000, 16u);
-			break;
-		case comprType::NEMESIS:
-			nemesis::encode(srcfile, dstfile);
-			break;
-		case comprType::COMPER:
-			comper::encode(srcfile, dstfile);
-			break;
-		case comprType::SAXMAN:
-			saxman::encode(srcfile, dstfile, false);
-			break;
-	}
 }
