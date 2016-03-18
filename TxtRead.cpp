@@ -25,7 +25,8 @@ struct
 	{ "Tile Offset:",         infoType::TILE_OFFSET },
 	{ "Letter Offset:",       infoType::LETTER_OFFSET },
 	{ "Number Offset:",       infoType::NUMBER_OFFSET },
-	{ "Save File:",           infoType::SAVE_FILE }
+	{ "Save File:",           infoType::SAVE_FILE },
+	{ "Kosinski Module Size:",infoType::KOSINSKI_MODULE_SIZE }
 };
 
 struct

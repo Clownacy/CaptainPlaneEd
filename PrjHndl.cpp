@@ -85,5 +85,8 @@ void ProjectData::AssignInfo(const infoType type, char* content) {
         case infoType::SAVE_FILE:
 		strcpy(map.saveName, trimString(content));
 		break;
+        case infoType::KOSINSKI_MODULE_SIZE:
+		art.kosinski_module_size = strtol(content, NULL, 0);
+		break;
     }
 }

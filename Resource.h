@@ -9,6 +9,7 @@ public:
 	int offset = 0;
 	int length = 0;
 	comprType compression = comprType::INVALID;
+	int kosinski_module_size = 0x1000;
 
 	virtual void Load(const char* const filename) = 0;
 	void Save(const char* const filename, const char* const dstfilename);

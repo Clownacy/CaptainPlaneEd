@@ -64,10 +64,10 @@ void Resource::CompressFile(const comprType compr_type, const char* const srcfil
 			enigma::encode(srcfile, dstfile, false);
 			break;
 		case comprType::KOSINSKI:
-			kosinski::encode(srcfile, dstfile, false, 0x1000, 16u);
+			kosinski::encode(srcfile, dstfile, false, kosinski_module_size, 16u);
 			break;
 		case comprType::MODULED_KOSINSKI:
-			kosinski::encode(srcfile, dstfile, true, 0x1000, 16u);
+			kosinski::encode(srcfile, dstfile, true, kosinski_module_size, 16u);
 			break;
 		case comprType::NEMESIS:
 			nemesis::encode(srcfile, dstfile);
