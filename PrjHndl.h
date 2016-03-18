@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TxtRead.h"
+#include "Resource.h"
 
 class ProjectData
 {
@@ -13,6 +14,9 @@ public:
 
     int tileAmount;
 
+    char saveName[128];
+
+    ResourceArt art;
     ProjectData(const char* const prjtxt);
     void LoadArt(const char* const filename);
     void LoadMap(const char* const filename);
@@ -22,7 +26,6 @@ private:
     char palName[128];
     char mapName[128];
     char artName[128];
-    char saveName[128];
     int palOffset;
     int mapOffset;
     int artOffset;

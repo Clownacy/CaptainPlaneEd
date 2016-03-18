@@ -7,6 +7,7 @@
 #include "Graphics.h"
 #include "SelRect.h"
 #include "PrjHndl.h"
+#include "Resource.h"
 
 const char* const FILE_MAP_TEMP = "tempmap.bin";
 const char* const FILE_ART_TEMP = "tempart.bin";
@@ -15,7 +16,8 @@ const char* const FILE_PAL_TEMP = "temppal.bin";
 int main(int argc, char *argv[])
 {
     ProjectData PrjData(argv[1]);
-    PrjData.LoadArt(FILE_ART_TEMP);
+    PrjData.tileAmount = PrjData.art.Load(FILE_ART_TEMP);
+  //  PrjData.LoadArt(FILE_ART_TEMP);
     PrjData.LoadMap(FILE_MAP_TEMP);
     PrjData.LoadPal(FILE_PAL_TEMP);
 

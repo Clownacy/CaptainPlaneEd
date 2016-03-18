@@ -6,6 +6,7 @@
 
 #include "PrjHndl.h"
 #include "TxtRead.h"
+#include "Resource.h"
 
 #include "compression/KidDec.h"
 #include "compression/ReadPlain.h"
@@ -54,7 +55,7 @@ void ProjectData::AssignInfo(const infoType type, char* content) {
 		strcpy(mapName, trimString(content));
 		break;
         case infoType::ART_FILE:
-		strcpy(artName, trimString(content));
+		strcpy(art.name, trimString(content));
 		break;
         case infoType::PALETTE_OFFSET:
 		palOffset = strtol(content, NULL, 0);
@@ -63,7 +64,7 @@ void ProjectData::AssignInfo(const infoType type, char* content) {
 		mapOffset = strtol(content, NULL, 0);
 		break;
         case infoType::ART_OFFSET:
-		artOffset = strtol(content, NULL, 0);
+		art.offset = strtol(content, NULL, 0);
 		break;
         case infoType::PALETTE_LENGTH:
 		palLength = strtol(content, NULL, 0);
@@ -72,13 +73,13 @@ void ProjectData::AssignInfo(const infoType type, char* content) {
 		mapLength = strtol(content, NULL, 0);
 		break;
         case infoType::ART_LENGTH:
-		artLength = strtol(content, NULL, 0);
+		art.length = strtol(content, NULL, 0);
 		break;
         case infoType::MAPPING_COMPRESSION:
 		mapCompr = readComprType(trimString(content));
 		break;
         case infoType::ART_COMPRESSION:
-		artCompr = readComprType(trimString(content));
+		art.compression = readComprType(trimString(content));
 		break;
         case infoType::X_SIZE:
 		xSize = strtol(content, NULL, 0);
