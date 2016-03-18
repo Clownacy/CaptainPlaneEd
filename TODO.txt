@@ -1,1 +1,0 @@
-Use classes to split almost identical LoadMap/LoadPal/LoadArt into something more modular
