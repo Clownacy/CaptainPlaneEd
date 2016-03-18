@@ -17,6 +17,7 @@ struct
 	{ "Palette Length:",      infoType::PALETTE_LENGTH },
 	{ "Mapping Length:",      infoType::MAPPING_LENGTH },
 	{ "Art Length:",          infoType::ART_LENGTH },
+	{ "Palette Compression:", infoType::PALETTE_COMPRESSION },
 	{ "Mapping Compression:", infoType::MAPPING_COMPRESSION },
 	{ "Art Compression:",     infoType::ART_COMPRESSION },
 	{ "x-Size:",              infoType::X_SIZE },

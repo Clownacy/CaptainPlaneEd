@@ -8,14 +8,6 @@
 #include "TxtRead.h"
 #include "Resource.h"
 
-#include "compression/KidDec.h"
-#include "compression/ReadPlain.h"
-#include "FW_KENSC/comper.h"
-#include "FW_KENSC/enigma.h"
-#include "FW_KENSC/kosinski.h"
-#include "FW_KENSC/nemesis.h"
-#include "FW_KENSC/saxman.h"
-
 ProjectData::ProjectData(const char* const prjtxt) {
     tileOffset = 0;
     letterOffset = numberOffset = 0;
@@ -63,6 +55,9 @@ void ProjectData::AssignInfo(const infoType type, char* content) {
 		break;
         case infoType::ART_LENGTH:
 		art.length = strtol(content, NULL, 0);
+		break;
+        case infoType::PALETTE_COMPRESSION:
+		pal.compression = readComprType(trimString(content));
 		break;
         case infoType::MAPPING_COMPRESSION:
 		map.compression = readComprType(trimString(content));

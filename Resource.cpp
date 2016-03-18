@@ -148,10 +148,17 @@ void ResourceMap::Load(const char* const filename)
 
 void ResourcePal::Load(const char* const filename)
 {
-	length = ReadPlain(name, filename, offset, length);
+	if (compression == comprType::INVALID)
+	{
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid palette compression format. Should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Moduled Kosinski'\n'Nemesis'\n'Kid Chameleon'\n'Comper'\n'Saxman'", NULL);
+		exit(1);
+	}
+
+	length = DecompressFile(compression, name, filename, offset, length);
+
 	if (length < 0)
 	{
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Palette file not found. Are you sure the path is correct?", NULL);
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not decompress palette file. Are you sure the compression is correct?", NULL);
 		exit(1);
 	}
 }

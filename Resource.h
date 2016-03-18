@@ -39,5 +39,7 @@ public:
 class ResourcePal : public Resource
 {
 public:
+	comprType compression = comprType::NONE;
+
 	void Load(const char* const filename);
 };
