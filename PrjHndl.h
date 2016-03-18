@@ -14,7 +14,6 @@ public:
     ResourceMap map;
     ResourcePal pal;
     ProjectData(const char* const prjtxt);
-    void LoadPal(const char* const filename);
 
 private:
     void AssignInfo(const infoType type, char* content);
