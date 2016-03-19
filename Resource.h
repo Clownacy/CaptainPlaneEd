@@ -15,8 +15,8 @@ public:
 	void Save(const char* const filename, const char* const dstfilename);
 
 protected:
-	long DecompressFile(const comprType compr_type, const char* const srcfile, const char* const dstfile, const long Pointer, const int length);
-	void CompressFile(const comprType compr_type, const char* const srcfile, const char* const dstfile);
+	long DecompressToFile(const char* const dstfile);
+	void CompressFile(const char* const srcfile, const char* const dstfile);
 };
 
 class ResourceArt : public Resource

@@ -15,46 +15,46 @@
 #define FILE_MAP_DEFAULT "MapDefault.bin"
 
 void Resource::Save(const char* const filename, const char* const dstfilename) {
-    CompressFile(this->compression, filename, dstfilename);
+    CompressFile(filename, dstfilename);
 }
 
-long Resource::DecompressFile(const comprType compr_type, const char* const srcfile, const char* const dstfile, const long Pointer, const int length)
+long Resource::DecompressToFile(const char* const dstfile)
 {
 	int decompressed_length;
-	switch (compr_type)
+	switch (this->compression)
 	{
 		case comprType::NONE:
-			decompressed_length = ReadPlain(srcfile, dstfile, Pointer, length);
+			decompressed_length = ReadPlain(this->name, dstfile, this->offset, this->length);
 			break;
 		case comprType::ENIGMA:
-			decompressed_length = enigma::decode(srcfile, dstfile, Pointer, false);
+			decompressed_length = enigma::decode(this->name, dstfile, this->offset, false);
 			break;
 		case comprType::KOSINSKI:
-			decompressed_length = kosinski::decode(srcfile, dstfile, Pointer, false, 16u);
+			decompressed_length = kosinski::decode(this->name, dstfile, this->offset, false, 16u);
 			break;
 		case comprType::MODULED_KOSINSKI:
-			decompressed_length = kosinski::decode(srcfile, dstfile, Pointer, true, 16u);
+			decompressed_length = kosinski::decode(this->name, dstfile, this->offset, true, 16u);
 			break;
 		case comprType::NEMESIS:
-			decompressed_length = nemesis::decode(srcfile, dstfile, Pointer, 0);
+			decompressed_length = nemesis::decode(this->name, dstfile, this->offset, 0);
 			break;
 		case comprType::KID_CHAMELEON:
-			decompressed_length = KidDec(srcfile, dstfile, Pointer);
+			decompressed_length = KidDec(this->name, dstfile, this->offset);
 			break;
 		case comprType::COMPER:
-			decompressed_length = comper::decode(srcfile, dstfile, Pointer);
+			decompressed_length = comper::decode(this->name, dstfile, this->offset);
 			break;
 		case comprType::SAXMAN:
-			decompressed_length = saxman::decode(srcfile, dstfile, Pointer, 0);
+			decompressed_length = saxman::decode(this->name, dstfile, this->offset, 0);
 			break;
 	}
 
 	return decompressed_length;
 }
 
-void Resource::CompressFile(const comprType compr_type, const char* const srcfile, const char* const dstfile)
+void Resource::CompressFile(const char* const srcfile, const char* const dstfile)
 {
-	switch (compr_type)
+	switch (this->compression)
 	{
 		case comprType::NONE:
 			remove(dstfile);
@@ -89,14 +89,14 @@ void ResourceArt::Load(const char* const filename)
 		exit(1);
 	}
 
-	this->length = DecompressFile(this->compression, this->name, filename, this->offset, this->length);
+	int decompressed_length = DecompressToFile(filename);
 
-	if (this->length < 0)
+	if (decompressed_length < 0)
 	{
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not decompress art file. Are you sure the compression is correct?", NULL);
 		exit(1);
 	}
-	this->tileAmount = this->length/0x20;
+	this->tileAmount = decompressed_length/0x20;
 }
 
 void ResourceMap::Load(const char* const filename)
@@ -107,14 +107,14 @@ void ResourceMap::Load(const char* const filename)
 		exit(1);
 	}
 
-	this->length = DecompressFile(this->compression, this->name, filename, this->offset, this->length);
+	int decompressed_length = DecompressToFile(filename);
 
 	FILE* mapfile = fopen(filename, "r+b");
 
-	if (this->length < 0) {
+	if (decompressed_length < 0) {
 		//file could not be decompressed or found
-		this->length = 2*this->xSize*this->ySize;
-		if (!CheckCreateBlankFile(this->name, mapfile, this->offset, this->length))
+		decompressed_length = 2*this->xSize*this->ySize;
+		if (!CheckCreateBlankFile(this->name, mapfile, this->offset, decompressed_length))
 		{
 			//file is existant but could not be decompressed
 			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not decompress map file. Are you sure the compression is correct?", NULL);
@@ -129,10 +129,10 @@ void ResourceMap::Load(const char* const filename)
 
 	fclose(mapfile);
 
-	if (this->length < 2*this->xSize*this->ySize)
+	if (decompressed_length < 2*this->xSize*this->ySize)
 	{
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Warning", "Specified size exceeds map size.\nField has been trimmed vertically.", NULL);
-		this->ySize = (this->length/this->xSize) / 2;
+		this->ySize = (decompressed_length/this->xSize) / 2;
 		if (this->ySize == 0)
 			exit(1);
 	}
@@ -154,9 +154,9 @@ void ResourcePal::Load(const char* const filename)
 		exit(1);
 	}
 
-	this->length = DecompressFile(this->compression, this->name, filename, this->offset, this->length);
+	int decompressed_length = DecompressToFile(filename);
 
-	if (this->length < 0)
+	if (decompressed_length < 0)
 	{
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not decompress palette file. Are you sure the compression is correct?", NULL);
 		exit(1);
