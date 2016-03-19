@@ -96,7 +96,7 @@ void ResourceArt::Load(const char* const filename)
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not decompress art file. Are you sure the compression is correct?", NULL);
 		exit(1);
 	}
-	tileAmount = this->length/0x20;
+	this->tileAmount = this->length/0x20;
 }
 
 void ResourceMap::Load(const char* const filename)
