@@ -4,9 +4,61 @@ CFLAGS	= `sdl2-config --cflags` -O3 -s -std=c++11
 DEFINES	= 
 LIBS	= `sdl2-config --libs`
 
-SOURCES	= PlaneEd.cpp TxtRead.cpp PrjHndl.cpp Tile.cpp Graphics.cpp LevMap.cpp SelRect.cpp Resource.cpp
-SOURCES	+= compression/KidDec.c compression/ReadPlain.c
-SOURCES += FW_KENSC/comper.cc FW_KENSC/enigma.cc FW_KENSC/kosinski.cc FW_KENSC/nemesis.cc FW_KENSC/saxman.cc
+OBJDIR = ./build
 
-$(NAME): $(SOURCES)
+OBJECTS = $(OBJDIR)/PlaneEd.o $(OBJDIR)/TxtRead.o $(OBJDIR)/PrjHndl.o $(OBJDIR)/Tile.o $(OBJDIR)/Graphics.o $(OBJDIR)/LevMap.o $(OBJDIR)/SelRect.o $(OBJDIR)/Resource.o
+OBJECTS += $(OBJDIR)/KidDec.o $(OBJDIR)/ReadPlain.o
+OBJECTS += $(OBJDIR)/comper.o $(OBJDIR)/enigma.o $(OBJDIR)/kosinski.o $(OBJDIR)/nemesis.o $(OBJDIR)/saxman.o
+
+all: objdirectory $(OBJECTS) $(NAME)
+
+objdirectory:
+	mkdir -p $(OBJDIR)
+
+$(OBJDIR)/PlaneEd.o: PlaneEd.cpp
+	$(GCC) $(CFLAGS) -c $^ -o $@
+
+$(OBJDIR)/TxtRead.o: TxtRead.cpp
+	$(GCC) $(CFLAGS) -c $^ -o $@
+
+$(OBJDIR)/PrjHndl.o: PrjHndl.cpp
+	$(GCC) $(CFLAGS) -c $^ -o $@
+
+$(OBJDIR)/Tile.o: Tile.cpp
+	$(GCC) $(CFLAGS) -c $^ -o $@
+
+$(OBJDIR)/Graphics.o: Graphics.cpp
+	$(GCC) $(CFLAGS) -c $^ -o $@
+
+$(OBJDIR)/LevMap.o: LevMap.cpp
+	$(GCC) $(CFLAGS) -c $^ -o $@
+
+$(OBJDIR)/SelRect.o: SelRect.cpp
+	$(GCC) $(CFLAGS) -c $^ -o $@
+
+$(OBJDIR)/Resource.o: Resource.cpp
+	$(GCC) $(CFLAGS) -c $^ -o $@
+
+$(OBJDIR)/KidDec.o: compression/KidDec.c
+	$(GCC) $(CFLAGS) -c $^ -o $@
+
+$(OBJDIR)/ReadPlain.o: compression/ReadPlain.c
+	$(GCC) $(CFLAGS) -c $^ -o $@
+
+$(OBJDIR)/comper.o: FW_KENSC/comper.cc
+	$(GCC) $(CFLAGS) -c $^ -o $@
+
+$(OBJDIR)/enigma.o: FW_KENSC/enigma.cc
+	$(GCC) $(CFLAGS) -c $^ -o $@
+
+$(OBJDIR)/kosinski.o: FW_KENSC/kosinski.cc
+	$(GCC) $(CFLAGS) -c $^ -o $@
+
+$(OBJDIR)/nemesis.o: FW_KENSC/nemesis.cc
+	$(GCC) $(CFLAGS) -c $^ -o $@
+
+$(OBJDIR)/saxman.o: FW_KENSC/saxman.cc
+	$(GCC) $(CFLAGS) -c $^ -o $@
+
+$(NAME): $(OBJECTS)
 	$(GCC) $(CFLAGS) $(DEFINES) $^ $(LIBS) -o $@
