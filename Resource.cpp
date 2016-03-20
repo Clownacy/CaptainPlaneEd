@@ -146,6 +146,11 @@ void ResourceMap::Load(const char* const filename)
 	}
 }
 
+ResourcePal::ResourcePal(void)
+{
+	this->compression = comprType::NONE;
+}
+
 void ResourcePal::Load(const char* const filename)
 {
 	if (this->compression == comprType::INVALID)
