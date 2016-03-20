@@ -12,11 +12,11 @@
 #include "FW_KENSC/nemesis.h"
 #include "FW_KENSC/saxman.h"
 
-#define FILE_MAP_DEFAULT "MapDefault.bin"
+const char* const FILE_MAP_DEFAULT = "MapDefault.bin";
 
 Resource::Resource(void)
 {
-	strcpy(this->name,"");
+	strcpy(this->name, "");
 	this->offset = 0;
 	this->length = 0;
 	this->compression = comprType::INVALID;
@@ -118,7 +118,7 @@ ResourceMap::ResourceMap(void)
 {
 	this->xSize = 0;
 	this->ySize = 0;
-	strcpy(this->saveName,"");
+	strcpy(this->saveName, "");
 }
 
 void ResourceMap::Load(const char* const filename)
@@ -158,13 +158,22 @@ void ResourceMap::Load(const char* const filename)
 		if (this->ySize == 0)
 			exit(1);
 	}
-    
+
 	if (strlen(this->saveName) == 0)
 	{
 		if (this->offset == 0)
+		{
 			strcpy(this->saveName, this->name); //overwrite existing map
+		}
 		else
+		{
+			const char* const part_message = "This tool cannot overwrite a ROM. Plane map will be saved to ";
+			char* whole_message = (char*)malloc(strlen(part_message)+strlen(FILE_MAP_DEFAULT)+1);
+			sprintf(whole_message, "%s%s", part_message, FILE_MAP_DEFAULT);
+			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Information", whole_message, NULL);
+			free(whole_message);
 			strcpy(this->saveName, FILE_MAP_DEFAULT); //write to default file
+		}
 	}
 }
 
