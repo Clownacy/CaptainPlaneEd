@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _LZSS_H_
-#define _LZSS_H_
+#ifndef __LIB_LZSS_H
+#define __LIB_LZSS_H
 
 #include <iosfwd>
 #include <limits>
@@ -73,16 +73,18 @@ public:
 	// Comparison operator. Lowest weight first, on tie, break by shortest
 	// length, on further tie break by distance. Used only on the multimap.
 	bool operator<(AdjListNode const &other) const noexcept {
-		if (weight < other.weight)
+		if (weight < other.weight) {
 			return true;
-		else if (weight > other.weight)
+		} else if (weight > other.weight) {
 			return false;
-		if (length < other.length)
+		}
+		if (length < other.length) {
 			return true;
-		else if (length > other.length)
+		} else if (length > other.length) {
 			return false;
-		else
+		} else {
 			return distance < other.distance;
+		}
 	}
 };
 
@@ -184,8 +186,9 @@ private:
 					best = std::move(AdjListNode(basenode + jj, basenode - ii, jj, wgt));
 				}
 				// We can find no more matches with the current starting node.
-				if (jj >= ubound)
+				if (jj >= ubound) {
 					break;
+				}
 			}
 		} while (ii-- > lbound);
 
@@ -202,11 +205,10 @@ public:
 		for (size_t ii = 0; ii < nlen; ii++) {
 			// Find all matches for all subsequent nodes.
 			MatchVector const matches = find_matches(ii);
-			for (MatchVector::const_iterator it = matches.begin();
-			     it != matches.end(); ++it) {
+			for (const auto & match : matches) {
 				// Insert the best (lowest cost) edge linking these two nodes.
-				if (it->get_weight() != std::numeric_limits<size_t>::max()) {
-					adjs[ii].push_back(*it);
+				if (match.get_weight() != std::numeric_limits<size_t>::max()) {
+					adjs[ii].push_back(match);
 				}
 			}
 		}
@@ -244,12 +246,11 @@ public:
 			AdjList const &list = adjs[ii];
 			// Get remaining unused descriptor bits up to this node.
 			size_t basedesc = desccosts[ii];
-			for (AdjList::const_iterator it = list.begin();
-			        it != list.end(); ++it) {
+			for (const auto & elem : list) {
 				// Need destination ID and edge weight.
-				size_t nextnode = it->get_dest(), wgt = it->get_weight();
+				size_t nextnode = elem.get_dest(), wgt = elem.get_weight();
 				// Compute remaining unused bits from using this edge.
-				size_t desccost = basedesc + Adaptor::desc_bits(*it);
+				size_t desccost = basedesc + Adaptor::desc_bits(elem);
 				desccost %= Adaptor::NumDescBits;
 				if (nextnode == nlen) {
 					// This is the ending node. Add the descriptor bits for the
@@ -273,7 +274,7 @@ public:
 					// If so, update the data structures with new best edge.
 					costs[nextnode] = costs[ii] + wgt;
 					parents[nextnode] = ii;
-					pedges[nextnode] = *it;
+					pedges[nextnode] = elem;
 					desccosts[nextnode] = desccost;
 				}
 			}
@@ -393,4 +394,4 @@ public:
 	}
 };
 
-#endif // _LZSS_H_
+#endif // __LIB_LZSS_H

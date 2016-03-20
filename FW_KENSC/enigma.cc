@@ -22,8 +22,8 @@
 #include <ostream>
 #include <sstream>
 #include <fstream>
-#include <string>
 #include <map>
+#include <string>
 #include <set>
 #include <vector>
 #include <algorithm>
@@ -51,31 +51,41 @@ public:
 template<int const N>
 class flag_io : public base_flag_io {
 public:
-	virtual unsigned short read_bitfield(EniIBitstream &bits) const {
+	unsigned short read_bitfield(EniIBitstream &bits) const override {
 		unsigned short flags = 0;
-		if ((N & (1 << 4)) != 0)
+		if ((N & (1 << 4)) != 0) {
 			flags |= bits.pop() << 15;
-		if ((N & (1 << 3)) != 0)
+		}
+		if ((N & (1 << 3)) != 0) {
 			flags |= bits.pop() << 14;
-		if ((N & (1 << 2)) != 0)
+		}
+		if ((N & (1 << 2)) != 0) {
 			flags |= bits.pop() << 13;
-		if ((N & (1 << 1)) != 0)
+		}
+		if ((N & (1 << 1)) != 0) {
 			flags |= bits.pop() << 12;
-		if ((N & (1 << 0)) != 0)
+		}
+		if ((N & (1 << 0)) != 0) {
 			flags |= bits.pop() << 11;
+		}
 		return flags;
 	}
-	virtual void write_bitfield(EniOBitstream &bits, unsigned short flags) const {
-		if ((N & (1 << 4)) != 0)
+	void write_bitfield(EniOBitstream &bits, unsigned short flags) const override {
+		if ((N & (1 << 4)) != 0) {
 			bits.push((flags >> 15) & 1);
-		if ((N & (1 << 3)) != 0)
+		}
+		if ((N & (1 << 3)) != 0) {
 			bits.push((flags >> 14) & 1);
-		if ((N & (1 << 2)) != 0)
+		}
+		if ((N & (1 << 2)) != 0) {
 			bits.push((flags >> 13) & 1);
-		if ((N & (1 << 1)) != 0)
+		}
+		if ((N & (1 << 1)) != 0) {
 			bits.push((flags >> 12) & 1);
-		if ((N & (1 << 0)) != 0)
+		}
+		if ((N & (1 << 0)) != 0) {
 			bits.push((flags >> 11) & 1);
+		}
 	}
 };
 
@@ -148,7 +158,7 @@ base_flag_io *base_flag_io::create(size_t n) {
 			return new flag_io<0x1f>;
 		default:
 			cerr << "Divide By Cucumber Error. Please Reinstall Universe And Reboot." << endl;
-			return NULL;
+			return nullptr;
 	}
 }
 
@@ -188,8 +198,9 @@ void enigma::decode_internal(istream &Src, ostream &Dst) {
 				case 3: {
 					size_t cnt = bits.read(4);
 					// This marks decompression as being done.
-					if (cnt == 0x0F)
+					if (cnt == 0x0F) {
 						return;
+					}
 
 					cnt++;
 					for (size_t i = 0; i < cnt; i++) {
@@ -203,12 +214,14 @@ void enigma::decode_internal(istream &Src, ostream &Dst) {
 		} else {
 			if (!bits.pop()) {
 				size_t cnt = bits.read(4) + 1;
-				for (size_t i = 0; i < cnt; i++)
+				for (size_t i = 0; i < cnt; i++) {
 					BigEndian::Write2(Dst, incrementing_value++);
+				}
 			} else {
 				size_t cnt = bits.read(4) + 1;
-				for (size_t i = 0; i < cnt; i++)
+				for (size_t i = 0; i < cnt; i++) {
 					BigEndian::Write2(Dst, common_value);
+				}
 			}
 		}
 	}
@@ -238,8 +251,9 @@ long enigma::decode(const char* const srcfile, const char* const dstfile, stream
 			Dst.write(pad.c_str(), 0x20);
 		}
 		Dst.write(pad.c_str(), 0x80 * 0x20);
-	} else
+	} else {
 		decode_internal(Src, Dst);
+	}
 
 	long return_size = Dst.tellp();
 	Src.close();
@@ -249,8 +263,8 @@ long enigma::decode(const char* const srcfile, const char* const dstfile, stream
 
 // Blazing fast function that gives the index of the MSB.
 static inline unsigned char slog2(unsigned short v) {
-	register unsigned char r; // result of slog2(v) will go here
-	register unsigned char shift;
+	unsigned char r; // result of slog2(v) will go here
+	unsigned char shift;
 
 	r = (v > 0xFF) << 3;
 	v >>= r;
@@ -277,13 +291,12 @@ static inline void flush_buffer(vector<unsigned short> &buf,
                                 EniOBitstream &bits,
                                 base_flag_io *&mask,
                                 unsigned short const packet_length) {
-	if (!buf.size())
+	if (!buf.size()) {
 		return;
+	}
 
 	bits.write(0x70 | ((buf.size() - 1) & 0xf), 7);
-	for (vector<unsigned short>::iterator it = buf.begin();
-	     it != buf.end(); ++it) {
-		unsigned short v = *it;
+	for (auto v : buf) {
 		mask->write_bitfield(bits, v);
 		bits.write(v & 0x7ff, packet_length);
 	}
@@ -304,8 +317,9 @@ void enigma::encode_internal(istream &Src, ostream &Dst) {
 	Src.seekg(0);
 	while (true) {
 		unsigned short v = BigEndian::Read2(Src);
-		if (!Src.good())
+		if (!Src.good()) {
 			break;
+		}
 		maskval |= v;
 		counts[v] += 1;
 		elems.insert(v);
@@ -317,8 +331,7 @@ void enigma::encode_internal(istream &Src, ostream &Dst) {
 
 	// Find the most common 2-byte value.
 	Compare_count cmp;
-	map<unsigned short, size_t>::iterator high = max_element(counts.begin(),
-	                                                         counts.end(), cmp);
+	auto high = max_element(counts.begin(), counts.end(), cmp);
 	unsigned short const common_value = high->first;
 	// No longer needed.
 	counts.clear();
@@ -327,14 +340,10 @@ void enigma::encode_internal(istream &Src, ostream &Dst) {
 	// The original algorithm does this for all 65536 2-byte words, while
 	// this version only checks the 2-byte words actually in the file.
 	map<unsigned short, size_t> runs;
-	for (set<unsigned short>::iterator it = elems.begin();
-	     it != elems.end(); ++it) {
-		unsigned short next = *it;
-		map<unsigned short, size_t>::iterator val =
-		    runs.insert(pair<unsigned short, size_t>(next, 0)).first;
-		for (vector<unsigned short>::iterator it2 = unpack.begin();
-		     it2 != unpack.end(); ++it2) {
-			if (*it2 == next) {
+	for (auto next : elems) {
+		auto val = runs.insert(pair<unsigned short, size_t>(next, 0)).first;
+		for (auto & elem : unpack) {
+			if (elem == next) {
 				next++;
 				val->second += 1;
 			}
@@ -344,8 +353,7 @@ void enigma::encode_internal(istream &Src, ostream &Dst) {
 	elems.clear();
 
 	// Find the starting 2-byte value with the longest incrementing run.
-	map<unsigned short, size_t>::iterator incr = max_element(runs.begin(),
-	                                                         runs.end(), cmp);
+	auto incr = max_element(runs.begin(), runs.end(), cmp);
 	unsigned short incrementing_value = incr->first;
 	// No longer needed.
 	runs.clear();
@@ -367,8 +375,9 @@ void enigma::encode_internal(istream &Src, ostream &Dst) {
 			unsigned short next = v + 1;
 			size_t cnt = 0;
 			for (size_t i = pos + 1; i < unpack.size() && cnt < 0xf; i++) {
-				if (next != unpack[i])
+				if (next != unpack[i]) {
 					break;
+				}
 				next++;
 				cnt++;
 			}
@@ -380,8 +389,9 @@ void enigma::encode_internal(istream &Src, ostream &Dst) {
 			unsigned short next = v;
 			size_t cnt = 0;
 			for (size_t i = pos + 1; i < unpack.size() && cnt < 0xf; i++) {
-				if (next != unpack[i])
+				if (next != unpack[i]) {
 					break;
+				}
 				cnt++;
 			}
 			bits.write(0x10 | cnt, 6);
@@ -395,14 +405,16 @@ void enigma::encode_internal(istream &Src, ostream &Dst) {
 				size_t cnt = 1;
 				next += delta;
 				for (size_t i = pos + 2; i < unpack.size() && cnt < 0xf; i++) {
-					if (next != unpack[i] || next == incrementing_value)
+					if (next != unpack[i] || next == incrementing_value) {
 						break;
+					}
 					next += delta;
 					cnt++;
 				}
 
-				if (delta == -1)
+				if (delta == -1) {
 					delta = 2;
+				}
 
 				delta = ((delta | 4) << 4);
 				bits.write(delta | cnt, 7);
@@ -410,8 +422,9 @@ void enigma::encode_internal(istream &Src, ostream &Dst) {
 				bits.write(v & 0x7ff, packet_length);
 				pos += cnt;
 			} else {
-				if (buf.size() >= 0xf)
+				if (buf.size() >= 0xf) {
 					flush_buffer(buf, bits, mask, packet_length);
+				}
 
 				buf.push_back(v);
 			}
@@ -449,8 +462,9 @@ bool enigma::encode(const char* const srcfile, const char* const dstfile, bool p
 	} else {
 		encode_internal(Src, Dst);
 		// Pad to even size.
-		if ((Dst.tellp() & 1) != 0)
+		if ((Dst.tellp() & 1) != 0) {
 			Dst.put(0);
+		}
 	}
 
 	Src.close();
