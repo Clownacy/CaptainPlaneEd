@@ -23,8 +23,9 @@ Resource::Resource(void)
 	this->kosinski_module_size = 0x1000;
 }
 
-void Resource::Save(const char* const filename, const char* const dstfilename) {
-    CompressFile(filename, dstfilename);
+void Resource::Save(const char* const filename, const char* const dstfilename)
+{
+	CompressFile(filename, dstfilename);
 }
 
 long Resource::DecompressToFile(const char* const dstfile)
@@ -169,6 +170,7 @@ void ResourceMap::Load(const char* const filename)
 
 ResourcePal::ResourcePal(void)
 {
+	// For backwards compatibility, palette is assumed to be uncompressed by default
 	this->compression = comprType::NONE;
 }
 
