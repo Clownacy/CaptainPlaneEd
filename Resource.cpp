@@ -26,6 +26,7 @@ Resource::Resource(void)
 void Resource::Save(const char* const filename, const char* const dstfilename)
 {
 	CompressFile(filename, dstfilename);
+	remove(filename);
 }
 
 long Resource::DecompressToFile(const char* const dstfile)
