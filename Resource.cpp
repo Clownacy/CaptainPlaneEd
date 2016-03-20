@@ -14,6 +14,15 @@
 
 #define FILE_MAP_DEFAULT "MapDefault.bin"
 
+Resource::Resource(void)
+{
+	strcpy(this->name,"");
+	this->offset = 0;
+	this->length = 0;
+	this->compression = comprType::INVALID;
+	this->kosinski_module_size = 0x1000;
+}
+
 void Resource::Save(const char* const filename, const char* const dstfilename) {
     CompressFile(filename, dstfilename);
 }
@@ -81,6 +90,11 @@ void Resource::CompressFile(const char* const srcfile, const char* const dstfile
 	}
 }
 
+ResourceArt::ResourceArt(void)
+{
+	this->tileAmount = 0;
+}
+
 void ResourceArt::Load(const char* const filename)
 {
 	if (this->compression == comprType::INVALID)
@@ -97,6 +111,13 @@ void ResourceArt::Load(const char* const filename)
 		exit(1);
 	}
 	this->tileAmount = decompressed_length/0x20;
+}
+
+ResourceMap::ResourceMap(void)
+{
+	this->xSize = 0;
+	this->ySize = 0;
+	strcpy(this->saveName,"");
 }
 
 void ResourceMap::Load(const char* const filename)
