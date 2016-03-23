@@ -156,7 +156,7 @@ void ResourceMap::Load(const char* const filename)
 			exit(1);
 	}
 
-	if (strlen(this->saveName) == 0)
+	if (strcmp(this->saveName, "") == 0)
 	{
 		if (this->offset == 0)
 		{
