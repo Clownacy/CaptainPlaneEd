@@ -180,8 +180,6 @@ long saxman::decode(const char* const srcfile, const char* const dstfile,
 	decode_internal(in, Dst, size);
 
 	long return_size = Dst.tellp();
-	Src.close();
-	Dst.close();
 	return return_size;
 }
 
@@ -241,7 +239,5 @@ bool saxman::encode(const char* const srcfile, const char* const dstfile, bool W
 	Dst << outbuff.rdbuf();
 
 	delete [] Buffer;
-	Src.close();
-	Dst.close();
 	return true;
 }

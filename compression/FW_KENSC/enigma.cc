@@ -257,8 +257,6 @@ long enigma::decode(const char* const srcfile, const char* const dstfile, stream
 	}
 
 	long return_size = Dst.tellp();
-	Src.close();
-	Dst.close();
 	return return_size;
 }
 
@@ -468,8 +466,6 @@ bool enigma::encode(const char* const srcfile, const char* const dstfile, bool p
 		}
 	}
 
-	Src.close();
-	Dst.close();
 	return true;
 }
 

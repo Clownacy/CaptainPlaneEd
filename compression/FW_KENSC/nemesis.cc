@@ -431,8 +431,6 @@ long nemesis::decode(const char* const srcfile, const char* const dstfile, strea
 	}
 
 	long return_size = Dst.tellp();
-	Src.close();
-	Dst.close();
 	return return_size;
 }
 
@@ -998,7 +996,5 @@ bool nemesis::encode(const char* const srcfile, const char* const dstfile) {
 		Dst.put(0);
 	}
 
-	Src.close();
-	Dst.close();
 	return true;
 }

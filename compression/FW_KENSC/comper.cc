@@ -128,8 +128,6 @@ long comper::decode(const char* const srcfile, const char* const dstfile, stream
 	decode_internal(in, Dst);
 
 	long return_size = Dst.tellp();
-	Src.close();
-	Dst.close();
 	return return_size;
 }
 
@@ -191,7 +189,5 @@ bool comper::encode(const char* const srcfile, const char* const dstfile) {
 	encode_internal(Dst, ptr, BSize);
 
 	delete [] Buffer;
-	Src.close();
-	Dst.close();
 	return true;
 }

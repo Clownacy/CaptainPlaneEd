@@ -214,8 +214,6 @@ long kosinski::decode(const char* const srcfile, const char* const dstfile,
 	}
 
 	long return_size = Dst.tellp();
-	Src.close();
-	Dst.close();
 	return return_size;
 }
 
@@ -371,7 +369,5 @@ bool kosinski::encode(const char* const srcfile, const char* const dstfile, bool
 	}
 
 	delete [] Buffer;
-	Src.close();
-	Dst.close();
 	return true;
 }
