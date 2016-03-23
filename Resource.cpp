@@ -6,11 +6,11 @@
 
 #include "compression/KidDec.h"
 #include "compression/ReadPlain.h"
-#include "FW_KENSC/comper.h"
-#include "FW_KENSC/enigma.h"
-#include "FW_KENSC/kosinski.h"
-#include "FW_KENSC/nemesis.h"
-#include "FW_KENSC/saxman.h"
+#include "compression/FW_KENSC/comper.h"
+#include "compression/FW_KENSC/enigma.h"
+#include "compression/FW_KENSC/kosinski.h"
+#include "compression/FW_KENSC/nemesis.h"
+#include "compression/FW_KENSC/saxman.h"
 
 const char* const FILE_MAP_DEFAULT = "MapDefault.bin";
 

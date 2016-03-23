@@ -45,19 +45,19 @@ $(OBJDIR)/KidDec.o: compression/KidDec.c
 $(OBJDIR)/ReadPlain.o: compression/ReadPlain.c
 	$(GCC) $(CFLAGS) -c $^ -o $@
 
-$(OBJDIR)/comper.o: FW_KENSC/comper.cc
+$(OBJDIR)/comper.o: compression/FW_KENSC/comper.cc
 	$(GCC) $(CFLAGS) -c $^ -o $@
 
-$(OBJDIR)/enigma.o: FW_KENSC/enigma.cc
+$(OBJDIR)/enigma.o: compression/FW_KENSC/enigma.cc
 	$(GCC) $(CFLAGS) -c $^ -o $@
 
-$(OBJDIR)/kosinski.o: FW_KENSC/kosinski.cc
+$(OBJDIR)/kosinski.o: compression/FW_KENSC/kosinski.cc
 	$(GCC) $(CFLAGS) -c $^ -o $@
 
-$(OBJDIR)/nemesis.o: FW_KENSC/nemesis.cc
+$(OBJDIR)/nemesis.o: compression/FW_KENSC/nemesis.cc
 	$(GCC) $(CFLAGS) -c $^ -o $@
 
-$(OBJDIR)/saxman.o: FW_KENSC/saxman.cc
+$(OBJDIR)/saxman.o: compression/FW_KENSC/saxman.cc
 	$(GCC) $(CFLAGS) -c $^ -o $@
 
 $(NAME): $(OBJECTS)
