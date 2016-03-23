@@ -19,8 +19,6 @@
  */
 
 #include <memory>
-#include <istream>
-#include <ostream>
 #include <sstream>
 #include <fstream>
 #include <map>

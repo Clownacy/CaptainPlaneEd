@@ -19,8 +19,6 @@
 
 //#define COUNT_FREQUENCIES 1
 
-#include <istream>
-#include <ostream>
 #include <sstream>
 #include <fstream>
 
