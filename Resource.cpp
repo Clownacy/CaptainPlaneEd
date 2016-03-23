@@ -132,12 +132,10 @@ void ResourceMap::Load(const char* const filename)
 
 	int decompressed_length = DecompressToFile(filename);
 
-	FILE* mapfile = fopen(filename, "r+b");
-
 	if (decompressed_length < 0) {
 		//file could not be decompressed or found
 		decompressed_length = 2*this->xSize*this->ySize;
-		if (!CheckCreateBlankFile(this->name, mapfile, this->offset, decompressed_length))
+		if (!CheckCreateBlankFile(this->name, filename, this->offset, decompressed_length))
 		{
 			//file is existant but could not be decompressed
 			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not decompress map file. Are you sure the compression is correct?", NULL);
@@ -149,8 +147,6 @@ void ResourceMap::Load(const char* const filename)
 			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Information", "No map file found, created blank template.", NULL);
 		}
 	}
-
-	fclose(mapfile);
 
 	if (decompressed_length < 2*this->xSize*this->ySize)
 	{

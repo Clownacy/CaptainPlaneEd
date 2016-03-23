@@ -7,7 +7,7 @@ extern "C" {
 #include <stdio.h>
 
 long ReadPlain(const char* const srcfile, const char* const dstfile, const long Pointer, int length);
-bool CheckCreateBlankFile(char *srcfile, FILE* dst, const long Pointer, const int length);
+bool CheckCreateBlankFile(const char* const srcfile, const char* const dstfile, const long Pointer, const int length);
 
 #ifdef __cplusplus
 }
