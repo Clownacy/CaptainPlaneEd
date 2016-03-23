@@ -105,9 +105,14 @@ void ResourceArt::Load(const char* const filename)
 		exit(1);
 	}
 
-	int decompressed_length = DecompressToFile(filename);
+	long decompressed_length = DecompressToFile(filename);
 
-	if (decompressed_length < 0)
+	if (decompressed_length == -2)
+	{
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not find art file. Are you sure the path is correct?", NULL);
+		exit(1);
+	}
+	else if (decompressed_length < 0)
 	{
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not decompress art file. Are you sure the compression is correct?", NULL);
 		exit(1);
@@ -130,9 +135,14 @@ void ResourceMap::Load(const char* const filename)
 		exit(1);
 	}
 
-	int decompressed_length = DecompressToFile(filename);
+	long decompressed_length = DecompressToFile(filename);
 
-	if (decompressed_length < 0) {
+	if (decompressed_length == -2)
+	{
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not find map file. Are you sure the path is correct?", NULL);
+		exit(1);
+	}
+	else if (decompressed_length < 0) {
 		//file could not be decompressed or found
 		decompressed_length = 2*this->xSize*this->ySize;
 		if (!CheckCreateBlankFile(this->name, filename, this->offset, decompressed_length))
@@ -188,9 +198,14 @@ void ResourcePal::Load(const char* const filename)
 		exit(1);
 	}
 
-	int decompressed_length = DecompressToFile(filename);
+	long decompressed_length = DecompressToFile(filename);
 
-	if (decompressed_length < 0)
+	if (decompressed_length == -2)
+	{
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not find palette file. Are you sure the path is correct?", NULL);
+		exit(1);
+	}
+	else if (decompressed_length < 0)
 	{
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not decompress palette file. Are you sure the compression is correct?", NULL);
 		exit(1);

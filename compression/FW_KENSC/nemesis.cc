@@ -410,6 +410,9 @@ void nemesis::decode_internal(istream &Src, ostream &Dst,
 
 long nemesis::decode(const char* const srcfile, const char* const dstfile, streampos Location, int *endptr) {
 	ifstream Src(srcfile, ios::in|ios::binary);
+	if (!Src.is_open())
+		return -2;
+
 	fstream Dst(dstfile, ios::in|ios::out|ios::binary|ios::trunc);
 
 	Src.seekg(Location);

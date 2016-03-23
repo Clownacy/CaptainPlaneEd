@@ -9,14 +9,9 @@ long ReadPlain(const char* const srcfile, const char* const dstfile, const long 
 {
     FILE* src = fopen(srcfile, "rb");
     if (src == NULL)
-        return -1;
+        return -2;
 
     FILE* dst = fopen(dstfile, "wb");
-    if (dst == NULL)
-    {
-        fclose(src);
-        return -1;
-    }
 
     if (length == 0) {
         if (Pointer == 0) {

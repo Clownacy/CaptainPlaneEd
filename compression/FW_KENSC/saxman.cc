@@ -165,6 +165,9 @@ void saxman::decode_internal(istream &in, iostream &Dst,
 long saxman::decode(const char* const srcfile, const char* const dstfile,
                     streampos Location, streamsize const BSize) {
 	ifstream Src(srcfile, ios::in|ios::binary);
+	if (!Src.is_open())
+		return -2;
+
 	fstream Dst(dstfile, ios::in|ios::out|ios::binary|ios::trunc);
 
 	Src.seekg(Location);

@@ -171,6 +171,9 @@ long kosinski::decode(const char* const srcfile, const char* const dstfile,
                       streampos Location, bool Moduled,
                       streamsize const ModulePadding) {
 	ifstream Src(srcfile, ios::in|ios::binary);
+	if (!Src.is_open())
+		return -2;
+
 	fstream Dst(dstfile, ios::in|ios::out|ios::binary|ios::trunc);
 
 	size_t DecBytes = 0;
