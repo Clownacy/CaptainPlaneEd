@@ -1,4 +1,3 @@
-#include <cstdio>
 #include <cstring>
 #include <fstream>
 
@@ -12,21 +11,19 @@ ProjectData::ProjectData(const char* const prjtxt) {
     tileOffset = 0;
     letterOffset = numberOffset = 0;
 
-    FILE* prjfile = fopen(prjtxt, "r");
-    if (prjfile == NULL) {
+    std::ifstream prjfile(prjtxt, std::ios::in);
+    if (!prjfile.is_open()) {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Please drag and drop your project file onto this program to start it.", NULL);
         exit(1);
     }
 
-    while (!feof(prjfile)) {
+    while (!prjfile.eof()) {
         char line[256];
-        fgets(line, 256, prjfile);
+        prjfile.getline(line, 256);
 	infoType info_type = readInfoType(line);
 	if (info_type != infoType::INVALID)
 		AssignInfo(info_type, line+strcspn(line, ":")+1);
     }
-
-    fclose(prjfile);
 }
 
 void ProjectData::AssignInfo(const infoType type, char* content) {
