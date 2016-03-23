@@ -21,8 +21,7 @@ ProjectData::ProjectData(const char* const prjtxt) {
         char line[256];
         prjfile.getline(line, 256);
 	infoType info_type = readInfoType(line);
-	if (info_type != infoType::INVALID)
-		AssignInfo(info_type, line+strcspn(line, ":")+1);
+	AssignInfo(info_type, line+strcspn(line, ":")+1);
     }
 }
 
