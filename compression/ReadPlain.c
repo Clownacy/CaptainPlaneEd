@@ -50,7 +50,7 @@ bool CheckCreateBlankFile(const char* const srcfile, const char* const dstfile, 
         //file does exist, don't overwrite
         return false;
 
-    FILE* dst = fopen(dstfile, "rb");
+    FILE* dst = fopen(dstfile, "wb");
     if (dst == NULL)
     {
         fclose(src);
@@ -58,7 +58,7 @@ bool CheckCreateBlankFile(const char* const srcfile, const char* const dstfile, 
     }
 
     //create blank file
-    for (int i=0; i< Pointer + length; i++)
+    for (int i=0; i< Pointer + length; ++i)
         fputc(0, dst);
 
     fclose(src);
