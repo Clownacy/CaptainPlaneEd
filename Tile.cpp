@@ -50,11 +50,11 @@ void Tile::ClearTile(void)
 
 uint16_t Tile::GetRawTile(void)
 {
-	return (this->priority
-	     | (this->xFlip << 8)
-	     | (this->yFlip << 8)
-	     | (this->paletteLine << 13)
-	     |  this->tileID);
+	return ((this->priority << 8)
+	      | (this->xFlip << 8)
+	      | (this->yFlip << 8)
+	      | (this->paletteLine << 13)
+	      |  this->tileID);
 }
 
 void Tile::SetPal(uint8_t paletteLine)
