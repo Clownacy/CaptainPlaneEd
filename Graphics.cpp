@@ -97,26 +97,31 @@ void Graphics::ReadPalette(const char* const filename) {
 void Graphics::ReadTiles(const char* const filename) {
     FILE* tilefile = fopen(filename,"rb");
     if (tilefile==NULL) {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Art file not found. Are you sure the path is correct?", NULL);
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Internal Error", "Decompressed art file not found.", NULL);
         exit(1);
     }
-    unsigned char tilebuffer[32]; //space for one tile
+    uint8_t tilebuffer[(8*8)/2]; //space for one tile
     tileData = new uint16_t***[tileAmount];
-    for (int t=0; t < tileAmount; ++t) {
-        fread(tilebuffer, sizeof(unsigned char), 32, tilefile);
-        tileData[t] = new uint16_t**[paletteLines];
-        for (int p=0; p < paletteLines; ++p) {
-            tileData[t][p] = new uint16_t*[4];
-            for (int f=0; f < 4; ++f) tileData[t][p][f] = new uint16_t[64];
-            for (int i=0; i < 32; ++i) {
-                tileData[t][p][0][2*i]   = palette[p][(tilebuffer[i] & 0xF0)>>4];
-                tileData[t][p][0][2*i+1] = palette[p][(tilebuffer[i] & 0x0F)];
-                tileData[t][p][1][8*(i/4)+7-2*(i%4)]   = palette[p][(tilebuffer[i] & 0xF0)>>4]; //X-flip
-                tileData[t][p][1][8*(i/4)+7-2*(i%4)-1] = palette[p][(tilebuffer[i] & 0x0F)];
-                tileData[t][p][2][56-8*(i/4)+2*(i%4)]   = palette[p][(tilebuffer[i] & 0xF0)>>4]; //Y-flip
-                tileData[t][p][2][56-8*(i/4)+2*(i%4)+1] = palette[p][(tilebuffer[i] & 0x0F)];
-                tileData[t][p][3][63-2*i]   = palette[p][(tilebuffer[i] & 0xF0)>>4]; //XY-flip
-                tileData[t][p][3][63-2*i-1] = palette[p][(tilebuffer[i] & 0x0F)];
+    for (int tile=0; tile < tileAmount; ++tile) {
+        fread(tilebuffer, sizeof(uint8_t), (8*8)/2, tilefile);
+        tileData[tile] = new uint16_t**[paletteLines];
+        for (int pal_line=0; pal_line < paletteLines; ++pal_line) {
+            tileData[tile][pal_line] = new uint16_t*[4];
+            for (int flip=0; flip < 4; ++flip)
+		    tileData[tile][pal_line][flip] = new uint16_t[8*8];
+            for (int i=0; i < (8*8)/2; ++i) {
+		// Normal tile
+                tileData[tile][pal_line][0][2*i]   = palette[pal_line][(tilebuffer[i] & 0xF0)>>4];
+                tileData[tile][pal_line][0][2*i+1] = palette[pal_line][(tilebuffer[i] & 0x0F)];
+		// X-flipped tile
+                tileData[tile][pal_line][1][8*(i/4)+7-2*(i%4)]   = palette[pal_line][(tilebuffer[i] & 0xF0)>>4];
+                tileData[tile][pal_line][1][8*(i/4)+7-2*(i%4)-1] = palette[pal_line][(tilebuffer[i] & 0x0F)];
+		// Y-flipped tile
+                tileData[tile][pal_line][2][56-8*(i/4)+2*(i%4)]   = palette[pal_line][(tilebuffer[i] & 0xF0)>>4];
+                tileData[tile][pal_line][2][56-8*(i/4)+2*(i%4)+1] = palette[pal_line][(tilebuffer[i] & 0x0F)];
+		// X-flipped + Y-flipped tile
+                tileData[tile][pal_line][3][63-2*i]   = palette[pal_line][(tilebuffer[i] & 0xF0)>>4];
+                tileData[tile][pal_line][3][63-2*i-1] = palette[pal_line][(tilebuffer[i] & 0x0F)];
             }
         }
     }
