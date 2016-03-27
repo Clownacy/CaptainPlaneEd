@@ -39,7 +39,7 @@ public:
     bool CheckSelValidPos(int x, int y);
     void DrawTileSingle(int x, int y, Tile tile);
     void DrawTileBlank(int x, int y, Tile tile);
-    void DrawTileFullColor(int x, int y, Uint32 color);
+    void DrawTileFullColor(int x, int y, uint32_t color);
     void DrawTileNone(int x, int y);
     void DrawTileInvalid(int x, int y);
     void ProcessDisplay();
