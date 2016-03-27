@@ -17,6 +17,7 @@ public:
     void ReadTile(FILE* file);
     void WriteTile(FILE* file);
     void ClearTile();
+    uint16_t GetRawTile(void);
     void SetPal(uint8_t paletteLine);
     void FlipX() {this->xFlip ^= 0x08;}
     void FlipY() {this->yFlip ^= 0x10;}

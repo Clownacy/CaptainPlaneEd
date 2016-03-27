@@ -34,12 +34,9 @@ void Tile::ReadTile(FILE* file)
 
 void Tile::WriteTile(FILE* file)
 {
-	fputc((char) (this->priority
-		    | this->xFlip
-		    | this->yFlip
-		   | (this->paletteLine << 5)
-		   | (this->tileID >> 8)), file);
-	fputc(this->tileID & 0xFF, file);
+	uint16_t tile = GetRawTile();
+	fputc(tile>>8, file);
+	fputc(tile&0xFF, file);
 }
 
 void Tile::ClearTile()
@@ -49,6 +46,15 @@ void Tile::ClearTile()
 	this->xFlip = 0;
 	this->yFlip = 0;
 	this->priority = 0;
+}
+
+uint16_t Tile::GetRawTile(void)
+{
+	return (this->priority
+	     | (this->xFlip << 8)
+	     | (this->yFlip << 8)
+	     | (this->paletteLine << 13)
+	     |  this->tileID);
 }
 
 void Tile::SetPal(uint8_t paletteLine)
