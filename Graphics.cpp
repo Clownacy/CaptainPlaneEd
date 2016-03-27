@@ -87,7 +87,7 @@ void Graphics::ReadPalette(const char* const filename) {
 		const uint16_t green = palette_entry&0x00F0;
 		const uint16_t red = (palette_entry&0x000F) << 8;
 		const uint16_t alpha = 0xF000;
-		palette[line][entry] = red|green|blue|alpha;
+		palette[line][entry] = alpha|red|green|blue;
 	}
 
     fclose(palfile);
