@@ -25,4 +25,5 @@ public:
 
 protected:
     uint16_t GetRawTile(void);
+    void LoadFromRawTile(uint16_t);
 };

@@ -23,13 +23,8 @@ Tile::Tile(const Tile& tile)
 
 void Tile::ReadTile(FILE* file)
 {
-	uint8_t byte = fgetc(file);
-	this->tileID = fgetc(file);
-	this->paletteLine = (byte & 0x60) >> 5;
-	this->xFlip = byte & 0x08;
-	this->yFlip = byte & 0x10;
-	this->priority = byte & 0x80;
-	this->tileID += (byte & 0x07)<<8;
+	uint16_t tile = (fgetc(file)<<8)|fgetc(file);
+	LoadFromRawTile(tile);
 }
 
 void Tile::WriteTile(FILE* file)
@@ -55,6 +50,15 @@ uint16_t Tile::GetRawTile(void)
 	      | (this->yFlip << 8)
 	      | (this->paletteLine << 13)
 	      |  this->tileID);
+}
+
+void Tile::LoadFromRawTile(uint16_t tile)
+{
+	this->paletteLine = (tile & 0x6000) >> 13;
+	this->xFlip = (tile & 0x0800) >> 8;
+	this->yFlip = (tile & 0x1000) >> 8;
+	this->priority = (tile & 0x8000) >> 8;
+	this->tileID = tile & 0x07FF;
 }
 
 void Tile::SetPal(uint8_t paletteLine)
