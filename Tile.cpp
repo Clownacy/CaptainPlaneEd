@@ -34,7 +34,7 @@ void Tile::WriteTile(FILE* file)
 	fputc(tile, file);
 }
 
-void Tile::LoadFromRawTile(uint16_t tile)
+void Tile::LoadFromRawTile(const uint16_t tile)
 {
 	this->priority = (tile & 0x8000) >> 15;
 	this->paletteLine = (tile & 0x6000) >> 13;
@@ -61,9 +61,17 @@ void Tile::ClearTile(void)
 	this->priority = 0;
 }
 
-void Tile::SetPal(uint8_t paletteLine)
+void Tile::SetPal(const uint8_t paletteLine)
 {
 	this->paletteLine = paletteLine;
+}
+
+void Tile::SetID(const int ID)
+{
+	this->tileID = ID;
+	this->xFlip = 0;
+	this->yFlip = 0;
+	this->priority = 0;
 }
 
 void Tile::FlipX(void)
@@ -79,12 +87,4 @@ void Tile::FlipY(void)
 void Tile::SwapPriority(void)
 {
 	this->priority ^= 1;
-}
-
-void Tile::SetID(int ID)
-{
-	this->tileID = ID;
-	this->xFlip = 0;
-	this->yFlip = 0;
-	this->priority = 0;
 }

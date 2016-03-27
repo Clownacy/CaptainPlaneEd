@@ -17,13 +17,13 @@ public:
     void ReadTile(FILE* file);
     void WriteTile(FILE* file);
     void ClearTile(void);
-    void SetPal(uint8_t paletteLine);
+    void SetPal(const uint8_t paletteLine);
+    void SetID(const int ID);
     void FlipX(void);
     void FlipY(void);
     void SwapPriority(void);
-    void SetID(int ID);
 
 protected:
-    void LoadFromRawTile(uint16_t);
+    void LoadFromRawTile(const uint16_t);
     uint16_t GetRawTile(void);
 };
