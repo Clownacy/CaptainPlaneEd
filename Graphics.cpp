@@ -78,12 +78,22 @@ void Graphics::ReadPalette(const char* const filename) {
     }
 
     palette = new uint16_t[paletteLines][16];
-    for (int i=0; i < paletteLines; ++i)
-        fread(palette[i], sizeof(unsigned char), 32, palfile);
+    for (int line=0; line < paletteLines; ++line)
+        for (int entry=0; entry < 16; ++entry)
+	{
+		// Convert BGR to RGB
+		uint16_t palette_entry = (fgetc(palfile)<<8)|fgetc(palfile);
+		uint16_t blue = (palette_entry&0x0F00) >> 8;
+		uint16_t green = palette_entry&0x00F0;
+		uint16_t red = (palette_entry&0x000F) << 8;
+		uint16_t alpha = 0xF000;
+		palette[line][entry] = red|green|blue|alpha;
+	}
+
     fclose(palfile);
     remove(filename);
 }
-#define getrgb(v) ((v&0xF000)>>8)|(v&0x0F0F|0xF000)	// Corrects G value, and sets alpha to max, so we can see
+
 void Graphics::ReadTiles(const char* const filename) {
     FILE* tilefile = fopen(filename,"rb");
     if (tilefile==NULL) {
@@ -99,14 +109,14 @@ void Graphics::ReadTiles(const char* const filename) {
             tileData[t][p] = new uint16_t*[4];
             for (int f=0; f < 4; ++f) tileData[t][p][f] = new uint16_t[64];
             for (int i=0; i < 32; ++i) {
-                tileData[t][p][0][2*i]   = getrgb(palette[p][(tilebuffer[i] & 0xF0)>>4]);
-                tileData[t][p][0][2*i+1] = getrgb(palette[p][(tilebuffer[i] & 0x0F)]);
-                tileData[t][p][1][8*(i/4)+7-2*(i%4)]   = getrgb(palette[p][(tilebuffer[i] & 0xF0)>>4]); //X-flip
-                tileData[t][p][1][8*(i/4)+7-2*(i%4)-1] = getrgb(palette[p][(tilebuffer[i] & 0x0F)]);
-                tileData[t][p][2][56-8*(i/4)+2*(i%4)]   = getrgb(palette[p][(tilebuffer[i] & 0xF0)>>4]); //Y-flip
-                tileData[t][p][2][56-8*(i/4)+2*(i%4)+1] = getrgb(palette[p][(tilebuffer[i] & 0x0F)]);
-                tileData[t][p][3][63-2*i]   = getrgb(palette[p][(tilebuffer[i] & 0xF0)>>4]); //XY-flip
-                tileData[t][p][3][63-2*i-1] = getrgb(palette[p][(tilebuffer[i] & 0x0F)]);
+                tileData[t][p][0][2*i]   = palette[p][(tilebuffer[i] & 0xF0)>>4];
+                tileData[t][p][0][2*i+1] = palette[p][(tilebuffer[i] & 0x0F)];
+                tileData[t][p][1][8*(i/4)+7-2*(i%4)]   = palette[p][(tilebuffer[i] & 0xF0)>>4]; //X-flip
+                tileData[t][p][1][8*(i/4)+7-2*(i%4)-1] = palette[p][(tilebuffer[i] & 0x0F)];
+                tileData[t][p][2][56-8*(i/4)+2*(i%4)]   = palette[p][(tilebuffer[i] & 0xF0)>>4]; //Y-flip
+                tileData[t][p][2][56-8*(i/4)+2*(i%4)+1] = palette[p][(tilebuffer[i] & 0x0F)];
+                tileData[t][p][3][63-2*i]   = palette[p][(tilebuffer[i] & 0xF0)>>4]; //XY-flip
+                tileData[t][p][3][63-2*i-1] = palette[p][(tilebuffer[i] & 0x0F)];
             }
         }
     }
