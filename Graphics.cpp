@@ -61,17 +61,22 @@ Graphics::Graphics(uint16_t xSize, uint16_t tileOffset, uint16_t tileAmount) {
 void Graphics::ReadPalette(const char* const filename) {
     FILE* palfile = fopen(filename,"rb");
     if (palfile==NULL) {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Palette file not found. Are you sure the path is correct?", NULL);
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Internal Error", "Decompressed palette file not found.", NULL);
         exit(1);
     }
+
     fseek(palfile, 0, SEEK_END);
     paletteLines = ftell(palfile)/0x20;
-    if (paletteLines > 4) paletteLines = 4;
     rewind(palfile);
-    if (paletteLines == 0) {
+ 
+    if (paletteLines > 4) {
+	    paletteLines = 4;
+    }
+    else if (paletteLines == 0) {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Palette file too small. It must contain at least one palette line.", NULL);
         exit(1);        
     }
+
     palette = new uint16_t[paletteLines][16];
     for (int i=0; i < paletteLines; ++i)
         fread(palette[i], sizeof(unsigned char), 32, palfile);
