@@ -42,9 +42,11 @@ bool CheckCreateBlankFile(const char* const srcfile, const char* const dstfile, 
 {
     FILE* src = fopen(srcfile, "rb");
     if (src != NULL)
-        //file does exist, don't overwrite
-        return false;
-    fclose(src);
+    {
+	//file does exist, don't overwrite
+	fclose(src);
+	return false;
+    }
 
     FILE* dst = fopen(dstfile, "wb");
 

@@ -36,7 +36,7 @@ void Tile::WriteTile(FILE* file)
 {
 	uint16_t tile = GetRawTile();
 	fputc(tile>>8, file);
-	fputc(tile&0xFF, file);
+	fputc(tile, file);
 }
 
 void Tile::ClearTile(void)
