@@ -24,6 +24,6 @@ public:
     void SetID(int ID);
 
 protected:
-    uint16_t GetRawTile(void);
     void LoadFromRawTile(uint16_t);
+    uint16_t GetRawTile(void);
 };
