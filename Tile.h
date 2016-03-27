@@ -6,10 +6,10 @@
 class Tile
 {
 public: 
-    uint8_t priority;
-    uint8_t paletteLine;
-    uint8_t xFlip;
-    uint8_t yFlip;
+    uint8_t priority : 1;
+    uint8_t paletteLine : 2;
+    uint8_t xFlip : 1;
+    uint8_t yFlip : 1;
     uint16_t tileID;
 
     Tile(void);

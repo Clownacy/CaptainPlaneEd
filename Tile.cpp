@@ -36,19 +36,19 @@ void Tile::WriteTile(FILE* file)
 
 void Tile::LoadFromRawTile(uint16_t tile)
 {
+	this->priority = (tile & 0x8000) >> 15;
 	this->paletteLine = (tile & 0x6000) >> 13;
-	this->xFlip = (tile & 0x0800) >> 8;
-	this->yFlip = (tile & 0x1000) >> 8;
-	this->priority = (tile & 0x8000) >> 8;
+	this->yFlip = (tile & 0x1000) >> 12;
+	this->xFlip = (tile & 0x0800) >> 11;
 	this->tileID = tile & 0x07FF;
 }
 
 uint16_t Tile::GetRawTile(void)
 {
-	return ((this->priority << 8)
-	      | (this->xFlip << 8)
-	      | (this->yFlip << 8)
+	return ((this->priority << 15)
 	      | (this->paletteLine << 13)
+	      | (this->yFlip << 12)
+	      | (this->xFlip << 11)
 	      |  this->tileID);
 }
 
@@ -68,17 +68,17 @@ void Tile::SetPal(uint8_t paletteLine)
 
 void Tile::FlipX(void)
 {
-	this->xFlip ^= 0x08;
+	this->xFlip ^= 1;
 }
 
 void Tile::FlipY(void)
 {
-	this->yFlip ^= 0x10;
+	this->yFlip ^= 1;
 }
 
 void Tile::SwapPriority(void)
 {
-	this->priority ^= 0x80;
+	this->priority ^= 1;
 }
 
 void Tile::SetID(int ID)

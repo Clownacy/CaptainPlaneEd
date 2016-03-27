@@ -187,7 +187,7 @@ void Graphics::DrawTileSingle(int x, int y, Tile tile) {
             DrawTileNone(x, y);
             DrawTileInvalid(x, y);
         } else if ((tile.tileID || !this->tileOffset) && tile.paletteLine < paletteLines)
-            DrawSurface(tiles[(tile.tileID) - tileOffset][tile.paletteLine][(tile.xFlip | tile.yFlip)>>3], screen, 8*x, 8*y);
+            DrawSurface(tiles[(tile.tileID) - tileOffset][tile.paletteLine][tile.xFlip | (tile.yFlip<<1)], screen, 8*x, 8*y);
         else DrawTileBlank(x, y, tile);
     } else DrawTileNone(x, y);
 }
