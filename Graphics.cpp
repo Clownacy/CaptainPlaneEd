@@ -229,15 +229,29 @@ void Graphics::DrawTileSingle(int x, int y, const Tile tile)
 {
     y -= screenTileYOffset;
     x -= screenTileXOffset;
-    if (x >= xDisplaySize) return;
-    if ((tile.priority && highPriorityDisplay) || (!tile.priority && lowPriorityDisplay)) {
-        if ((tile.tileID) - tileOffset >= this->tileAmount) {
+    if (x < xDisplaySize)
+    {
+        if ((tile.priority && highPriorityDisplay) || (!tile.priority && lowPriorityDisplay))
+        {
+            if ((tile.tileID) - tileOffset >= this->tileAmount)
+            {
+                DrawTileNone(x, y);
+                DrawTileInvalid(x, y);
+            }
+            else if ((tile.tileID || !this->tileOffset) && tile.paletteLine < paletteLines)
+            {
+                DrawSurface(tiles[(tile.tileID) - tileOffset][tile.paletteLine][tile.xFlip | (tile.yFlip<<1)], screen, 8*x, 8*y);
+            }
+            else
+            {
+                DrawTileBlank(x, y, tile);
+            }
+        }
+        else
+        {
             DrawTileNone(x, y);
-            DrawTileInvalid(x, y);
-        } else if ((tile.tileID || !this->tileOffset) && tile.paletteLine < paletteLines)
-            DrawSurface(tiles[(tile.tileID) - tileOffset][tile.paletteLine][tile.xFlip | (tile.yFlip<<1)], screen, 8*x, 8*y);
-        else DrawTileBlank(x, y, tile);
-    } else DrawTileNone(x, y);
+        }
+    }
 }
 
 bool Graphics::CheckSelValidPos(const int x, const int y)
@@ -275,7 +289,8 @@ void Graphics::DrawTileFullColor(const int x, const int y, const uint32_t color)
 void Graphics::DrawTileInvalid(const int x, const int y)
 {
     //PosTileToScreen(&x, &y);
-    for (int i=0; i < 8; ++i) {
+    for (int i=0; i < 8; ++i)
+    {
         DrawPixel(8*x+i, 8*y+i);
         DrawPixel(8*x+i, 8*y+7-i);
     }
@@ -297,7 +312,8 @@ void Graphics::DrawPixel(const int x, const int y)
 void Graphics::DrawRect(int x, int y)
 {
     PosTileToScreen(&x, &y);
-    for (int i=0; i < 8; ++i) {
+    for (int i=0; i < 8; ++i)
+    {
         DrawPixel(x+i, y);
         DrawPixel(x+i, y+7);
         DrawPixel(x, y+i);
@@ -309,11 +325,13 @@ void Graphics::DrawRect(int x, int y)
 void Graphics::DrawFreeRect(int x, int y, const int xSize, const int ySize)
 {
     PosTileToScreen(&x, &y);
-    for (int i=0; i < 8*ySize; ++i) {
+    for (int i=0; i < 8*ySize; ++i)
+    {
         DrawPixel(x, y+i);
         DrawPixel(x + 8*xSize - 1, y+i);
     }
-    for (int i=0; i < 8*xSize; ++i) {
+    for (int i=0; i < 8*xSize; ++i)
+    {
         DrawPixel(x+i, y);
         DrawPixel(x+i, y + 8*ySize - 1);
     }
