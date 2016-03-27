@@ -5,7 +5,7 @@
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480	//minimum size to allow for 64x64 maps
 
-Graphics::Graphics(uint16_t xSize, uint16_t tileOffset, uint16_t tileAmount)
+Graphics::Graphics(const uint16_t xSize, const uint16_t tileOffset, const uint16_t tileAmount)
 {
     this->selXMin = std::min(8*64, 8*xSize) + 1;
     this->xDisplaySize = std::min(64, 0+xSize);
@@ -162,9 +162,9 @@ void Graphics::CreateTiles(void)
     }
 }
 
-SDL_Surface* Graphics::InitSurface(uint16_t *pixelsT, int width, int height, int bbp)
+SDL_Surface* Graphics::InitSurface(uint16_t* const pixelsT, const int width, const int height, const int bbp)
 {
-    void* pixels = pixelsT;
+    void* const pixels = pixelsT;
     SDL_Surface* surface = SDL_CreateRGBSurfaceFrom (pixels, width,
                          height, bbp, width*((bbp+7)/8), 0x0F00, 0x00F0, 0x000F, 0xF000);
 
@@ -177,7 +177,7 @@ SDL_Surface* Graphics::InitSurface(uint16_t *pixelsT, int width, int height, int
     return surface;
 }
 
-void Graphics::DrawSurface(SDL_Surface* img, SDL_Surface* screen, int x, int y)
+void Graphics::DrawSurface(SDL_Surface* const img, SDL_Surface* const screen, const int x, const int y)
 {
     SDL_Rect RectTemp;
     RectTemp.x = x;
@@ -225,7 +225,7 @@ void Graphics::ProcessDisplay(void)
 }
 
 /* map coords */
-void Graphics::DrawTileSingle(int x, int y, Tile tile)
+void Graphics::DrawTileSingle(int x, int y, const Tile tile)
 {
     y -= screenTileYOffset;
     x -= screenTileXOffset;
@@ -240,19 +240,18 @@ void Graphics::DrawTileSingle(int x, int y, Tile tile)
     } else DrawTileNone(x, y);
 }
 
-bool Graphics::CheckSelValidPos(int x, int y)
+bool Graphics::CheckSelValidPos(const int x, const int y)
 {
-    if (x>=selXMin && x<selXMin+8*selectorWidth && y>=0 && (x-selXMin)/8+selectorWidth*(y/8 + selTileYOffset)<GetTileAmount()) return true;
-    else return false;
+    return (x>=selXMin && x<selXMin+8*selectorWidth && y>=0 && (x-selXMin)/8+selectorWidth*(y/8 + selTileYOffset)<GetTileAmount());
 }
 
-void Graphics::DrawTileNone(int x, int y)
+void Graphics::DrawTileNone(const int x, const int y)
 {
     uint32_t color = SDL_MapRGB(screen->format, 0, 0, 0);
     DrawTileFullColor(x, y, color);
 }
 
-void Graphics::DrawTileBlank(int x, int y, Tile tile)
+void Graphics::DrawTileBlank(const int x, const int y, const Tile tile)
 {
     uint32_t color = SDL_MapRGB(
         screen->format,
@@ -263,7 +262,7 @@ void Graphics::DrawTileBlank(int x, int y, Tile tile)
     DrawTileFullColor(x, y, color);
 }
 
-void Graphics::DrawTileFullColor(int x, int y, uint32_t color)
+void Graphics::DrawTileFullColor(const int x, const int y, const uint32_t color)
 {
     SDL_Rect RectTemp;
     RectTemp.x = 8*x;
@@ -273,7 +272,7 @@ void Graphics::DrawTileFullColor(int x, int y, uint32_t color)
     SDL_FillRect(this->screen, &RectTemp, color);
 }
 
-void Graphics::DrawTileInvalid(int x, int y)
+void Graphics::DrawTileInvalid(const int x, const int y)
 {
     //PosTileToScreen(&x, &y);
     for (int i=0; i < 8; ++i) {
@@ -282,7 +281,7 @@ void Graphics::DrawTileInvalid(int x, int y)
     }
 }
 
-void Graphics::DrawPixel(int x, int y)
+void Graphics::DrawPixel(const int x, const int y)
 {
     if (x>=0 && x<SCREEN_WIDTH && y>=0 && y<SCREEN_HEIGHT)
     {
@@ -307,7 +306,7 @@ void Graphics::DrawRect(int x, int y)
 }
 
 /* map coords */
-void Graphics::DrawFreeRect(int x, int y, int xSize, int ySize)
+void Graphics::DrawFreeRect(int x, int y, const int xSize, const int ySize)
 {
     PosTileToScreen(&x, &y);
     for (int i=0; i < 8*ySize; ++i) {
@@ -320,7 +319,7 @@ void Graphics::DrawFreeRect(int x, int y, int xSize, int ySize)
     }
 }
 
-void Graphics::PosScreenToTile(int* x, int* y)
+void Graphics::PosScreenToTile(int* const x, int* const y)
 {
     *x /= 8;
     *y /= 8;
@@ -328,7 +327,7 @@ void Graphics::PosScreenToTile(int* x, int* y)
     *x += screenTileXOffset;
 }
 
-void Graphics::PosScreenToTileRound(int* x, int* y)
+void Graphics::PosScreenToTileRound(int* const x, int* const y)
 {
     *x = ((*x)+4)/8;
     *y = ((*y)+4)/8;
@@ -336,7 +335,7 @@ void Graphics::PosScreenToTileRound(int* x, int* y)
     *x += screenTileXOffset;
 }
 
-void Graphics::PosTileToScreen(int* x, int* y)
+void Graphics::PosTileToScreen(int* const x, int* const y)
 {
     *y -= screenTileYOffset;
     *x -= screenTileXOffset;

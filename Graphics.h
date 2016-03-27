@@ -27,23 +27,23 @@ private:
     bool highPriorityDisplay;
     bool lowPriorityDisplay;
 public:
-    Graphics(uint16_t xSize, uint16_t tileOffset, uint16_t tileAmount);
+    Graphics(const uint16_t xSize, const uint16_t tileOffset, const uint16_t tileAmount);
     void ReadPalette(const char* const filename);
     void ReadTiles(const char* const filename);
     void CreateTiles(void);
-    SDL_Surface* InitSurface(uint16_t* pixelsT, int width, int height, int bbp);
-    void DrawSurface(SDL_Surface* img, SDL_Surface* screen, int x, int y);
+    SDL_Surface* InitSurface(uint16_t* const pixelsT, int const width, const int height, const int bbp);
+    void DrawSurface(SDL_Surface* const img, SDL_Surface* const screen, const int x, const int y);
     void ClearMap(void);
     void ClearSelector(void);
     void DrawSelector(void);
-    bool CheckSelValidPos(int x, int y);
-    void DrawTileSingle(int x, int y, Tile tile);
-    void DrawTileBlank(int x, int y, Tile tile);
-    void DrawTileFullColor(int x, int y, uint32_t color);
-    void DrawTileNone(int x, int y);
-    void DrawTileInvalid(int x, int y);
+    bool CheckSelValidPos(const int x, const int y);
+    void DrawTileSingle(const int x, const int y, const Tile tile);
+    void DrawTileBlank(const int x, const int y, const Tile tile);
+    void DrawTileFullColor(const int x, const int y, const uint32_t color);
+    void DrawTileNone(const int x, const int y);
+    void DrawTileInvalid(const int x, const int y);
     void ProcessDisplay(void);
-    void SetCurrentPal(uint8_t currentPal) {this->currentPal = currentPal;}
+    void SetCurrentPal(const uint8_t currentPal) {this->currentPal = currentPal;}
     uint8_t GetCurrentPal(void) {return currentPal;}
     uint8_t GetPaletteLines(void) {return paletteLines;}
     uint8_t GetSelectorWidth(void) {return selectorWidth;}
@@ -51,9 +51,9 @@ public:
     uint16_t GetTileOffset(void) {return tileOffset;}
     void ToggleHighPriority(void) {highPriorityDisplay = !highPriorityDisplay;}
     void ToggleLowPriority(void) {lowPriorityDisplay = !lowPriorityDisplay;}
-    void DrawPixel(int x, int y);
+    void DrawPixel(const int x, const int y);
     void DrawRect(int x, int y); //x, y = tile coordinates (not pixel)
-    void DrawFreeRect(int x, int y, int xSize, int ySize);
+    void DrawFreeRect(int x, int y, const int xSize, const int ySize);
     void IncScreenOffset(void) {++screenTileYOffset;}
     void DecScreenOffset(void) {if (screenTileYOffset>0) --screenTileYOffset;}
     int GetScreenOffset(void) {return screenTileYOffset;}
@@ -63,7 +63,7 @@ public:
     void IncSelOffset(void) {++selTileYOffset;}
     void DecSelOffset(void) {if (selTileYOffset>0) --selTileYOffset;}
     int GetSelOffset(void) {return selTileYOffset;}
-    void PosScreenToTile(int* x, int* y);
-    void PosScreenToTileRound(int* x, int* y);
-    void PosTileToScreen(int* x, int* y);
+    void PosScreenToTile(int* const x, int* const y);
+    void PosScreenToTileRound(int* const x, int* const y);
+    void PosTileToScreen(int* const x, int* const y);
 };
