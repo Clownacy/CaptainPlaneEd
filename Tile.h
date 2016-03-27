@@ -18,9 +18,9 @@ public:
     void WriteTile(FILE* file);
     void ClearTile(void);
     void SetPal(uint8_t paletteLine);
-    void FlipX(void) {this->xFlip ^= 0x08;}
-    void FlipY(void) {this->yFlip ^= 0x10;}
-    void SwapPriority(void) {this->priority ^= 0x80;}
+    void FlipX(void);
+    void FlipY(void);
+    void SwapPriority(void);
     void SetID(int ID);
 
 protected:

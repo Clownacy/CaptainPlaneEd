@@ -62,6 +62,21 @@ void Tile::SetPal(uint8_t paletteLine)
 	this->paletteLine = paletteLine;
 }
 
+void Tile::FlipX(void)
+{
+	this->xFlip ^= 0x08;
+}
+
+void Tile::FlipY(void)
+{
+	this->yFlip ^= 0x10;
+}
+
+void Tile::SwapPriority(void)
+{
+	this->priority ^= 0x80;
+}
+
 void Tile::SetID(int ID)
 {
 	this->tileID = ID;
