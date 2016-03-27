@@ -45,17 +45,17 @@ void LevMap::DrawMap(void) {
     GfxStuff->ClearMap();
     for (int x=0; x < xSize; ++x)
         for (int y=0; y < ySize; ++y)
-            GfxStuff->DrawTileSingle(x, y, MapData[y][x]);
+            GfxStuff->DrawTileSingle(x, y, &MapData[y][x]);
 }
 
 void LevMap::DrawMapSection(const int xStart, const int yStart, const int xSize, const int ySize) {
     for (int x=0; x < xSize; ++x)
         for (int y=0; y < ySize; ++y)
-            GfxStuff->DrawTileSingle(xStart+x, yStart+y, MapData[yStart+y][xStart+x]);
+            GfxStuff->DrawTileSingle(xStart+x, yStart+y, &MapData[yStart+y][xStart+x]);
 }
 
 void LevMap::DrawCurrentTile(void) {
-    GfxStuff->DrawTileSingle(CurX, CurY, MapData[CurY][CurX]);
+    GfxStuff->DrawTileSingle(CurX, CurY, &MapData[CurY][CurX]);
     GfxStuff->DrawRect(CurX, CurY);
 }
 
@@ -135,7 +135,7 @@ void LevMap::CheckSelectTile(int x, int y) {
 void LevMap::RefreshTile(const uint8_t x, const uint8_t y, const bool curFlag) {
     if (CheckValidPos(x, y)) {
         if (x == CurX && y == CurY && curFlag) DrawCurrentTile();
-        else GfxStuff->DrawTileSingle(x, y, MapData[y][x]);
+        else GfxStuff->DrawTileSingle(x, y, &MapData[y][x]);
     }
 }
 
@@ -145,7 +145,7 @@ void LevMap::RefreshTileScreen(int x, int y, const bool curFlag) {
     GfxStuff->PosScreenToTile(&x, &y);
     if (CheckValidPos(x, y)) {
         if (x == CurX && y == CurY && curFlag) DrawCurrentTile();
-        else GfxStuff->DrawTileSingle(x, y, MapData[y][x]);
+        else GfxStuff->DrawTileSingle(x, y, &MapData[y][x]);
     }
 }
 
@@ -153,7 +153,7 @@ void LevMap::RefreshTileScreen(int x, int y, const bool curFlag) {
 void LevMap::DrawSelectedTile(int x, int y) {
     GfxStuff->PosScreenToTile(&x, &y);
     if (CheckValidPos(x, y))
-        GfxStuff->DrawTileSingle(x, y, SelectedTile);
+        GfxStuff->DrawTileSingle(x, y, &SelectedTile);
 }
 
 void LevMap::CheckClickTile(int x, int y) {

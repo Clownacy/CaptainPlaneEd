@@ -157,7 +157,9 @@ void Graphics::CreateTiles(void)
         {
             tiles[t][p] = new SDL_Surface*[4];
             for (int f=0; f < 4; ++f)
+	    {
                 tiles[t][p][f] = InitSurface(tileData[t][p][f], 8, 8, 16);
+	    }
         }
     }
 }
@@ -225,22 +227,22 @@ void Graphics::ProcessDisplay(void)
 }
 
 /* map coords */
-void Graphics::DrawTileSingle(int x, int y, const Tile tile)
+void Graphics::DrawTileSingle(int x, int y, const Tile* const tile)
 {
     y -= screenTileYOffset;
     x -= screenTileXOffset;
     if (x < xDisplaySize)
     {
-        if ((tile.priority && highPriorityDisplay) || (!tile.priority && lowPriorityDisplay))
+        if ((tile->priority && highPriorityDisplay) || (!tile->priority && lowPriorityDisplay))
         {
-            if ((tile.tileID) - tileOffset >= this->tileAmount)
+            if ((tile->tileID) - tileOffset >= this->tileAmount)
             {
                 DrawTileNone(x, y);
                 DrawTileInvalid(x, y);
             }
-            else if ((tile.tileID || !this->tileOffset) && tile.paletteLine < paletteLines)
+            else if ((tile->tileID || !this->tileOffset) && tile->paletteLine < paletteLines)
             {
-                DrawSurface(tiles[(tile.tileID) - tileOffset][tile.paletteLine][tile.xFlip | (tile.yFlip<<1)], screen, 8*x, 8*y);
+                DrawSurface(tiles[(tile->tileID) - tileOffset][tile->paletteLine][tile->xFlip | (tile->yFlip<<1)], screen, 8*x, 8*y);
             }
             else
             {
@@ -265,13 +267,13 @@ void Graphics::DrawTileNone(const int x, const int y)
     DrawTileFullColor(x, y, color);
 }
 
-void Graphics::DrawTileBlank(const int x, const int y, const Tile tile)
+void Graphics::DrawTileBlank(const int x, const int y, const Tile* const tile)
 {
     uint32_t color = SDL_MapRGB(
         screen->format,
-        (palette[tile.paletteLine][0] & 0x0F00)>>4,
-        (palette[tile.paletteLine][0] & 0x00F0),
-        (palette[tile.paletteLine][0] & 0x000F)<<4
+        (palette[tile->paletteLine][0] & 0x0F00)>>4,
+        (palette[tile->paletteLine][0] & 0x00F0),
+        (palette[tile->paletteLine][0] & 0x000F)<<4
     );
     DrawTileFullColor(x, y, color);
 }

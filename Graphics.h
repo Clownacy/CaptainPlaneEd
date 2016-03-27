@@ -37,8 +37,8 @@ public:
     void ClearSelector(void);
     void DrawSelector(void);
     bool CheckSelValidPos(const int x, const int y);
-    void DrawTileSingle(const int x, const int y, const Tile tile);
-    void DrawTileBlank(const int x, const int y, const Tile tile);
+    void DrawTileSingle(const int x, const int y, const Tile* const tile);
+    void DrawTileBlank(const int x, const int y, const Tile* const tile);
     void DrawTileFullColor(const int x, const int y, const uint32_t color);
     void DrawTileNone(const int x, const int y);
     void DrawTileInvalid(const int x, const int y);
