@@ -41,7 +41,7 @@ void LevMap::SaveMap(const char* const filename) {
     fclose(mapfile);
 }
 
-void LevMap::DrawMap() {
+void LevMap::DrawMap(void) {
     GfxStuff->ClearMap();
     for (int x=0; x < xSize; ++x)
         for (int y=0; y < ySize; ++y)
@@ -54,7 +54,7 @@ void LevMap::DrawMapSection(const int xStart, const int yStart, const int xSize,
             GfxStuff->DrawTileSingle(xStart+x, yStart+y, MapData[yStart+y][xStart+x]);
 }
 
-void LevMap::DrawCurrentTile() {
+void LevMap::DrawCurrentTile(void) {
     GfxStuff->DrawTileSingle(CurX, CurY, MapData[CurY][CurX]);
     GfxStuff->DrawRect(CurX, CurY);
 }
@@ -73,13 +73,13 @@ void LevMap::SelectTile(const int ID) {
     SelectedTile.SetPal(GfxStuff->GetCurrentPal());
 }
 
-void LevMap::SelectedTileIncrID() {
+void LevMap::SelectedTileIncrID(void) {
     if (SelectedTile.tileID == 0 && GfxStuff->GetTileOffset() != 0) SelectedTile.tileID = GfxStuff->GetTileOffset();
     else if (SelectedTile.tileID + 1 < GfxStuff->GetTileAmount() + GfxStuff->GetTileOffset())
         ++SelectedTile.tileID;
 }
 
-void LevMap::SelectedTileDecrID() {
+void LevMap::SelectedTileDecrID(void) {
     if (SelectedTile.tileID > GfxStuff->GetTileOffset()) --SelectedTile.tileID;
     else SelectedTile.tileID = 0;
 }
@@ -94,17 +94,17 @@ void LevMap::SetTile(const uint8_t x, const uint8_t y) {
     DrawCurrentTile();
 }
 
-void LevMap::SetTileSelected() {
+void LevMap::SetTileSelected(void) {
     MapData[CurY][CurX] = SelectedTile;
     RefreshTile(CurX, CurY, false);
     DrawCurrentTile();
 }
 
-void LevMap::SelectTileCur() {
+void LevMap::SelectTileCur(void) {
     SelectedTile = MapData[CurY][CurX];
 }
 
-void LevMap::ClearCurrentTile() {
+void LevMap::ClearCurrentTile(void) {
     MapData[CurY][CurX].ClearTile();
     DrawCurrentTile();
 }
@@ -180,7 +180,7 @@ void LevMap::SetCurrentTile(const int ID) {
     }
 }
 
-void LevMap::CurShiftRight() {
+void LevMap::CurShiftRight(void) {
     RefreshTile(CurX, CurY, false);
     if (CurX < xSize - 1 || CurY < ySize - 1) {
         CurY += ++CurX / xSize;
@@ -189,7 +189,7 @@ void LevMap::CurShiftRight() {
     DrawCurrentTile();
 }
 
-void LevMap::CurShiftLeft() {
+void LevMap::CurShiftLeft(void) {
     RefreshTile(CurX, CurY, false);    
     if (CurX > 0 || CurY > 0) {
         if (--CurX < 0) { 
@@ -200,13 +200,13 @@ void LevMap::CurShiftLeft() {
     DrawCurrentTile();
 }
 
-void LevMap::CurShiftDown() {
+void LevMap::CurShiftDown(void) {
     RefreshTile(CurX, CurY, false);    
     if (CurY < ySize-1) ++CurY;
     DrawCurrentTile();
 }
 
-void LevMap::CurShiftUp() {
+void LevMap::CurShiftUp(void) {
     RefreshTile(CurX, CurY, false);    
     if (CurY > 0) --CurY;
     DrawCurrentTile();
