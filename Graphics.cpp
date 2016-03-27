@@ -82,11 +82,11 @@ void Graphics::ReadPalette(const char* const filename) {
         for (int entry=0; entry < 16; ++entry)
 	{
 		// Convert BGR to RGB
-		uint16_t palette_entry = (fgetc(palfile)<<8)|fgetc(palfile);
-		uint16_t blue = (palette_entry&0x0F00) >> 8;
-		uint16_t green = palette_entry&0x00F0;
-		uint16_t red = (palette_entry&0x000F) << 8;
-		uint16_t alpha = 0xF000;
+		const uint16_t palette_entry = (fgetc(palfile)<<8)|fgetc(palfile);
+		const uint16_t blue = (palette_entry&0x0F00) >> 8;
+		const uint16_t green = palette_entry&0x00F0;
+		const uint16_t red = (palette_entry&0x000F) << 8;
+		const uint16_t alpha = 0xF000;
 		palette[line][entry] = red|green|blue|alpha;
 	}
 
