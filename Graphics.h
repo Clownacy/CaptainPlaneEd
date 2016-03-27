@@ -63,7 +63,7 @@ public:
     void IncSelOffset() {++selTileYOffset;}
     void DecSelOffset() {if (selTileYOffset>0) --selTileYOffset;}
     int GetSelOffset() {return selTileYOffset;}
-    void PosScreenToTile(int& x, int& y);
-    void PosScreenToTileRound(int& x, int& y);
-    void PosTileToScreen(int& x, int& y);
+    void PosScreenToTile(int* x, int* y);
+    void PosScreenToTileRound(int* x, int* y);
+    void PosTileToScreen(int* x, int* y);
 };

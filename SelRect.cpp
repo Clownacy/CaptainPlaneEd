@@ -79,7 +79,7 @@ void SelRect::TakeSection() {
    parameters: the cursor position */
 void SelRect::SelInit(int x, int y) {
     if (MapData != NULL) SelClearRect();
-    GfxStuff->PosScreenToTileRound(x, y);
+    GfxStuff->PosScreenToTileRound(&x, &y);
     xStart = x;
     yStart = y;
     AdaptStartBounds();
@@ -88,7 +88,7 @@ void SelRect::SelInit(int x, int y) {
 /* Sets the ending position of the rectangle and grabs data from the map
    parameters: the cursor position */
 void SelRect::SelFinalize(int x, int y) {
-    GfxStuff->PosScreenToTileRound(x, y);
+    GfxStuff->PosScreenToTileRound(&x, &y);
     if (x < xStart) {int temp = x; x = xStart; xStart = temp;}
     if (y < yStart) {int temp = y; y = yStart; yStart = temp;}
     xSize = x - xStart;

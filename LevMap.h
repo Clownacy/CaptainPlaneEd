@@ -14,30 +14,30 @@ private:
     
     friend class SelRect;
 public:
-    LevMap(uint8_t xSize, uint8_t ySize, Graphics* GfxStuff);
-    void LoadMap(const char* filename);
-    void SaveMap(const char* filename);
+    LevMap(const uint8_t xSize, const uint8_t ySize, Graphics* const GfxStuff);
+    void LoadMap(const char* const filename);
+    void SaveMap(const char* const filename);
     void DrawMap();
-    void DrawMapSection(int xStart, int yStart, int xSize, int ySize);
+    void DrawMapSection(const int xStart, const int yStart, const int xSize, const int ySize);
     void DrawCurrentTile();
-    void RefreshTile(uint8_t x, uint8_t y, bool curFlag);
-    void RefreshTileScreen(int x, int y, bool curFlag);
-    void DrawSelectedTile(int x, int y);
-    void SelectTile(int ID);
+    void RefreshTile(const uint8_t x, const uint8_t y, const bool curFlag);
+    void RefreshTileScreen(const int x, const int y, const bool curFlag);
+    void DrawSelectedTile(const int x, const int y);
+    void SelectTile(const int ID);
     void SelectedTileIncrID();
     void SelectedTileDecrID();
-    void SetCurrentTile(int ID);
-    void SelectTile(uint8_t x, uint8_t y);
+    void SetCurrentTile(const int ID);
+    void SelectTile(const uint8_t x, const uint8_t y);
     void SelectTileCur();
-    void SetTile(uint8_t x, uint8_t y);
+    void SetTile(const uint8_t x, const uint8_t y);
     void SetTileSelected(); //Selected tile to current position
     void ClearCurrentTile();
-    void SetPalCurrent(uint8_t palette);
-    void SetPalSelectedTile(uint8_t palette);
-    void CheckSetTile(int x, int y);
-    void CheckSelectTile(int x, int y);
-    void CheckClickTile(int x, int y);
-    bool CheckValidPos(int x, int y);
+    void SetPalCurrent(const uint8_t palette);
+    void SetPalSelectedTile(const uint8_t palette);
+    void CheckSetTile(const int x, const int y);
+    void CheckSelectTile(const int x, const int y);
+    void CheckClickTile(const int x, const int y);
+    bool CheckValidPos(const int x, const int y);
     void CurShiftRight();
     void CurShiftLeft();
     void CurShiftDown();

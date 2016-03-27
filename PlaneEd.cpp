@@ -13,7 +13,7 @@ const char* const FILE_MAP_TEMP = "tempmap.bin";
 const char* const FILE_ART_TEMP = "tempart.bin";
 const char* const FILE_PAL_TEMP = "temppal.bin";
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     ProjectData PrjData(argv[1]);
     PrjData.art.Load(FILE_ART_TEMP);

@@ -222,7 +222,7 @@ void Graphics::DrawTileFullColor(int x, int y, Uint32 color) {
 }
 
 void Graphics::DrawTileInvalid(int x, int y) {
-    //PosTileToScreen(x, y);
+    //PosTileToScreen(&x, &y);
     for (int i=0; i < 8; ++i) {
         DrawPixel(8*x+i, 8*y+i);
         DrawPixel(8*x+i, 8*y+7-i);
@@ -240,7 +240,7 @@ void Graphics::DrawPixel(int x, int y) {
 
 /* map coords */
 void Graphics::DrawRect(int x, int y) {
-    PosTileToScreen(x, y);
+    PosTileToScreen(&x, &y);
     for (int i=0; i < 8; ++i) {
         DrawPixel(x+i, y);
         DrawPixel(x+i, y+7);
@@ -251,7 +251,7 @@ void Graphics::DrawRect(int x, int y) {
 
 /* map coords */
 void Graphics::DrawFreeRect(int x, int y, int xSize, int ySize) {
-    PosTileToScreen(x, y);
+    PosTileToScreen(&x, &y);
     for (int i=0; i < 8*ySize; ++i) {
         DrawPixel(x, y+i);
         DrawPixel(x + 8*xSize - 1, y+i);
@@ -262,23 +262,23 @@ void Graphics::DrawFreeRect(int x, int y, int xSize, int ySize) {
     }
 }
 
-void Graphics::PosScreenToTile(int& x, int& y) {
-    x /= 8;
-    y /= 8;
-    y += screenTileYOffset;
-    x += screenTileXOffset;
+void Graphics::PosScreenToTile(int* x, int* y) {
+    *x /= 8;
+    *y /= 8;
+    *y += screenTileYOffset;
+    *x += screenTileXOffset;
 }
 
-void Graphics::PosScreenToTileRound(int& x, int& y) {
-    x = (x+4)/8;
-    y = (y+4)/8;
-    y += screenTileYOffset;
-    x += screenTileXOffset;
+void Graphics::PosScreenToTileRound(int* x, int* y) {
+    *x = ((*x)+4)/8;
+    *y = ((*y)+4)/8;
+    *y += screenTileYOffset;
+    *x += screenTileXOffset;
 }
 
-void Graphics::PosTileToScreen(int& x, int& y) {
-    y -= screenTileYOffset;
-    x -= screenTileXOffset;
-    x *= 8;
-    y *= 8;
+void Graphics::PosTileToScreen(int* x, int* y) {
+    *y -= screenTileYOffset;
+    *x -= screenTileXOffset;
+    *x *= 8;
+    *y *= 8;
 }
