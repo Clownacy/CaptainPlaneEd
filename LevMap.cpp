@@ -6,6 +6,10 @@ LevMap::LevMap(const uint8_t xSize, const uint8_t ySize, Graphics* const GfxStuf
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid map size. Must be at least 1x1.", NULL);
         exit(1);
     }
+    else if (xSize > 64 || ySize > 64) {
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid map size. Must be 64x64 or smaller.", NULL);
+        exit(1);
+    }
     this->xSize=xSize;
     this->ySize=ySize;
     MapData = new Tile*[ySize];
