@@ -284,14 +284,14 @@ void Graphics::DrawTileInvalid(int x, int y)
 
 void Graphics::DrawPixel(int x, int y)
 {
-    if (x<0 || x>=SCREEN_WIDTH || y<0 || y>=SCREEN_HEIGHT)
-	    return;
+    if (x>=0 && x<SCREEN_WIDTH && y>=0 && y<SCREEN_HEIGHT)
+    {
+        uint32_t color = SDL_MapRGB(screen->format, 0xE0, 0xB0, 0xD0);
 
-    uint32_t color = SDL_MapRGB(screen->format, 0xE0, 0xB0, 0xD0);
-
-    uint32_t* pixel;
-    pixel = (uint32_t*) screen->pixels + y*screen->pitch/4 + x;
-    *pixel = color;
+        uint32_t* pixel;
+        pixel = (uint32_t*) screen->pixels + y*screen->pitch/4 + x;
+        *pixel = color;
+    }
 }
 
 /* map coords */
