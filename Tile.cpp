@@ -3,7 +3,7 @@
 
 #include "Tile.h"
 
-Tile::Tile()
+Tile::Tile(void)
 {
 	this->tileID = 0;
 	this->paletteLine = 0;
@@ -39,7 +39,7 @@ void Tile::WriteTile(FILE* file)
 	fputc(tile&0xFF, file);
 }
 
-void Tile::ClearTile()
+void Tile::ClearTile(void)
 {
 	this->tileID = 0;
 	this->paletteLine = 0;

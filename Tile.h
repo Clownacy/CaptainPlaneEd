@@ -11,16 +11,18 @@ public:
     uint8_t xFlip;
     uint8_t yFlip;
     uint16_t tileID;
-public:
-    Tile();
+
+    Tile(void);
     Tile(const Tile& tile);
     void ReadTile(FILE* file);
     void WriteTile(FILE* file);
-    void ClearTile();
-    uint16_t GetRawTile(void);
+    void ClearTile(void);
     void SetPal(uint8_t paletteLine);
-    void FlipX() {this->xFlip ^= 0x08;}
-    void FlipY() {this->yFlip ^= 0x10;}
-    void SwapPriority() {this->priority ^= 0x80;}
+    void FlipX(void) {this->xFlip ^= 0x08;}
+    void FlipY(void) {this->yFlip ^= 0x10;}
+    void SwapPriority(void) {this->priority ^= 0x80;}
     void SetID(int ID);
+
+protected:
+    uint16_t GetRawTile(void);
 };
