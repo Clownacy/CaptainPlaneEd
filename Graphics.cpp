@@ -5,6 +5,8 @@
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480	//minimum size to allow for 64x64 maps
 
+#define PALETTE_ENTRIES_PER_LINE 16
+
 Graphics::Graphics(const uint16_t xSize, const uint16_t tileOffset, const uint16_t tileAmount)
 {
     this->selXMin = std::min(8*64, 8*xSize) + 1;
@@ -73,9 +75,9 @@ void Graphics::ReadPalette(const char* const filename)
     }
 
     fseek(palfile, 0, SEEK_END);
-    paletteLines = ftell(palfile)/0x20;
+    paletteLines = ftell(palfile)/(PALETTE_ENTRIES_PER_LINE*sizeof(uint16_t));
     rewind(palfile);
- 
+
     if (paletteLines > 4)
     {
         paletteLines = 4;
@@ -86,18 +88,18 @@ void Graphics::ReadPalette(const char* const filename)
         exit(1);        
     }
 
-    palette = new uint16_t[paletteLines][16];
+    palette = new uint16_t[paletteLines][PALETTE_ENTRIES_PER_LINE];
     for (int line=0; line < paletteLines; ++line)
     {
-        for (int entry=0; entry < 16; ++entry)
+        for (int entry=0; entry < PALETTE_ENTRIES_PER_LINE; ++entry)
 	{
-		// Convert BGR to RGB
-		const uint16_t palette_entry = (fgetc(palfile)<<8)|fgetc(palfile);
-		const uint16_t blue = (palette_entry&0x0F00) >> 8;
-		const uint16_t green = palette_entry&0x00F0;
-		const uint16_t red = (palette_entry&0x000F) << 8;
-		const uint16_t alpha = 0xF000;
-		palette[line][entry] = alpha|red|green|blue;
+	    // Convert BGR to RGB
+	    const uint16_t palette_entry = (fgetc(palfile)<<8)|fgetc(palfile);
+	    const uint16_t blue = (palette_entry&0x0F00) >> 8;
+	    const uint16_t green = palette_entry&0x00F0;
+	    const uint16_t red = (palette_entry&0x000F) << 8;
+	    const uint16_t alpha = 0xF000;
+	    palette[line][entry] = alpha|red|green|blue;
 	}
     }
 
@@ -124,7 +126,7 @@ void Graphics::ReadTiles(const char* const filename)
             tileData[tile][pal_line] = new uint16_t*[4];
             for (int flip=0; flip < 4; ++flip)
 	    {
-		    tileData[tile][pal_line][flip] = new uint16_t[8*8];
+                tileData[tile][pal_line][flip] = new uint16_t[8*8];
 	    }
             for (int i=0; i < (8*8)/2; ++i)
 	    {
