@@ -12,13 +12,13 @@ Tile::Tile(void)
 	this->priority = 0;
 }
 
-Tile::Tile(const Tile& tile)
+Tile::Tile(const Tile* const tile)
 {
-	this->tileID = tile.tileID;
-	this->paletteLine = tile.paletteLine;
-	this->xFlip = tile.xFlip;
-	this->yFlip = tile.yFlip;
-	this->priority = tile.priority;
+	this->tileID = tile->tileID;
+	this->paletteLine = tile->paletteLine;
+	this->xFlip = tile->xFlip;
+	this->yFlip = tile->yFlip;
+	this->priority = tile->priority;
 }
 
 void Tile::ReadTile(FILE* file)

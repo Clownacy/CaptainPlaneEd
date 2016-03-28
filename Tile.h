@@ -13,7 +13,7 @@ public:
     uint16_t tileID;
 
     Tile(void);
-    Tile(const Tile& tile);
+    Tile(const Tile* const tile);
     void ReadTile(FILE* file);
     void WriteTile(FILE* file);
     void ClearTile(void);

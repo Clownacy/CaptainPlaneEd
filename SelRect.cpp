@@ -13,17 +13,17 @@ SelRect::SelRect(Graphics* GfxStuff, LevMap* LevelMap) {
 }
 
 /* copy constructor */
-SelRect::SelRect(const SelRect& sr) {
-    xStart = sr.xStart;
-    yStart = sr.yStart;
-    xSize = sr.xSize;
-    ySize = sr.ySize;
-    if (sr.MapData != NULL) {
+SelRect::SelRect(SelRect* const sr) {
+    xStart = sr->xStart;
+    yStart = sr->yStart;
+    xSize = sr->xSize;
+    ySize = sr->ySize;
+    if (sr->MapData != NULL) {
         MapData = new Tile**[ySize];
         for (int y=0; y < ySize; ++y) MapData[y] = new Tile*[xSize];
         for (int y=0; y < ySize; ++y) {
             for (int x=0; x < xSize; ++x) {
-                MapData[y][x] = new Tile(*sr.MapData[y][x]);
+                MapData[y][x] = new Tile(sr->MapData[y][x]);
             }
         }
     } else MapData = NULL;

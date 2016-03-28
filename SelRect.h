@@ -17,7 +17,7 @@ private:
     friend class LevMap;
 public:
     SelRect(Graphics* GfxStuff, LevMap* LevelMap);
-    SelRect(const SelRect& sr);
+    SelRect(SelRect* const sr);
     ~SelRect();
     bool isActive();
 /*    uint8_t SetXStart(int xs) {xStart = xs;}

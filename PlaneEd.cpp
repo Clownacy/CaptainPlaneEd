@@ -230,13 +230,13 @@ int main(int argc, char* argv[])
                                     case 'c':
                                         if (SelectionRect->isActive()) {
                                             if (CopyRect != NULL) delete CopyRect;
-                                            CopyRect = new SelRect(*SelectionRect);
+                                            CopyRect = new SelRect(SelectionRect);
                                         }
                                         break;
                                     case 'x':
                                         if (SelectionRect->isActive()) {
                                             if (CopyRect != NULL) delete CopyRect;
-                                            CopyRect = new SelRect(*SelectionRect);
+                                            CopyRect = new SelRect(SelectionRect);
                                             SelectionRect->clear();
                                             SelectionRect->AssignSection();
                                             LevelMap.DrawMap();
