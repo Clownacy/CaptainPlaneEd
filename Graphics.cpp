@@ -1,9 +1,11 @@
 #include <algorithm>
 
 #include "Graphics.h"
+#include "Windows.h"
 
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480	//minimum size to allow for 64x64 maps
+#define WINDOW_HEIGHT SCREEN_HEIGHT+20	//Windows menu bar adds 20 pixels
 
 #define PALETTE_ENTRIES_PER_LINE 16
 
@@ -35,7 +37,7 @@ Graphics::Graphics(const uint16_t xSize, const uint16_t tileOffset, const uint16
     }
     atexit(SDL_Quit);
     
-    window = SDL_CreateWindow("Captain PlaneEd", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+    window = SDL_CreateWindow("Captain PlaneEd", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
     if (window == NULL)
     {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unable to init SDL Window", SDL_GetError(), NULL);
@@ -63,6 +65,9 @@ Graphics::Graphics(const uint16_t xSize, const uint16_t tileOffset, const uint16
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unable to init screen SDL Texture", SDL_GetError(), NULL);
         exit(1);
     }
+
+    // Windows-only crap to generate a menu bar
+    CreateMenuBar(window);
 }
 
 void Graphics::ReadPalette(const char* const filename)

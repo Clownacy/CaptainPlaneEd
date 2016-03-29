@@ -8,6 +8,7 @@
 #include "SelRect.h"
 #include "PrjHndl.h"
 #include "Resource.h"
+#include "Windows.h"
 
 const char* const FILE_MAP_TEMP = "tempmap.bin";
 const char* const FILE_ART_TEMP = "tempart.bin";
@@ -271,6 +272,10 @@ int main(int argc, char* argv[])
                         CtrlPress = false; break;
                 }
             }
+            if (event.type == SDL_SYSWMEVENT)
+	    {
+		    HandleWindowsEvent(&event);
+	    }
             GfxStuff.ProcessDisplay();
         }
     }
