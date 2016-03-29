@@ -6,9 +6,9 @@
 #include "LevMap.h"
 #include "PrjHndl.h"
 
-void CreateMenuBar(SDL_Window* window);
-void HandleWindowsEvent(SDL_Event* event);
-bool OpenProjectFilePrompt(char* filepath);
+void CreateMenuBar(SDL_Window* const window);
+void HandleWindowsEvent(const SDL_Event* const event);
+bool OpenProjectFilePrompt(char* const filepath);
 
 enum
 {
@@ -17,7 +17,7 @@ enum
 	ID_FILE_EXIT
 };
 
-void CreateMenuBar(SDL_Window* window)
+void CreateMenuBar(SDL_Window* const window)
 {
 	SDL_SysWMinfo info;
 	SDL_VERSION(&info.version)
@@ -36,7 +36,7 @@ void CreateMenuBar(SDL_Window* window)
 	SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
 }
 
-void HandleWindowsEvent(SDL_Event* event)
+void HandleWindowsEvent(const SDL_Event* const event)
 {
 	if (event->syswm.msg->msg.win.msg == WM_COMMAND)
 	{
@@ -61,13 +61,12 @@ void HandleWindowsEvent(SDL_Event* event)
 			case ID_FILE_EXIT:
 			{
 				exit(1);
-				break;
 			}
 		}
 	}
 }
 
-bool OpenProjectFilePrompt(char* filepath)
+bool OpenProjectFilePrompt(char* const filepath)
 {
 	OPENFILENAME ofn;
         memset(&ofn, 0, sizeof(ofn));
