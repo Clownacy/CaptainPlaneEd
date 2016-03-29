@@ -6,6 +6,10 @@
 #include "LevMap.h"
 #include "PrjHndl.h"
 
+void CreateMenuBar(SDL_Window* window);
+void HandleWindowsEvent(SDL_Event* event);
+bool OpenProjectFilePrompt(char* filepath);
+
 enum
 {
 	ID_FILE_OPENPROJECT,
@@ -39,15 +43,42 @@ void HandleWindowsEvent(SDL_Event* event)
 		switch (LOWORD(event->syswm.msg->msg.win.wParam))
 		{
 			case ID_FILE_OPENPROJECT:
+			{
+				char filename[500] = "";
+				if (OpenProjectFilePrompt(filename) == true)
+				{
+					MessageBox(0, filename,"Is this your card?", MB_OK);
+				}
 				break;
+			}
 			case ID_FILE_SAVE:
+			{
 				Current_LevelMap->SaveMap(FILE_MAP_TEMP);
 				Current_ProjectData->map.Save(FILE_MAP_TEMP, Current_ProjectData->map.saveName);
 				SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Information", "Save complete.", NULL);
 				break;
+			}
 			case ID_FILE_EXIT:
+			{
 				exit(1);
 				break;
+			}
 		}
 	}
+}
+
+bool OpenProjectFilePrompt(char* filepath)
+{
+	OPENFILENAME ofn;
+        memset(&ofn, 0, sizeof(ofn));
+        ofn.lStructSize = sizeof(ofn);
+        ofn.hwndOwner = NULL;
+        ofn.lpstrFile = filepath;
+        ofn.nMaxFile = 500;
+        ofn.hInstance = NULL;
+        ofn.lpstrFilter = TEXT("All files (*.*)\0*.*\0\0");
+        ofn.nFilterIndex = 1;
+        ofn.Flags = OFN_FILEMUSTEXIST;
+        bool bRes = GetOpenFileName(&ofn);
+	return bRes;
 }

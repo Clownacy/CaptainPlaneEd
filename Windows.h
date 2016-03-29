@@ -2,5 +2,6 @@
 
 #include <SDL2/SDL.h>
 
-void CreateMenuBar(SDL_Window* window);
-void HandleWindowsEvent(SDL_Event* event);
+extern void CreateMenuBar(SDL_Window* window);
+extern void HandleWindowsEvent(SDL_Event* event);
+extern bool OpenProjectFilePrompt(char* filepath);

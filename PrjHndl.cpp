@@ -6,6 +6,7 @@
 #include "PrjHndl.h"
 #include "TxtRead.h"
 #include "Resource.h"
+#include "Windows.h"
 
 ProjectData::ProjectData(const char* const prjtxt) {
     tileOffset = 0;
@@ -13,8 +14,13 @@ ProjectData::ProjectData(const char* const prjtxt) {
 
     std::ifstream prjfile(prjtxt, std::ios::in);
     if (!prjfile.is_open()) {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Please drag and drop your project file onto this program to start it.", NULL);
-        exit(1);
+	char filename[500] = "";
+	OpenProjectFilePrompt(filename);
+	prjfile.open(filename, std::ios::in);
+        if (!prjfile.is_open()) {
+            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not open project file.", NULL);
+            exit(1);
+        }
     }
 
     while (!prjfile.eof()) {
