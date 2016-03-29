@@ -2,6 +2,10 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_syswm.h>
 
+#include "Common.h"
+#include "LevMap.h"
+#include "PrjHndl.h"
+
 enum
 {
 	ID_FILE_OPENPROJECT,
@@ -37,6 +41,9 @@ void HandleWindowsEvent(SDL_Event* event)
 			case ID_FILE_OPENPROJECT:
 				break;
 			case ID_FILE_SAVE:
+				Current_LevelMap->SaveMap(FILE_MAP_TEMP);
+				Current_ProjectData->map.Save(FILE_MAP_TEMP, Current_ProjectData->map.saveName);
+				SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Information", "Save complete.", NULL);
 				break;
 			case ID_FILE_EXIT:
 				exit(1);

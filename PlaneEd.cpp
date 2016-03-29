@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <SDL2/SDL.h>
 
+#include "Common.h"
 #include "Tile.h"
 #include "LevMap.h"
 #include "Graphics.h"
@@ -10,19 +11,20 @@
 #include "Resource.h"
 #include "Windows.h"
 
-const char* const FILE_MAP_TEMP = "tempmap.bin";
-const char* const FILE_ART_TEMP = "tempart.bin";
-const char* const FILE_PAL_TEMP = "temppal.bin";
+ProjectData* Current_ProjectData;
+LevMap* Current_LevelMap;
 
 int main(int argc, char* argv[])
 {
     ProjectData PrjData(argv[1]);
+    Current_ProjectData = &PrjData;
     PrjData.art.Load(FILE_ART_TEMP);
     PrjData.map.Load(FILE_MAP_TEMP);
     PrjData.pal.Load(FILE_PAL_TEMP);
 
     Graphics GfxStuff(PrjData.map.xSize, PrjData.tileOffset, PrjData.art.tileAmount);
     LevMap LevelMap(PrjData.map.xSize, PrjData.map.ySize, &GfxStuff);
+    Current_LevelMap = &LevelMap;
 
     GfxStuff.ReadPalette(FILE_PAL_TEMP);
     GfxStuff.ReadTiles(FILE_ART_TEMP);
