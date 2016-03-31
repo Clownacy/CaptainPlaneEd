@@ -5,10 +5,9 @@
 #include "Common.h"
 #include "LevMap.h"
 #include "PrjHndl.h"
+#include "Windows.h"
 
-void CreateMenuBar(SDL_Window* const window);
-void HandleWindowsEvent(const SDL_Event* const event);
-bool OpenProjectFilePrompt(char* const filepath);
+HWND hWnd;
 
 enum
 {
@@ -22,7 +21,7 @@ void CreateMenuBar(SDL_Window* const window)
 	SDL_SysWMinfo info;
 	SDL_VERSION(&info.version)
 	SDL_GetWindowWMInfo(window,&info);
-	HWND hWnd = info.info.win.window;
+	hWnd = info.info.win.window;
 
 	HMENU hMenu = CreateMenu();
 	HMENU hSubMenu = CreatePopupMenu();
@@ -71,12 +70,12 @@ bool OpenProjectFilePrompt(char* const filepath)
 	OPENFILENAME ofn;
         memset(&ofn, 0, sizeof(ofn));
         ofn.lStructSize = sizeof(ofn);
-        ofn.hwndOwner = NULL;
-        ofn.lpstrFile = filepath;
-        ofn.nMaxFile = 500;
+        ofn.hwndOwner = hWnd;
         ofn.hInstance = NULL;
         ofn.lpstrFilter = TEXT("PlaneEd project file (*.txt)\0*.txt\0\0");
         ofn.nFilterIndex = 1;
+        ofn.lpstrFile = filepath;
+        ofn.nMaxFile = 500;
         ofn.Flags = OFN_FILEMUSTEXIST;
         bool bRes = GetOpenFileName(&ofn);
 	return bRes;
