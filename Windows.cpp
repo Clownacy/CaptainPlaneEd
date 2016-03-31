@@ -57,16 +57,13 @@ void HandleWindowsEvent(const SDL_Event* const event)
 					CurProject = new Project(filename, MainScreen);
 
 					//Process initial display
-					CurProject->LevelMap->DrawMap();
-					CurProject->GfxStuff->DrawSelector();
+					CurProject->Redraw();
 				}
 				break;
 			}
 			case ID_FILE_SAVE:
 			{
-				Current_LevelMap->SaveMap(FILE_MAP_TEMP);
-				Current_ProjectData->map.Save(FILE_MAP_TEMP, Current_ProjectData->map.saveName);
-				SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Information", "Save complete.", NULL);
+				CurProject->Save();
 				break;
 			}
 			case ID_FILE_EXIT:

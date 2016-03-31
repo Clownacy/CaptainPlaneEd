@@ -27,3 +27,17 @@ Project::Project(char* const parameter_filepath, Screen* const MainScreen)
 	SelectionRect = new SelRect(this->GfxStuff, this->LevelMap);
 	CopyRect = new SelRect(this->GfxStuff, this->LevelMap);
 }
+
+void Project::Save(void)
+{
+	CurProject->LevelMap->SaveMap(FILE_MAP_TEMP);
+	CurProject->PrjData->map.Save(FILE_MAP_TEMP, CurProject->PrjData->map.saveName);
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Information", "Save complete.", NULL);
+}
+
+void Project::Redraw(void)
+{
+	CurProject->LevelMap->DrawMap();
+	CurProject->GfxStuff->DrawSelector();
+	CurProject->SelectionRect->SelDrawRect();
+}

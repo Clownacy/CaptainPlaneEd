@@ -258,17 +258,13 @@ int main(int argc, char* argv[])
                     case SDLK_F9:
 		        if (CurProject != NULL)
 			{
-                            CurProject->LevelMap->SaveMap(FILE_MAP_TEMP);
-			    CurProject->PrjData->map.Save(FILE_MAP_TEMP, CurProject->PrjData->map.saveName);
-			    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Information", "Save complete.", NULL);
+                            CurProject->Save();
 			}
 			break;
                     case SDLK_F10: //redraw whole screen
 		        if (CurProject != NULL)
 			{
-                            CurProject->LevelMap->DrawMap();
-                            CurProject->GfxStuff->DrawSelector();
-                            CurProject->SelectionRect->SelDrawRect();
+                            CurProject->Redraw();
 			}
 			break;
                     case SDLK_BACKSPACE:

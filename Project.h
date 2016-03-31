@@ -15,4 +15,6 @@ public:
 	SelRect* CopyRect;
 
 	Project(char* const parameter_filepath, Screen* MainScreen);
+	void Save(void);
+	void Redraw(void);
 };
