@@ -63,7 +63,10 @@ void HandleWindowsEvent(const SDL_Event* const event)
 			}
 			case MENUBAR_FILE_SAVE:
 			{
-				CurProject->Save();
+				if (CurProject != NULL)
+				{
+					CurProject->Save();
+				}
 				break;
 			}
 			case MENUBAR_FILE_CLOSE:
