@@ -2,15 +2,13 @@
 
 #include <SDL2/SDL.h>
 
+#include "Screen.h"
 #include "Tile.h"
 
 class Graphics
 {
 private:
-    SDL_Window* window;
-    SDL_Renderer* render;
-    SDL_Texture* texture;
-    SDL_Surface* screen;
+    Screen* MainScreen;
     uint16_t (*palette)[16];
     SDL_Surface**** tiles;    //surface data: [tile][pal][flip]
     uint16_t**** tileData;   //pixel data: [tile][pal][flip][64]
@@ -27,7 +25,7 @@ private:
     bool highPriorityDisplay;
     bool lowPriorityDisplay;
 public:
-    Graphics(const uint16_t xSize, const uint16_t tileOffset, const uint16_t tileAmount);
+    Graphics(const uint16_t xSize, const uint16_t tileOffset, const uint16_t tileAmount, Screen* const Screen);
     void ReadPalette(const char* const filename);
     void ReadTiles(const char* const filename);
     void CreateTiles(void);
@@ -42,7 +40,6 @@ public:
     void DrawTileFullColor(const int x, const int y, const uint32_t color);
     void DrawTileNone(const int x, const int y);
     void DrawTileInvalid(const int x, const int y);
-    void ProcessDisplay(void);
     void SetCurrentPal(const uint8_t currentPal) {this->currentPal = currentPal;}
     uint8_t GetCurrentPal(void) {return currentPal;}
     uint8_t GetPaletteLines(void) {return paletteLines;}

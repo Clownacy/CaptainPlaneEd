@@ -1,16 +1,15 @@
 #include <algorithm>
+#include <SDL2/SDL.h>
 
 #include "Graphics.h"
+#include "Screen.h"
 #include "Windows.h"
-
-#define SCREEN_WIDTH 640
-#define SCREEN_HEIGHT 480	//minimum size to allow for 64x64 maps
-#define WINDOW_HEIGHT SCREEN_HEIGHT+20	//Windows menu bar adds 20 pixels
 
 #define PALETTE_ENTRIES_PER_LINE 16
 
-Graphics::Graphics(const uint16_t xSize, const uint16_t tileOffset, const uint16_t tileAmount)
+Graphics::Graphics(const uint16_t xSize, const uint16_t tileOffset, const uint16_t tileAmount, Screen* const Screen)
 {
+    this->MainScreen = Screen;
     this->selXMin = std::min(8*64, 8*xSize) + 1;
     this->xDisplaySize = std::min(64, 0+xSize);
     this->tileOffset = tileOffset;
@@ -29,45 +28,6 @@ Graphics::Graphics(const uint16_t xSize, const uint16_t tileOffset, const uint16
         if (8 * (xSize+selectorWidth) < SCREEN_WIDTH) selectorWidth += 8;
         else break;
     }
-
-    if (SDL_Init(SDL_INIT_VIDEO)<0)
-    {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unable to init SDL video", SDL_GetError(), NULL);
-        exit(1);
-    }
-    atexit(SDL_Quit);
-    
-    window = SDL_CreateWindow("Captain PlaneEd", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-    if (window == NULL)
-    {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unable to init SDL Window", SDL_GetError(), NULL);
-        exit(1);
-    }
-    
-    render = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    if (render == NULL)
-    {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unable to init SDL Renderer", SDL_GetError(), NULL);
-        exit(1);
-    }
-    
-    SDL_RenderSetLogicalSize(render, SCREEN_WIDTH, SCREEN_HEIGHT);
-
-    screen = SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0, 0, 0, 0);
-    if (screen==NULL)
-    {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unable to init screen SDL Surface", SDL_GetError(), NULL);
-        exit(1);
-    }
-    texture = SDL_CreateTextureFromSurface(render, screen);
-    if (texture==NULL)
-    {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unable to init screen SDL Texture", SDL_GetError(), NULL);
-        exit(1);
-    }
-
-    // Windows-only crap to generate a menu bar
-    CreateMenuBar(window);
 }
 
 void Graphics::ReadPalette(const char* const filename)
@@ -196,41 +156,33 @@ void Graphics::DrawSurface(SDL_Surface* const img, SDL_Surface* const screen, co
 
 void Graphics::ClearMap(void)
 {
-    uint32_t color = SDL_MapRGB(screen->format, 0, 0, 0);
+    uint32_t color = SDL_MapRGB(MainScreen->screen->format, 0, 0, 0);
     SDL_Rect RectTemp;
     RectTemp.x = 0;
     RectTemp.y = 0;
     RectTemp.w = selXMin-1;
     RectTemp.h = SCREEN_HEIGHT;
-    SDL_FillRect(this->screen, &RectTemp, color);    
+    SDL_FillRect(MainScreen->screen, &RectTemp, color);    
 }
 
 void Graphics::ClearSelector(void)
 {
-    uint32_t color = SDL_MapRGB(screen->format, 0, 0, 0);
+    uint32_t color = SDL_MapRGB(MainScreen->screen->format, 0, 0, 0);
     SDL_Rect RectTemp;
     RectTemp.x = selXMin;
     RectTemp.y = 0;
     RectTemp.w = 8*selectorWidth;
     RectTemp.h = SCREEN_HEIGHT;
-    SDL_FillRect(this->screen, &RectTemp, color);
+    SDL_FillRect(MainScreen->screen, &RectTemp, color);
 }
 
 void Graphics::DrawSelector(void)
 {
     ClearSelector();
     for (int i=0; i < tileAmount; ++i)
-        DrawSurface(tiles[i][currentPal][0], this->screen, selXMin + 8*(i%selectorWidth), 8*(i/selectorWidth - selTileYOffset));
+        DrawSurface(tiles[i][currentPal][0], MainScreen->screen, selXMin + 8*(i%selectorWidth), 8*(i/selectorWidth - selTileYOffset));
     //SDL_Flip(screen);
-    ProcessDisplay();
-}
-
-void Graphics::ProcessDisplay(void)
-{
-    SDL_UpdateTexture(texture, NULL, screen->pixels, screen->pitch);
-    SDL_RenderClear(render);
-    SDL_RenderCopy(render, texture, NULL, NULL);
-    SDL_RenderPresent(render);
+    MainScreen->ProcessDisplay();
 }
 
 /* map coords */
@@ -249,7 +201,7 @@ void Graphics::DrawTileSingle(int x, int y, const Tile* const tile)
             }
             else if ((tile->tileID || !this->tileOffset) && tile->paletteLine < paletteLines)
             {
-                DrawSurface(tiles[(tile->tileID) - tileOffset][tile->paletteLine][tile->xFlip | (tile->yFlip<<1)], screen, 8*x, 8*y);
+                DrawSurface(tiles[(tile->tileID) - tileOffset][tile->paletteLine][tile->xFlip | (tile->yFlip<<1)], MainScreen->screen, 8*x, 8*y);
             }
             else
             {
@@ -270,14 +222,14 @@ bool Graphics::CheckSelValidPos(const int x, const int y)
 
 void Graphics::DrawTileNone(const int x, const int y)
 {
-    uint32_t color = SDL_MapRGB(screen->format, 0, 0, 0);
+    uint32_t color = SDL_MapRGB(MainScreen->screen->format, 0, 0, 0);
     DrawTileFullColor(x, y, color);
 }
 
 void Graphics::DrawTileBlank(const int x, const int y, const Tile* const tile)
 {
     uint32_t color = SDL_MapRGB(
-        screen->format,
+        MainScreen->screen->format,
         (palette[tile->paletteLine][0] & 0x0F00)>>4,
         (palette[tile->paletteLine][0] & 0x00F0),
         (palette[tile->paletteLine][0] & 0x000F)<<4
@@ -292,7 +244,7 @@ void Graphics::DrawTileFullColor(const int x, const int y, const uint32_t color)
     RectTemp.y = 8*y;
     RectTemp.w = 8;
     RectTemp.h = 8;
-    SDL_FillRect(this->screen, &RectTemp, color);
+    SDL_FillRect(MainScreen->screen, &RectTemp, color);
 }
 
 void Graphics::DrawTileInvalid(const int x, const int y)
@@ -309,10 +261,10 @@ void Graphics::DrawPixel(const int x, const int y)
 {
     if (x>=0 && x<SCREEN_WIDTH && y>=0 && y<SCREEN_HEIGHT)
     {
-        uint32_t color = SDL_MapRGB(screen->format, 0xE0, 0xB0, 0xD0);
+        uint32_t color = SDL_MapRGB(MainScreen->screen->format, 0xE0, 0xB0, 0xD0);
 
         uint32_t* pixel;
-        pixel = (uint32_t*) screen->pixels + y*screen->pitch/4 + x;
+        pixel = (uint32_t*) MainScreen->screen->pixels + y*MainScreen->screen->pitch/4 + x;
         *pixel = color;
     }
 }

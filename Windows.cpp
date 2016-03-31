@@ -75,7 +75,7 @@ bool OpenProjectFilePrompt(char* const filepath)
         ofn.lpstrFile = filepath;
         ofn.nMaxFile = 500;
         ofn.hInstance = NULL;
-        ofn.lpstrFilter = TEXT("All files (*.*)\0*.*\0\0");
+        ofn.lpstrFilter = TEXT("PlaneEd project file (*.txt)\0*.txt\0\0");
         ofn.nFilterIndex = 1;
         ofn.Flags = OFN_FILEMUSTEXIST;
         bool bRes = GetOpenFileName(&ofn);

@@ -15,7 +15,8 @@ ProjectData::ProjectData(const char* const prjtxt) {
     std::ifstream prjfile(prjtxt, std::ios::in);
     if (!prjfile.is_open()) {
 	char filename[500] = "";
-	OpenProjectFilePrompt(filename);
+	if (OpenProjectFilePrompt(filename) == false)
+	    exit(1);
 	prjfile.open(filename, std::ios::in);
         if (!prjfile.is_open()) {
             SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not open project file.", NULL);
