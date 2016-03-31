@@ -28,8 +28,8 @@ Project::Project(char* const parameter_filepath, Screen* const MainScreen)
 
 	this->LevelMap->LoadMap(FILE_MAP_TEMP);
 
-	SelectionRect = new SelRect(this->GfxStuff, this->LevelMap);
-	CopyRect = new SelRect(this->GfxStuff, this->LevelMap);
+	this->SelectionRect = new SelRect(this->GfxStuff, this->LevelMap);
+	this->CopyRect = new SelRect(this->GfxStuff, this->LevelMap);
 }
 
 void Project::Save(void)

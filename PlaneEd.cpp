@@ -14,7 +14,7 @@
 #include "WinAPI.h"
 
 Screen* MainScreen;
-Project* CurProject;
+Project* CurProject = NULL;
 
 ProjectData* Current_ProjectData;
 LevMap* Current_LevelMap;

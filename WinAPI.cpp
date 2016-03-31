@@ -69,6 +69,7 @@ void HandleWindowsEvent(const SDL_Event* const event)
 			case MENUBAR_FILE_CLOSE:
 			{
 				delete CurProject;
+				CurProject = NULL;	// Deleting an object does not NULL this pointer, so we have to do it ourselves
 				MainScreen->Fill(0, 0, 0);
 				break;
 			}
