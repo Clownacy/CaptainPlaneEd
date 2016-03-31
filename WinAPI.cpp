@@ -31,6 +31,7 @@ void CreateMenuBar(void)
 	AppendMenu(hSubMenu, MF_STRING, MENUBAR_FILE_CLOSE, "&Close");
 	AppendMenu(hSubMenu, MF_STRING, MENUBAR_FILE_EXIT, "&Exit");
 
+	EnableMenuItem(hSubMenu, MENUBAR_FILE_SAVE, MF_GRAYED);
 	EnableMenuItem(hSubMenu, MENUBAR_FILE_CLOSE, MF_GRAYED);
 
 	SetMenu(hWnd, hMenu);
@@ -53,6 +54,7 @@ void HandleWindowsEvent(const SDL_Event* const event)
 						delete CurProject;
 					CurProject = new Project(filename, MainScreen);
 
+					EnableMenuItem(hSubMenu, MENUBAR_FILE_SAVE, MF_ENABLED);
 					EnableMenuItem(hSubMenu, MENUBAR_FILE_CLOSE, MF_ENABLED);
 
 					//Process initial display
@@ -63,16 +65,15 @@ void HandleWindowsEvent(const SDL_Event* const event)
 			}
 			case MENUBAR_FILE_SAVE:
 			{
-				if (CurProject != NULL)
-				{
-					CurProject->Save();
-				}
+				CurProject->Save();
 				break;
 			}
 			case MENUBAR_FILE_CLOSE:
 			{
 				delete CurProject;
 				CurProject = NULL;	// Deleting an object does not NULL this pointer, so we have to do it ourselves
+				EnableMenuItem(hSubMenu, MENUBAR_FILE_SAVE, MF_GRAYED);
+				EnableMenuItem(hSubMenu, MENUBAR_FILE_CLOSE, MF_GRAYED);
 				MainScreen->Fill(0, 0, 0);
 				break;
 			}
