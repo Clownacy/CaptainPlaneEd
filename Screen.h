@@ -1,6 +1,6 @@
 #pragma once
 
-#include <stdint.h>
+#include <cstdint>
 #include <SDL2/SDL.h>
 
 #define SCREEN_WIDTH 640

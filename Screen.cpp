@@ -1,4 +1,4 @@
-#include <stdint.h>
+#include <cstdint>
 #include <SDL2/SDL.h>
 
 #include "Screen.h"

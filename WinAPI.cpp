@@ -3,7 +3,6 @@
 #include <SDL2/SDL_syswm.h>
 
 #include "Common.h"
-#include "LevMap.h"
 #include "PrjHndl.h"
 #include "WinAPI.h"
 
