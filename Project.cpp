@@ -12,7 +12,6 @@ const char* const FILE_PAL_TEMP = "temppal.bin";
 Project::Project(char* const parameter_filepath, Screen* const MainScreen)
 {
 	this->PrjData = new ProjectData(parameter_filepath);
-	Current_ProjectData = this->PrjData;
 	this->PrjData->art.Load(FILE_ART_TEMP);
 	this->PrjData->map.Load(FILE_MAP_TEMP);
 	this->PrjData->pal.Load(FILE_PAL_TEMP);
@@ -20,7 +19,6 @@ Project::Project(char* const parameter_filepath, Screen* const MainScreen)
 	this->GfxStuff = new Graphics(this->PrjData->map.xSize, this->PrjData->tileOffset, this->PrjData->art.tileAmount, MainScreen);
 
 	this->LevelMap = new LevMap(this->PrjData->map.xSize, this->PrjData->map.ySize, this->GfxStuff);
-	Current_LevelMap = this->LevelMap;
 
 	this->GfxStuff->ReadPalette(FILE_PAL_TEMP);
 	this->GfxStuff->ReadTiles(FILE_ART_TEMP);

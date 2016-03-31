@@ -16,9 +16,6 @@
 Screen* MainScreen;
 Project* CurProject = NULL;
 
-ProjectData* Current_ProjectData;
-LevMap* Current_LevelMap;
-
 int main(int argc, char* argv[])
 {
     // Create our window
