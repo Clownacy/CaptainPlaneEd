@@ -4,6 +4,8 @@
 #include "Screen.h"
 #include "WinAPI.h"
 
+#define WINDOW_HEIGHT SCREEN_HEIGHT+20	//Windows menu bar adds 20 pixels
+
 Screen::Screen(void)
 {
     if (SDL_Init(SDL_INIT_VIDEO)<0)
