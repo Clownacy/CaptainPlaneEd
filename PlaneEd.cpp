@@ -24,6 +24,8 @@ int main(int argc, char* argv[])
     // Create our window
     MainScreen = new Screen;
 
+    SDL_FillRect(MainScreen->screen, NULL, SDL_MapRGB(MainScreen->screen->format, 0, 0, 0));
+
     // For backwards-compatibility, we want project files that are drag-and-dropped
     // onto the executable to be automatically loaded when it starts.
     // First, we have to make sure the file's actually there.
@@ -327,7 +329,7 @@ int main(int argc, char* argv[])
                             CurProject->GfxStuff->DrawSelector();
 			}
 			break;
-                    case ' ':
+                    case SDLK_SPACE:
 		        if (CurProject != NULL)
 			{
                             CurProject->LevelMap->ClearCurrentTile();
