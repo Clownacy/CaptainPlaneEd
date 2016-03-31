@@ -10,9 +10,9 @@ HWND hWnd;
 
 enum
 {
-	ID_FILE_OPENPROJECT,
-	ID_FILE_SAVE,
-	ID_FILE_EXIT
+	MENUBAR_FILE_OPENPROJECT,
+	MENUBAR_FILE_SAVE,
+	MENUBAR_FILE_EXIT
 };
 
 namespace WinAPI
@@ -31,9 +31,9 @@ void CreateMenuBar(void)
 	HMENU hMenu = CreateMenu();
 	HMENU hSubMenu = CreatePopupMenu();
 	AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu, "&File");
-	AppendMenu(hSubMenu, MF_STRING, ID_FILE_OPENPROJECT, "&Open project file");
-	AppendMenu(hSubMenu, MF_STRING, ID_FILE_SAVE, "&Save");
-	AppendMenu(hSubMenu, MF_STRING, ID_FILE_EXIT, "&Exit");
+	AppendMenu(hSubMenu, MF_STRING, MENUBAR_FILE_OPENPROJECT, "&Open project file");
+	AppendMenu(hSubMenu, MF_STRING, MENUBAR_FILE_SAVE, "&Save");
+	AppendMenu(hSubMenu, MF_STRING, MENUBAR_FILE_EXIT, "&Exit");
 
 	SetMenu(hWnd, hMenu);
 	
@@ -46,7 +46,7 @@ void HandleWindowsEvent(const SDL_Event* const event)
 	{
 		switch (LOWORD(event->syswm.msg->msg.win.wParam))
 		{
-			case ID_FILE_OPENPROJECT:
+			case MENUBAR_FILE_OPENPROJECT:
 			{
 				char filename[500] = "";
 				if (WinAPI::OpenProjectFilePrompt(filename) == true)
@@ -61,12 +61,12 @@ void HandleWindowsEvent(const SDL_Event* const event)
 				}
 				break;
 			}
-			case ID_FILE_SAVE:
+			case MENUBAR_FILE_SAVE:
 			{
 				CurProject->Save();
 				break;
 			}
-			case ID_FILE_EXIT:
+			case MENUBAR_FILE_EXIT:
 			{
 				exit(1);
 			}
