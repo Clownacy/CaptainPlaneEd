@@ -6,17 +6,12 @@
 #include "PrjHndl.h"
 #include "WinAPI.h"
 
-HWND hWnd;
-
-enum
-{
-	MENUBAR_FILE_OPENPROJECT,
-	MENUBAR_FILE_SAVE,
-	MENUBAR_FILE_EXIT
-};
-
 namespace WinAPI
 {
+
+HWND hWnd;
+HMENU hMenu;
+HMENU hSubMenu;
 
 void SaveHWND(SDL_Window* const window)
 {
@@ -28,12 +23,15 @@ void SaveHWND(SDL_Window* const window)
 
 void CreateMenuBar(void)
 {
-	HMENU hMenu = CreateMenu();
-	HMENU hSubMenu = CreatePopupMenu();
+	hMenu = CreateMenu();
+	hSubMenu = CreatePopupMenu();
 	AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu, "&File");
 	AppendMenu(hSubMenu, MF_STRING, MENUBAR_FILE_OPENPROJECT, "&Open project file");
 	AppendMenu(hSubMenu, MF_STRING, MENUBAR_FILE_SAVE, "&Save");
+	AppendMenu(hSubMenu, MF_STRING, MENUBAR_FILE_CLOSE, "&Close");
 	AppendMenu(hSubMenu, MF_STRING, MENUBAR_FILE_EXIT, "&Exit");
+
+	EnableMenuItem(hSubMenu, MENUBAR_FILE_CLOSE, MF_GRAYED);
 
 	SetMenu(hWnd, hMenu);
 	
@@ -55,6 +53,8 @@ void HandleWindowsEvent(const SDL_Event* const event)
 						delete CurProject;
 					CurProject = new Project(filename, MainScreen);
 
+					EnableMenuItem(hSubMenu, MENUBAR_FILE_CLOSE, MF_ENABLED);
+
 					//Process initial display
 					MainScreen->Fill(0, 0, 0);
 					CurProject->Redraw();
@@ -64,6 +64,12 @@ void HandleWindowsEvent(const SDL_Event* const event)
 			case MENUBAR_FILE_SAVE:
 			{
 				CurProject->Save();
+				break;
+			}
+			case MENUBAR_FILE_CLOSE:
+			{
+				delete CurProject;
+				MainScreen->Fill(0, 0, 0);
 				break;
 			}
 			case MENUBAR_FILE_EXIT:

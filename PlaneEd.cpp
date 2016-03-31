@@ -35,6 +35,8 @@ int main(int argc, char* argv[])
 	fclose(prjfile);
         CurProject = new Project(argv[1], MainScreen);
 
+	EnableMenuItem(WinAPI::hSubMenu, MENUBAR_FILE_CLOSE, MF_ENABLED);
+
         // Process initial display
         CurProject->Redraw();
     }
