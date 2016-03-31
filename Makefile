@@ -6,7 +6,7 @@ LIBS	= `sdl2-config --libs`
 
 OBJDIR = ./build
 
-OBJECTS = $(OBJDIR)/PlaneEd.o $(OBJDIR)/TxtRead.o $(OBJDIR)/PrjHndl.o $(OBJDIR)/Tile.o $(OBJDIR)/Graphics.o $(OBJDIR)/LevMap.o $(OBJDIR)/SelRect.o $(OBJDIR)/Resource.o $(OBJDIR)/Screen.o
+OBJECTS = $(OBJDIR)/PlaneEd.o $(OBJDIR)/TxtRead.o $(OBJDIR)/PrjHndl.o $(OBJDIR)/Tile.o $(OBJDIR)/Graphics.o $(OBJDIR)/LevMap.o $(OBJDIR)/SelRect.o $(OBJDIR)/Resource.o $(OBJDIR)/Screen.o $(OBJDIR)/Project.o
 OBJECTS += $(OBJDIR)/Windows.o
 OBJECTS += $(OBJDIR)/KidDec.o $(OBJDIR)/ReadPlain.o
 OBJECTS += $(OBJDIR)/comper.o $(OBJDIR)/enigma.o $(OBJDIR)/kosinski.o $(OBJDIR)/nemesis.o $(OBJDIR)/saxman.o
@@ -41,6 +41,9 @@ $(OBJDIR)/Resource.o: Resource.cpp
 	$(GCC) $(CFLAGS) -c $^ -o $@
 
 $(OBJDIR)/Screen.o: Screen.cpp
+	$(GCC) $(CFLAGS) -c $^ -o $@
+
+$(OBJDIR)/Project.o: Project.cpp
 	$(GCC) $(CFLAGS) -c $^ -o $@
 
 $(OBJDIR)/Windows.o: Windows.cpp
