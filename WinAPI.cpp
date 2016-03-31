@@ -11,7 +11,9 @@ namespace WinAPI
 
 HWND hWnd;
 HMENU hMenu;
-HMENU hSubMenu;
+HMENU hSubMenu_File;
+HMENU hSubMenu_View;
+COLORREF custom_colours[16];
 
 void SaveHWND(SDL_Window* const window)
 {
@@ -24,13 +26,16 @@ void SaveHWND(SDL_Window* const window)
 void CreateMenuBar(void)
 {
 	hMenu = CreateMenu();
-	hSubMenu = CreatePopupMenu();
-	AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu, "&File");
-	AppendMenu(hSubMenu, MF_STRING, MENUBAR_FILE_OPENPROJECT, "&Open");
-	AppendMenu(hSubMenu, MF_STRING | MF_GRAYED, MENUBAR_FILE_SAVE, "&Save");
-	AppendMenu(hSubMenu, MF_STRING | MF_GRAYED, MENUBAR_FILE_CLOSE, "&Close");
-	AppendMenu(hSubMenu, MF_SEPARATOR, 0, NULL);
-	AppendMenu(hSubMenu, MF_STRING, MENUBAR_FILE_EXIT, "&Exit");
+	hSubMenu_File = CreatePopupMenu();
+	AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu_File, "&File");
+	AppendMenu(hSubMenu_File, MF_STRING, MENUBAR_FILE_OPENPROJECT, "&Open");
+	AppendMenu(hSubMenu_File, MF_STRING | MF_GRAYED, MENUBAR_FILE_SAVE, "&Save");
+	AppendMenu(hSubMenu_File, MF_STRING | MF_GRAYED, MENUBAR_FILE_CLOSE, "&Close");
+	AppendMenu(hSubMenu_File, MF_SEPARATOR, 0, NULL);
+	AppendMenu(hSubMenu_File, MF_STRING, MENUBAR_FILE_EXIT, "&Exit");
+	hSubMenu_View = CreatePopupMenu();
+	AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu_View, "&View");
+	AppendMenu(hSubMenu_View, MF_STRING, MENUBAR_VIEW_BACKGROUNDCOLOUR, "&Background Colour...");
 
 	SetMenu(hWnd, hMenu);
 
@@ -52,11 +57,11 @@ void HandleWindowsEvent(const SDL_Event* const event)
 						delete CurProject;
 					CurProject = new Project(filename, MainScreen);
 
-					EnableMenuItem(hSubMenu, MENUBAR_FILE_SAVE, MF_ENABLED);
-					EnableMenuItem(hSubMenu, MENUBAR_FILE_CLOSE, MF_ENABLED);
+					EnableMenuItem(hSubMenu_File, MENUBAR_FILE_SAVE, MF_ENABLED);
+					EnableMenuItem(hSubMenu_File, MENUBAR_FILE_CLOSE, MF_ENABLED);
 
 					//Process initial display
-					MainScreen->Fill(0, 0, 0);
+					MainScreen->Fill(MainScreen->background_colour.red, MainScreen->background_colour.green, MainScreen->background_colour.blue);
 					CurProject->Redraw();
 				}
 				break;
@@ -70,14 +75,33 @@ void HandleWindowsEvent(const SDL_Event* const event)
 			{
 				delete CurProject;
 				CurProject = NULL;	// Deleting an object does not NULL this pointer, so we have to do it ourselves
-				EnableMenuItem(hSubMenu, MENUBAR_FILE_SAVE, MF_GRAYED);
-				EnableMenuItem(hSubMenu, MENUBAR_FILE_CLOSE, MF_GRAYED);
-				MainScreen->Fill(0, 0, 0);
+				EnableMenuItem(hSubMenu_File, MENUBAR_FILE_SAVE, MF_GRAYED);
+				EnableMenuItem(hSubMenu_File, MENUBAR_FILE_CLOSE, MF_GRAYED);
+				MainScreen->Fill(MainScreen->background_colour.red, MainScreen->background_colour.green, MainScreen->background_colour.blue);
 				break;
 			}
 			case MENUBAR_FILE_EXIT:
 			{
 				exit(1);
+			}
+			case MENUBAR_VIEW_BACKGROUNDCOLOUR:
+			{
+				CHOOSECOLOR user_colour;
+				user_colour.lStructSize = sizeof(user_colour);
+				user_colour.hwndOwner = hWnd;
+				user_colour.rgbResult = RGB(MainScreen->background_colour.red,MainScreen->background_colour.green,MainScreen->background_colour.blue);
+				user_colour.lpCustColors = custom_colours;
+				user_colour.Flags = CC_RGBINIT;
+				if (ChooseColor(&user_colour) == true)
+				{
+					MainScreen->background_colour.red = GetRValue(user_colour.rgbResult);
+					MainScreen->background_colour.green = GetGValue(user_colour.rgbResult);
+					MainScreen->background_colour.blue = GetBValue(user_colour.rgbResult);
+					MainScreen->Fill(MainScreen->background_colour.red, MainScreen->background_colour.green, MainScreen->background_colour.blue);
+					if (CurProject != NULL)
+						CurProject->Redraw();
+				}
+				break;
 			}
 		}
 	}

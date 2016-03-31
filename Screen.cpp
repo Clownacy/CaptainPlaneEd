@@ -44,6 +44,8 @@ Screen::Screen(void)
         exit(1);
     }
 
+    this->background_colour = {.red = 0, .green = 0, .blue = 0};
+
     // Windows-only crap to generate a menu bar
     WinAPI::SaveHWND(window);
     WinAPI::CreateMenuBar();
