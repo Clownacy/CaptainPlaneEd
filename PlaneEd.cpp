@@ -36,8 +36,7 @@ int main(int argc, char* argv[])
         CurProject = new Project(argv[1], MainScreen);
 
         // Process initial display
-        CurProject->LevelMap->DrawMap();
-        CurProject->GfxStuff->DrawSelector();
+        CurProject->Redraw();
     }
 
     bool CtrlPress = false;
