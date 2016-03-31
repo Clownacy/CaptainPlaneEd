@@ -26,13 +26,14 @@ void CreateMenuBar(void)
 	hMenu = CreateMenu();
 	hSubMenu = CreatePopupMenu();
 	AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu, "&File");
-	AppendMenu(hSubMenu, MF_STRING, MENUBAR_FILE_OPENPROJECT, "&Open project file");
+	AppendMenu(hSubMenu, MF_STRING, MENUBAR_FILE_OPENPROJECT, "&Open");
 	AppendMenu(hSubMenu, MF_STRING | MF_GRAYED, MENUBAR_FILE_SAVE, "&Save");
 	AppendMenu(hSubMenu, MF_STRING | MF_GRAYED, MENUBAR_FILE_CLOSE, "&Close");
+	AppendMenu(hSubMenu, MF_SEPARATOR, 0, NULL);
 	AppendMenu(hSubMenu, MF_STRING, MENUBAR_FILE_EXIT, "&Exit");
 
 	SetMenu(hWnd, hMenu);
-	
+
 	SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
 }
 
