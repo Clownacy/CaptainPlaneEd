@@ -3,7 +3,7 @@
 
 #include "Graphics.h"
 #include "Screen.h"
-#include "Windows.h"
+#include "WinAPI.h"
 
 #define PALETTE_ENTRIES_PER_LINE 16
 

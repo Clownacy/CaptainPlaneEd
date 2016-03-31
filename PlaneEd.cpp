@@ -11,7 +11,7 @@
 #include "Project.h"
 #include "PrjHndl.h"
 #include "Resource.h"
-#include "Windows.h"
+#include "WinAPI.h"
 
 Screen* MainScreen;
 Project* CurProject;

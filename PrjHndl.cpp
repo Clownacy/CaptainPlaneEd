@@ -6,7 +6,7 @@
 #include "PrjHndl.h"
 #include "TxtRead.h"
 #include "Resource.h"
-#include "Windows.h"
+#include "WinAPI.h"
 
 ProjectData::ProjectData(const char* const prjtxt) {
     tileOffset = 0;

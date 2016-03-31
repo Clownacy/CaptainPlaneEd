@@ -1,7 +1,7 @@
 #include <SDL2/SDL.h>
 
 #include "Screen.h"
-#include "Windows.h"
+#include "WinAPI.h"
 
 Screen::Screen(void)
 {

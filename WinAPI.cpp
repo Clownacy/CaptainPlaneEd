@@ -5,7 +5,7 @@
 #include "Common.h"
 #include "LevMap.h"
 #include "PrjHndl.h"
-#include "Windows.h"
+#include "WinAPI.h"
 
 HWND hWnd;
 
