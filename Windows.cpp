@@ -52,7 +52,13 @@ void HandleWindowsEvent(const SDL_Event* const event)
 				char filename[500] = "";
 				if (WinAPI::OpenProjectFilePrompt(filename) == true)
 				{
-					MessageBox(0, filename,"Is this your card?", MB_OK);
+					if (CurProject != NULL)
+						delete CurProject;
+					CurProject = new Project(filename, MainScreen);
+
+					//Process initial display
+					CurProject->LevelMap->DrawMap();
+					CurProject->GfxStuff->DrawSelector();
 				}
 				break;
 			}

@@ -13,16 +13,6 @@ ProjectData::ProjectData(const char* const prjtxt) {
     letterOffset = numberOffset = 0;
 
     std::ifstream prjfile(prjtxt, std::ios::in);
-    if (!prjfile.is_open()) {
-	char filename[500] = "";
-	if (WinAPI::OpenProjectFilePrompt(filename) == false)
-	    exit(1);
-	prjfile.open(filename, std::ios::in);
-        if (!prjfile.is_open()) {
-            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not open project file.", NULL);
-            exit(1);
-        }
-    }
 
     while (!prjfile.eof()) {
         char line[256];
