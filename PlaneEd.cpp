@@ -278,7 +278,7 @@ int main(int argc, char* argv[])
             }
             if (event.type == SDL_SYSWMEVENT)
 	    {
-		    HandleWindowsEvent(&event);
+		    WinAPI::HandleWindowsEvent(&event);
 	    }
             MainScreen.ProcessDisplay();
         }

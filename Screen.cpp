@@ -42,7 +42,8 @@ Screen::Screen(void)
     }
 
     // Windows-only crap to generate a menu bar
-    CreateMenuBar(window);
+    WinAPI::SaveHWND(window);
+    WinAPI::CreateMenuBar();
 }
 
 void Screen::ProcessDisplay(void)

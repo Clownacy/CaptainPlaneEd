@@ -16,13 +16,19 @@ enum
 	ID_FILE_EXIT
 };
 
-void CreateMenuBar(SDL_Window* const window)
+namespace WinAPI
+{
+
+void SaveHWND(SDL_Window* const window)
 {
 	SDL_SysWMinfo info;
 	SDL_VERSION(&info.version)
 	SDL_GetWindowWMInfo(window,&info);
 	hWnd = info.info.win.window;
+}
 
+void CreateMenuBar(void)
+{
 	HMENU hMenu = CreateMenu();
 	HMENU hSubMenu = CreatePopupMenu();
 	AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu, "&File");
@@ -44,7 +50,7 @@ void HandleWindowsEvent(const SDL_Event* const event)
 			case ID_FILE_OPENPROJECT:
 			{
 				char filename[500] = "";
-				if (OpenProjectFilePrompt(filename) == true)
+				if (WinAPI::OpenProjectFilePrompt(filename) == true)
 				{
 					MessageBox(0, filename,"Is this your card?", MB_OK);
 				}
@@ -79,4 +85,6 @@ bool OpenProjectFilePrompt(char* const filepath)
         ofn.Flags = OFN_FILEMUSTEXIST;
         bool bRes = GetOpenFileName(&ofn);
 	return bRes;
+}
+
 }

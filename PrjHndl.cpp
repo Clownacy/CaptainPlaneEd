@@ -15,7 +15,7 @@ ProjectData::ProjectData(const char* const prjtxt) {
     std::ifstream prjfile(prjtxt, std::ios::in);
     if (!prjfile.is_open()) {
 	char filename[500] = "";
-	if (OpenProjectFilePrompt(filename) == false)
+	if (WinAPI::OpenProjectFilePrompt(filename) == false)
 	    exit(1);
 	prjfile.open(filename, std::ios::in);
         if (!prjfile.is_open()) {
