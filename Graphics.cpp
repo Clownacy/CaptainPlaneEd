@@ -156,31 +156,31 @@ void Graphics::DrawSurface(SDL_Surface* const img, SDL_Surface* const screen, co
 
 void Graphics::ClearMap(void)
 {
-    uint32_t color = SDL_MapRGB(MainScreen->screen->format, 0, 0, 0);
+    uint32_t color = SDL_MapRGB(MainScreen->surface->format, 0, 0, 0);
     SDL_Rect RectTemp;
     RectTemp.x = 0;
     RectTemp.y = 0;
     RectTemp.w = selXMin-1;
     RectTemp.h = SCREEN_HEIGHT;
-    SDL_FillRect(MainScreen->screen, &RectTemp, color);    
+    SDL_FillRect(MainScreen->surface, &RectTemp, color);    
 }
 
 void Graphics::ClearSelector(void)
 {
-    uint32_t color = SDL_MapRGB(MainScreen->screen->format, 0, 0, 0);
+    uint32_t color = SDL_MapRGB(MainScreen->surface->format, 0, 0, 0);
     SDL_Rect RectTemp;
     RectTemp.x = selXMin;
     RectTemp.y = 0;
     RectTemp.w = 8*selectorWidth;
     RectTemp.h = SCREEN_HEIGHT;
-    SDL_FillRect(MainScreen->screen, &RectTemp, color);
+    SDL_FillRect(MainScreen->surface, &RectTemp, color);
 }
 
 void Graphics::DrawSelector(void)
 {
     ClearSelector();
     for (int i=0; i < tileAmount; ++i)
-        DrawSurface(tiles[i][currentPal][0], MainScreen->screen, selXMin + 8*(i%selectorWidth), 8*(i/selectorWidth - selTileYOffset));
+        DrawSurface(tiles[i][currentPal][0], MainScreen->surface, selXMin + 8*(i%selectorWidth), 8*(i/selectorWidth - selTileYOffset));
     //SDL_Flip(screen);
     MainScreen->ProcessDisplay();
 }
@@ -201,7 +201,7 @@ void Graphics::DrawTileSingle(int x, int y, const Tile* const tile)
             }
             else if ((tile->tileID || !this->tileOffset) && tile->paletteLine < paletteLines)
             {
-                DrawSurface(tiles[(tile->tileID) - tileOffset][tile->paletteLine][tile->xFlip | (tile->yFlip<<1)], MainScreen->screen, 8*x, 8*y);
+                DrawSurface(tiles[(tile->tileID) - tileOffset][tile->paletteLine][tile->xFlip | (tile->yFlip<<1)], MainScreen->surface, 8*x, 8*y);
             }
             else
             {
@@ -222,14 +222,14 @@ bool Graphics::CheckSelValidPos(const int x, const int y)
 
 void Graphics::DrawTileNone(const int x, const int y)
 {
-    uint32_t color = SDL_MapRGB(MainScreen->screen->format, 0, 0, 0);
+    uint32_t color = SDL_MapRGB(MainScreen->surface->format, 0, 0, 0);
     DrawTileFullColor(x, y, color);
 }
 
 void Graphics::DrawTileBlank(const int x, const int y, const Tile* const tile)
 {
     uint32_t color = SDL_MapRGB(
-        MainScreen->screen->format,
+        MainScreen->surface->format,
         (palette[tile->paletteLine][0] & 0x0F00)>>4,
         (palette[tile->paletteLine][0] & 0x00F0),
         (palette[tile->paletteLine][0] & 0x000F)<<4
@@ -244,7 +244,7 @@ void Graphics::DrawTileFullColor(const int x, const int y, const uint32_t color)
     RectTemp.y = 8*y;
     RectTemp.w = 8;
     RectTemp.h = 8;
-    SDL_FillRect(MainScreen->screen, &RectTemp, color);
+    SDL_FillRect(MainScreen->surface, &RectTemp, color);
 }
 
 void Graphics::DrawTileInvalid(const int x, const int y)
@@ -261,10 +261,10 @@ void Graphics::DrawPixel(const int x, const int y)
 {
     if (x>=0 && x<SCREEN_WIDTH && y>=0 && y<SCREEN_HEIGHT)
     {
-        uint32_t color = SDL_MapRGB(MainScreen->screen->format, 0xE0, 0xB0, 0xD0);
+        uint32_t color = SDL_MapRGB(MainScreen->surface->format, 0xE0, 0xB0, 0xD0);
 
         uint32_t* pixel;
-        pixel = (uint32_t*) MainScreen->screen->pixels + y*MainScreen->screen->pitch/4 + x;
+        pixel = (uint32_t*) MainScreen->surface->pixels + y*MainScreen->surface->pitch/4 + x;
         *pixel = color;
     }
 }

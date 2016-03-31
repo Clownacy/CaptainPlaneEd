@@ -11,7 +11,7 @@ class Screen
 public:
 	SDL_Window* window;
 	SDL_Renderer* render;
-	SDL_Surface* screen;
+	SDL_Surface* surface;
 	SDL_Texture* texture;
 
 	Screen(void);

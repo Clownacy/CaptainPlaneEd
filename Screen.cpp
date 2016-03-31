@@ -28,16 +28,16 @@ Screen::Screen(void)
     
     SDL_RenderSetLogicalSize(render, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-    screen = SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0, 0, 0, 0);
-    if (screen==NULL)
+    surface = SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0, 0, 0, 0);
+    if (surface==NULL)
     {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unable to init screen SDL Surface", SDL_GetError(), NULL);
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unable to init surface SDL Surface", SDL_GetError(), NULL);
         exit(1);
     }
-    texture = SDL_CreateTextureFromSurface(render, screen);
+    texture = SDL_CreateTextureFromSurface(render, surface);
     if (texture==NULL)
     {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unable to init screen SDL Texture", SDL_GetError(), NULL);
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unable to init surface SDL Texture", SDL_GetError(), NULL);
         exit(1);
     }
 
@@ -48,7 +48,7 @@ Screen::Screen(void)
 
 void Screen::ProcessDisplay(void)
 {
-    SDL_UpdateTexture(texture, NULL, screen->pixels, screen->pitch);
+    SDL_UpdateTexture(texture, NULL, surface->pixels, surface->pitch);
     SDL_RenderClear(render);
     SDL_RenderCopy(render, texture, NULL, NULL);
     SDL_RenderPresent(render);

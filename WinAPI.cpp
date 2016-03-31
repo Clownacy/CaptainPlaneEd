@@ -57,7 +57,7 @@ void HandleWindowsEvent(const SDL_Event* const event)
 					CurProject = new Project(filename, MainScreen);
 
 					//Process initial display
-					SDL_FillRect(MainScreen->screen, NULL, SDL_MapRGB(MainScreen->screen->format, 0, 0, 0));
+					SDL_FillRect(MainScreen->surface, NULL, SDL_MapRGB(MainScreen->surface->format, 0, 0, 0));
 					CurProject->Redraw();
 				}
 				break;
