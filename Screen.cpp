@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <SDL2/SDL.h>
 
 #include "Screen.h"
@@ -52,4 +53,9 @@ void Screen::ProcessDisplay(void)
     SDL_RenderClear(render);
     SDL_RenderCopy(render, texture, NULL, NULL);
     SDL_RenderPresent(render);
+}
+
+void Screen::Fill(uint8_t r, uint8_t g, uint8_t b)
+{
+    SDL_FillRect(this->surface, NULL, SDL_MapRGB(this->surface->format, r, g, b));
 }

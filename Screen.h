@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdint.h>
 #include <SDL2/SDL.h>
 
 #define SCREEN_WIDTH 640
@@ -16,4 +17,5 @@ public:
 
 	Screen(void);
 	void ProcessDisplay(void);
+	void Fill(uint8_t r, uint8_t g, uint8_t b);
 };

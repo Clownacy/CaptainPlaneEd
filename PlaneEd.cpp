@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
     // Create our window
     MainScreen = new Screen;
 
-    SDL_FillRect(MainScreen->surface, NULL, SDL_MapRGB(MainScreen->surface->format, 0, 0, 0));
+    MainScreen->Fill(0, 0, 0);
 
     // For backwards-compatibility, we want project files that are drag-and-dropped
     // onto the executable to be automatically loaded when it starts.
