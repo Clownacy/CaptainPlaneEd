@@ -1,15 +1,15 @@
 #include <algorithm>
 #include <SDL2/SDL.h>
 
+#include "Common.h"
 #include "Graphics.h"
 #include "Screen.h"
 #include "WinAPI.h"
 
 #define PALETTE_ENTRIES_PER_LINE 16
 
-Graphics::Graphics(const uint16_t xSize, const uint16_t tileOffset, const uint16_t tileAmount, Screen* const Screen)
+Graphics::Graphics(const uint16_t xSize, const uint16_t tileOffset, const uint16_t tileAmount)
 {
-    this->MainScreen = Screen;
     this->selXMin = std::min(8*64, 8*xSize) + 1;
     this->xDisplaySize = std::min(64, 0+xSize);
     this->tileOffset = tileOffset;

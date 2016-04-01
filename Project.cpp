@@ -16,7 +16,7 @@ Project::Project(char* const parameter_filepath, Screen* const MainScreen)
 	this->PrjData->map.Load(FILE_MAP_TEMP);
 	this->PrjData->pal.Load(FILE_PAL_TEMP);
 
-	this->GfxStuff = new Graphics(this->PrjData->map.xSize, this->PrjData->tileOffset, this->PrjData->art.tileAmount, MainScreen);
+	this->GfxStuff = new Graphics(this->PrjData->map.xSize, this->PrjData->tileOffset, this->PrjData->art.tileAmount);
 
 	this->LevelMap = new LevMap(this->PrjData->map.xSize, this->PrjData->map.ySize, this->GfxStuff);
 

@@ -9,7 +9,6 @@
 class Graphics
 {
 private:
-    Screen* MainScreen;
     uint16_t (*palette)[16];
     SDL_Surface**** tiles;    //surface data: [tile][pal][flip]
     uint16_t**** tileData;   //pixel data: [tile][pal][flip][64]
@@ -26,7 +25,7 @@ private:
     bool highPriorityDisplay;
     bool lowPriorityDisplay;
 public:
-    Graphics(const uint16_t xSize, const uint16_t tileOffset, const uint16_t tileAmount, Screen* const Screen);
+    Graphics(const uint16_t xSize, const uint16_t tileOffset, const uint16_t tileAmount);
     void ReadPalette(const char* const filename);
     void ReadTiles(const char* const filename);
     void CreateTiles(void);
