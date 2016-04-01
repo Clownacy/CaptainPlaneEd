@@ -23,5 +23,5 @@ public:
 
 	Screen(void);
 	void ProcessDisplay(void);
-	void Fill(uint8_t r, uint8_t g, uint8_t b);
+	void Fill(uint8_t red, uint8_t green, uint8_t blue);
 };
