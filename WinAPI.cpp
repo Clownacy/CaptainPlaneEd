@@ -87,6 +87,7 @@ void HandleWindowsEvent(const SDL_Event* const event)
 			case MENUBAR_VIEW_BACKGROUNDCOLOUR:
 			{
 				CHOOSECOLOR user_colour;
+				memset(&user_colour, 0, sizeof(user_colour));
 				user_colour.lStructSize = sizeof(user_colour);
 				user_colour.hwndOwner = hWnd;
 				user_colour.rgbResult = RGB(MainScreen->BackgroundColour.red,MainScreen->BackgroundColour.green,MainScreen->BackgroundColour.blue);
