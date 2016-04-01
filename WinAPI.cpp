@@ -61,7 +61,7 @@ void HandleWindowsEvent(const SDL_Event* const event)
 					EnableMenuItem(hSubMenu_File, MENUBAR_FILE_CLOSE, MF_ENABLED);
 
 					//Process initial display
-					MainScreen->Fill(MainScreen->background_colour.red, MainScreen->background_colour.green, MainScreen->background_colour.blue);
+					MainScreen->Fill(MainScreen->BackgroundColour.red, MainScreen->BackgroundColour.green, MainScreen->BackgroundColour.blue);
 					CurProject->Redraw();
 				}
 				break;
@@ -77,7 +77,7 @@ void HandleWindowsEvent(const SDL_Event* const event)
 				CurProject = NULL;	// Deleting an object does not NULL this pointer, so we have to do it ourselves
 				EnableMenuItem(hSubMenu_File, MENUBAR_FILE_SAVE, MF_GRAYED);
 				EnableMenuItem(hSubMenu_File, MENUBAR_FILE_CLOSE, MF_GRAYED);
-				MainScreen->Fill(MainScreen->background_colour.red, MainScreen->background_colour.green, MainScreen->background_colour.blue);
+				MainScreen->Fill(MainScreen->BackgroundColour.red, MainScreen->BackgroundColour.green, MainScreen->BackgroundColour.blue);
 				break;
 			}
 			case MENUBAR_FILE_EXIT:
@@ -89,15 +89,15 @@ void HandleWindowsEvent(const SDL_Event* const event)
 				CHOOSECOLOR user_colour;
 				user_colour.lStructSize = sizeof(user_colour);
 				user_colour.hwndOwner = hWnd;
-				user_colour.rgbResult = RGB(MainScreen->background_colour.red,MainScreen->background_colour.green,MainScreen->background_colour.blue);
+				user_colour.rgbResult = RGB(MainScreen->BackgroundColour.red,MainScreen->BackgroundColour.green,MainScreen->BackgroundColour.blue);
 				user_colour.lpCustColors = custom_colours;
 				user_colour.Flags = CC_RGBINIT;
 				if (ChooseColor(&user_colour) == true)
 				{
-					MainScreen->background_colour.red = GetRValue(user_colour.rgbResult);
-					MainScreen->background_colour.green = GetGValue(user_colour.rgbResult);
-					MainScreen->background_colour.blue = GetBValue(user_colour.rgbResult);
-					MainScreen->Fill(MainScreen->background_colour.red, MainScreen->background_colour.green, MainScreen->background_colour.blue);
+					MainScreen->BackgroundColour.red = GetRValue(user_colour.rgbResult);
+					MainScreen->BackgroundColour.green = GetGValue(user_colour.rgbResult);
+					MainScreen->BackgroundColour.blue = GetBValue(user_colour.rgbResult);
+					MainScreen->Fill(MainScreen->BackgroundColour.red, MainScreen->BackgroundColour.green, MainScreen->BackgroundColour.blue);
 					if (CurProject != NULL)
 						CurProject->Redraw();
 				}

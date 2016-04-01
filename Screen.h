@@ -14,7 +14,7 @@ public:
 		uint8_t red;
 		uint8_t green;
 		uint8_t blue;
-	} background_colour;
+	} BackgroundColour;
 
 	SDL_Window* window;
 	SDL_Renderer* render;
