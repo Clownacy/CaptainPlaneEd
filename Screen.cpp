@@ -38,10 +38,25 @@ Screen::Screen(void)
 		exit(1);
 	}
 
-	texture = SDL_CreateTextureFromSurface(render, surface);
-	if (texture==NULL)
+	SDL_Texture* temptexture = SDL_CreateTextureFromSurface(render, surface);
+	if (temptexture==NULL)
 	{
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unable to init surface SDL Texture", SDL_GetError(), NULL);
+		exit(1);
+	}
+
+	// Since I don't know of any way to change a texture's SDL_TextureAccess after creation,
+	// I have to go with this hackish workaround.
+	uint32_t temptexture_format;
+	int temptexture_width;
+	int temptexture_height;
+	SDL_QueryTexture(temptexture, &temptexture_format, NULL, &temptexture_width, &temptexture_height);
+	SDL_DestroyTexture(temptexture);
+	
+	texture = SDL_CreateTexture(render, temptexture_format, SDL_TEXTUREACCESS_STREAMING, temptexture_width, temptexture_height);
+	if (temptexture==NULL)
+	{
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unable to init SDL Texture", SDL_GetError(), NULL);
 		exit(1);
 	}
 
@@ -54,8 +69,12 @@ Screen::Screen(void)
 
 void Screen::ProcessDisplay(void)
 {
-	SDL_UpdateTexture(texture, NULL, surface->pixels, surface->pitch);
-	SDL_RenderClear(render);
+	void* pixels;
+	int pitch;
+	SDL_LockTexture(texture, NULL, &pixels, &pitch);
+	memcpy(pixels, surface->pixels, pitch*surface->h);
+	SDL_UnlockTexture(texture);
+
 	SDL_RenderCopy(render, texture, NULL, NULL);
 	SDL_RenderPresent(render);
 }
