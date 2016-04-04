@@ -15,15 +15,15 @@ Screen::Screen(void)
 	}
 	atexit(SDL_Quit);
 
-	window = SDL_CreateWindow("Captain PlaneEd", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-	if (window == NULL)
+	this->window = SDL_CreateWindow("Captain PlaneEd", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+	if (this->window == NULL)
 	{
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unable to init SDL Window", SDL_GetError(), NULL);
 		exit(1);
 	}
 
-	render = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-	if (render == NULL)
+	this->render = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	if (this->render == NULL)
 	{
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unable to init SDL Renderer", SDL_GetError(), NULL);
 		exit(1);
@@ -32,15 +32,15 @@ Screen::Screen(void)
 	SDL_RenderSetLogicalSize(render, SCREEN_WIDTH, SCREEN_HEIGHT);
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
 
-	surface = SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0, 0, 0, 0);	// Implicitly ARGB8888, compatible with the below texture
-	if (surface==NULL)
+	this->surface = SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0, 0, 0, 0);	// Implicitly ARGB8888, compatible with the below texture
+	if (this->surface==NULL)
 	{
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unable to init screen SDL Surface", SDL_GetError(), NULL);
 		exit(1);
 	}
 	
-	texture = SDL_CreateTexture(render, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT);
-	if (texture==NULL)
+	this->texture = SDL_CreateTexture(this->render, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT);
+	if (this->texture==NULL)
 	{
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unable to init screen SDL Texture", SDL_GetError(), NULL);
 		exit(1);
@@ -49,7 +49,7 @@ Screen::Screen(void)
 	this->BackgroundColour = {.red = 0, .green = 0, .blue = 0};
 
 	// Windows-only crap to generate a menu bar
-	WinAPI::SaveHWND(window);
+	WinAPI::SaveHWND(this->window);
 	WinAPI::CreateMenuBar();
 }
 
@@ -57,12 +57,12 @@ void Screen::ProcessDisplay(void)
 {
 	void* pixels;
 	int pitch;
-	SDL_LockTexture(texture, NULL, &pixels, &pitch);
-	memcpy(pixels, surface->pixels, pitch*surface->h);
-	SDL_UnlockTexture(texture);
+	SDL_LockTexture(this->texture, NULL, &pixels, &pitch);
+	memcpy(pixels, this->surface->pixels, pitch*this->surface->h);
+	SDL_UnlockTexture(this->texture);
 
-	SDL_RenderCopy(render, texture, NULL, NULL);
-	SDL_RenderPresent(render);
+	SDL_RenderCopy(this->render, this->texture, NULL, NULL);
+	SDL_RenderPresent(this->render);
 }
 
 void Screen::Fill(uint8_t red, uint8_t green, uint8_t blue)
