@@ -31,30 +31,15 @@ Screen::Screen(void)
 
 	SDL_RenderSetLogicalSize(render, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-	surface = SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0, 0, 0, 0);
+	surface = SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0, 0, 0, 0);	// Implicitly ARGB8888, compatible with the below texture
 	if (surface==NULL)
 	{
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unable to init surface SDL Surface", SDL_GetError(), NULL);
 		exit(1);
 	}
-
-	SDL_Texture* temptexture = SDL_CreateTextureFromSurface(render, surface);
-	if (temptexture==NULL)
-	{
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unable to init surface SDL Texture", SDL_GetError(), NULL);
-		exit(1);
-	}
-
-	// Since I don't know of any way to change a texture's SDL_TextureAccess after creation,
-	// I have to go with this hackish workaround.
-	uint32_t temptexture_format;
-	int temptexture_width;
-	int temptexture_height;
-	SDL_QueryTexture(temptexture, &temptexture_format, NULL, &temptexture_width, &temptexture_height);
-	SDL_DestroyTexture(temptexture);
 	
-	texture = SDL_CreateTexture(render, temptexture_format, SDL_TEXTUREACCESS_STREAMING, temptexture_width, temptexture_height);
-	if (temptexture==NULL)
+	texture = SDL_CreateTexture(render, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT);
+	if (texture==NULL)
 	{
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unable to init SDL Texture", SDL_GetError(), NULL);
 		exit(1);
