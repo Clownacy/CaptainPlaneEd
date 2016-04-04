@@ -30,6 +30,7 @@ Screen::Screen(void)
 	}
 
 	SDL_RenderSetLogicalSize(render, SCREEN_WIDTH, SCREEN_HEIGHT);
+	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
 
 	surface = SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0, 0, 0, 0);	// Implicitly ARGB8888, compatible with the below texture
 	if (surface==NULL)
