@@ -1,5 +1,7 @@
 #include <cstring>
 #include <fstream>
+#include <unistd.h>
+
 
 #include <SDL2/SDL.h>
 
@@ -11,6 +13,22 @@
 ProjectData::ProjectData(const char* const prjtxt) {
     tileOffset = 0;
     letterOffset = numberOffset = 0;
+
+    // Make working directory from project path
+    char prjdir[strlen(prjtxt)+1];
+    strcpy(prjdir, prjtxt);
+    // Find last path separator
+    char* posix_seperator = strrchr(prjdir, '/');	// First, POSIX
+    char* windows_seperator = strrchr(prjdir, '\\');	// Then whatever Windows uses
+    if (posix_seperator != NULL || windows_seperator != NULL)
+    {
+        if (posix_seperator != NULL)
+            (*posix_seperator) = '\0';
+        else if (windows_seperator != NULL)
+            (*windows_seperator) = '\0';
+
+        chdir(prjdir);
+    }
 
     std::ifstream prjfile(prjtxt, std::ios::in);
 
