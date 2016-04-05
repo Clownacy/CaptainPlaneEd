@@ -1,0 +1,1 @@
+Figure out why the selected tile 'ghosts' when mouse is moved after window is resized
