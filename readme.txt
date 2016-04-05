@@ -1,3 +1,28 @@
+'Captain PlaneEd' is a modified version of the original PlaneEd. Source available here:
+https://github.com/Clownacy/CaptainPlaneEd
+
+PlaneEd is an LGPLv2.1-licensed project. Binary and source available here:
+http://info.sonicretro.org/PlaneEd
+
+
+This uses a modified version of the LGPLv3-licensed KENSC library.
+
+Original source found here:
+https://github.com/flamewing/s2-ssedit
+
+Modified source found here:
+https://github.com/Clownacy/CaptainPlaneEd
+
+Refer to the Git commit log for the list of changes.
+
+
+This uses the SDL2 library, found here:
+https://www.libsdl.org/
+
+
+
+Below is the largely-outdated original readme
+
 ==============================================================================
 PlaneEd - Sega Genesis/MegaDrive plane mappings editor
 ==============================================================================
