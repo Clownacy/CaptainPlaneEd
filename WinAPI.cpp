@@ -76,7 +76,7 @@ void HandleWindowsEvent(const SDL_Event* const event)
 			case MENUBAR_FILE_OPENPROJECT:
 			{
 				char filename[500] = "";
-				if (WinAPI::OpenProjectFilePrompt(filename) == true)
+				if (OpenProjectFilePrompt(filename) == true)
 				{
 					if (CurProject != NULL)
 						delete CurProject;
