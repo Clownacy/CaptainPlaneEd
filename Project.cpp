@@ -28,7 +28,7 @@ const char* const FILE_MAP_TEMP = "tempmap.bin";
 const char* const FILE_ART_TEMP = "tempart.bin";
 const char* const FILE_PAL_TEMP = "temppal.bin";
 
-Project::Project(char* const parameter_filepath, Screen* const MainScreen)
+Project::Project(char* const parameter_filepath)
 {
 	this->PrjData = new ProjectData(parameter_filepath);
 	this->PrjData->art.Load(FILE_ART_TEMP);

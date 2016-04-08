@@ -50,7 +50,7 @@ int main(int argc, char* argv[])
     if (prjfile != NULL)
     {
 	fclose(prjfile);
-        CurProject = new Project(argv[1], MainScreen);
+        CurProject = new Project(argv[1]);
 
 	EnableMenuItem(WinAPI::hSubMenu_File, MENUBAR_FILE_SAVE, MF_ENABLED);
 	EnableMenuItem(WinAPI::hSubMenu_File, MENUBAR_FILE_CLOSE, MF_ENABLED);

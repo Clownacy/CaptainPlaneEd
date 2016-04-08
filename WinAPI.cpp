@@ -74,7 +74,7 @@ void HandleWindowsEvent(const SDL_Event* const event)
 				{
 					if (CurProject != NULL)
 						delete CurProject;
-					CurProject = new Project(filename, MainScreen);
+					CurProject = new Project(filename);
 
 					EnableMenuItem(hSubMenu_File, MENUBAR_FILE_SAVE, MF_ENABLED);
 					EnableMenuItem(hSubMenu_File, MENUBAR_FILE_CLOSE, MF_ENABLED);

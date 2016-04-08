@@ -34,7 +34,7 @@ public:
 	SelRect* SelectionRect;
 	SelRect* CopyRect;
 
-	Project(char* const parameter_filepath, Screen* MainScreen);
+	Project(char* const parameter_filepath);
 	void Save(void);
 	void Redraw(void);
 };
