@@ -18,7 +18,6 @@
     USA
 */
 
-#include "Common.h"
 #include "LevMap.h"
 #include "Project.h"
 #include "PrjHndl.h"
@@ -52,14 +51,14 @@ Project::Project(char* const parameter_filepath, Screen* const MainScreen)
 
 void Project::Save(void)
 {
-	CurProject->LevelMap->SaveMap(FILE_MAP_TEMP);
-	CurProject->PrjData->map.Save(FILE_MAP_TEMP, CurProject->PrjData->map.saveName);
+	this->LevelMap->SaveMap(FILE_MAP_TEMP);
+	this->PrjData->map.Save(FILE_MAP_TEMP, this->PrjData->map.saveName);
 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Information", "Save complete.", NULL);
 }
 
 void Project::Redraw(void)
 {
-	CurProject->LevelMap->DrawMap();
-	CurProject->GfxStuff->DrawSelector();
-	CurProject->SelectionRect->SelDrawRect();
+	this->LevelMap->DrawMap();
+	this->GfxStuff->DrawSelector();
+	this->SelectionRect->SelDrawRect();
 }
