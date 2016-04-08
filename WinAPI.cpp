@@ -34,6 +34,12 @@ HMENU hSubMenu_File;
 HMENU hSubMenu_View;
 COLORREF custom_colours[16];
 
+void SaveHWND(SDL_Window* const window);
+void CreateMenuBar(void);
+void HandleWindowsEvent(const SDL_Event* const event);
+bool OpenProjectFilePrompt(char* const filepath);
+void EnableMenuBarOption(bool enable, int menu_option);
+
 void SaveHWND(SDL_Window* const window)
 {
 	SDL_SysWMinfo info;
@@ -76,8 +82,8 @@ void HandleWindowsEvent(const SDL_Event* const event)
 						delete CurProject;
 					CurProject = new Project(filename);
 
-					EnableMenuItem(hSubMenu_File, MENUBAR_FILE_SAVE, MF_ENABLED);
-					EnableMenuItem(hSubMenu_File, MENUBAR_FILE_CLOSE, MF_ENABLED);
+					EnableMenuBarOption(true, MENUBAR_FILE_SAVE);
+					EnableMenuBarOption(true, MENUBAR_FILE_CLOSE);
 
 					//Process initial display
 					MainScreen->Fill(MainScreen->BackgroundColour.red, MainScreen->BackgroundColour.green, MainScreen->BackgroundColour.blue);
@@ -94,8 +100,8 @@ void HandleWindowsEvent(const SDL_Event* const event)
 			{
 				delete CurProject;
 				CurProject = NULL;	// Deleting an object does not NULL this pointer, so we have to do it ourselves
-				EnableMenuItem(hSubMenu_File, MENUBAR_FILE_SAVE, MF_GRAYED);
-				EnableMenuItem(hSubMenu_File, MENUBAR_FILE_CLOSE, MF_GRAYED);
+				EnableMenuBarOption(false, MENUBAR_FILE_SAVE);
+				EnableMenuBarOption(false, MENUBAR_FILE_CLOSE);
 				MainScreen->Fill(MainScreen->BackgroundColour.red, MainScreen->BackgroundColour.green, MainScreen->BackgroundColour.blue);
 				break;
 			}
@@ -141,6 +147,17 @@ bool OpenProjectFilePrompt(char* const filepath)
         ofn.Flags = OFN_FILEMUSTEXIST;
         bool bRes = GetOpenFileName(&ofn);
 	return bRes;
+}
+
+void EnableMenuBarOption(bool enable, int menu_option)
+{
+	HMENU submenu;
+	if (menu_option > MENUBAR_FILE_START && menu_option < MENUBAR_FILE_END)
+		submenu = hSubMenu_File;
+	else //if (menu_option > MENUBAR_VIEW_START && menu_option < MENUBAR_VIEW_END)
+		submenu = hSubMenu_View;
+
+	EnableMenuItem(submenu, menu_option, enable ? MF_ENABLED : MF_DISABLED);
 }
 
 }
