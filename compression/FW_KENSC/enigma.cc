@@ -18,8 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <sstream>
 #include <fstream>
+#include <sstream>
 #include <map>
 #include <string>
 #include <set>
@@ -256,8 +256,7 @@ long enigma::decode(const char* const srcfile, const char* const dstfile, stream
 		decode_internal(Src, Dst);
 	}
 
-	long return_size = Dst.tellp();
-	return return_size;
+	return Dst.tellp();
 }
 
 // Blazing fast function that gives the index of the MSB.
@@ -340,7 +339,7 @@ void enigma::encode_internal(istream &Src, ostream &Dst) {
 	// this version only checks the 2-byte words actually in the file.
 	map<unsigned short, size_t> runs;
 	for (auto next : elems) {
-		auto val = runs.insert(pair<unsigned short, size_t>(next, 0)).first;
+		auto val = runs.emplace(next, 0).first;
 		for (auto & elem : unpack) {
 			if (elem == next) {
 				next++;

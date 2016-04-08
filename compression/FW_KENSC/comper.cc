@@ -16,13 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <sstream>
 #include <fstream>
+#include <sstream>
 
 #include "comper.h"
 #include "bigendian_io.h"
 #include "bitstream.h"
 #include "lzss.h"
+#include "ignore_unused_variable_warning.h"
 
 using namespace std;
 
@@ -32,23 +33,23 @@ struct ComperAdaptor {
 	typedef unsigned short descriptor_t;
 	typedef bigendian<descriptor_t> descriptor_endian_t;
 	// Number of bits on descriptor bitfield.
-	constexpr static size_t NumDescBits = sizeof(descriptor_t) * 8;
+	constexpr static size_t const NumDescBits = sizeof(descriptor_t) * 8;
 	// Number of bits used in descriptor bitfield to signal the end-of-file
 	// marker sequence.
-	constexpr static size_t NumTermBits = 1;
+	constexpr static size_t const NumTermBits = 1;
 	// Flag that tells the compressor that new descriptor fields is needed
 	// when a new bit is needed and all bits in the previous one have been
 	// used up.
-	constexpr static size_t NeedEarlyDescriptor = 0;
+	constexpr static size_t const NeedEarlyDescriptor = 0;
 	// Flag that marks the descriptor bits as being in big-endian bit
 	// order (that is, highest bits come out first).
-	constexpr static size_t DescriptorLittleEndianBits = 0;
+	constexpr static size_t const DescriptorLittleEndianBits = 0;
 	// Size of the search buffer.
-	constexpr static size_t SearchBufSize = 256;
+	constexpr static size_t const SearchBufSize = 256;
 	// Size of the look-ahead buffer.
-	constexpr static size_t LookAheadBufSize = 256;
+	constexpr static size_t const LookAheadBufSize = 256;
 	// Total size of the sliding window.
-	constexpr static size_t SlidingWindowSize = SearchBufSize + LookAheadBufSize;
+	constexpr static size_t const SlidingWindowSize = SearchBufSize + LookAheadBufSize;
 	// Computes the cost of a symbolwise encoding, that is, the cost of encoding
 	// one single symbol..
 	constexpr static size_t symbolwise_weight() noexcept {
@@ -59,25 +60,35 @@ struct ComperAdaptor {
 	// "off" vertices ago, for matches with len > 1.
 	// A return of "numeric_limits<size_t>::max()" means "infinite",
 	// or "no edge".
-	constexpr static size_t dictionary_weight(size_t UNUSED(dist), size_t UNUSED(len)) noexcept {
+	constexpr static size_t dictionary_weight(size_t dist, size_t len) noexcept {
 		// Preconditions:
 		// len > 1 && len <= LookAheadBufSize && dist != 0 && dist <= SearchBufSize
 		// Dictionary match: 1-bit descriptor, 8-bit distance, 8-bit length.
+		ignore_unused_variable_warning(dist);
+		ignore_unused_variable_warning(len);
 		return 1 + 8 + 8;
 	}
 	// Given an edge, computes how many bits are used in the descriptor field.
-	static size_t desc_bits(AdjListNode const &UNUSED(edge)) noexcept {
+	constexpr static size_t desc_bits(AdjListNode const &edge) noexcept {
 		// Comper always uses a single bit descriptor.
+		ignore_unused_variable_warning(edge);
 		return 1;
 	}
 	// Comper finds no additional matches over normal LZSS.
-	static void extra_matches(stream_t const *UNUSED(data),
-	                          size_t UNUSED(basenode),
-	                          size_t UNUSED(ubound), size_t UNUSED(lbound),
-	                          LZSSGraph<ComperAdaptor>::MatchVector &UNUSED(matches)) noexcept {
+	constexpr static void extra_matches(stream_t const *data,
+	                          size_t basenode,
+	                          size_t ubound, size_t lbound,
+	                          LZSSGraph<ComperAdaptor>::MatchVector &matches) noexcept {
+		ignore_unused_variable_warning(data);
+		ignore_unused_variable_warning(basenode);
+		ignore_unused_variable_warning(ubound);
+		ignore_unused_variable_warning(lbound);
+		ignore_unused_variable_warning(matches);
 	}
 	// Comper needs no additional padding at the end-of-file.
-	static size_t get_padding(size_t UNUSED(totallen), size_t UNUSED(padmask)) noexcept {
+	constexpr static size_t get_padding(size_t totallen, size_t padmask) noexcept {
+		ignore_unused_variable_warning(totallen);
+		ignore_unused_variable_warning(padmask);
 		return 0;
 	}
 };
@@ -127,8 +138,7 @@ long comper::decode(const char* const srcfile, const char* const dstfile, stream
 	in.seekg(0);
 	decode_internal(in, Dst);
 
-	long return_size = Dst.tellp();
-	return return_size;
+	return Dst.tellp();
 }
 
 void comper::encode_internal(ostream &Dst, unsigned char const *&Buffer,
