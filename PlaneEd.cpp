@@ -388,8 +388,10 @@ int main(int argc, char* argv[])
                                             CurProject->LevelMap->DrawMap();
 					}
                                         break;
-                                    /*case 'a':
-                                        break;*/
+                                    case 'a':
+                                        CurProject->SelectionRect->SelInit(0, 0);
+                                        CurProject->SelectionRect->SelFinalize(CurProject->PrjData->map.xSize*8, CurProject->PrjData->map.ySize*8);
+                                        break;
                                 }
                             } else {
 				if (CurProject != NULL)
