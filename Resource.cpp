@@ -18,6 +18,7 @@
     USA
 */
 
+#include <fstream>
 #include <SDL2/SDL.h>
 
 #include "PrjHndl.h"
@@ -198,6 +199,7 @@ void ResourceMap::Load(const char* const filename)
 
 ResourcePal::ResourcePal(void)
 {
+	this->destination_offset = 0;
 	// For backwards compatibility, palette is assumed to be uncompressed by default
 	this->compression = comprType::NONE;
 }
@@ -222,4 +224,16 @@ void ResourcePal::Load(const char* const filename)
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not decompress palette file. Are you sure the compression is correct?", NULL);
 		exit(1);
 	}
+
+	std::ifstream palfileold(filename, std::ios::in|std::ios::binary);
+	std::ofstream palfilenew("temp.bin", std::ios::out|std::ios::binary);;
+	for (int i=0; i < this->destination_offset; i++)
+		palfilenew.put(0);
+	char byte = 0;
+	while (palfileold.get(byte))
+		palfilenew.put(byte);
+	palfileold.close();
+	palfilenew.close();
+	remove(filename);
+	rename("temp.bin", filename);
 }

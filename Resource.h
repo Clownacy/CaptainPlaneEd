@@ -63,6 +63,8 @@ public:
 class ResourcePal : public Resource
 {
 public:
+	int destination_offset;
+
 	ResourcePal(void);
 	void Load(const char* const filename);
 };

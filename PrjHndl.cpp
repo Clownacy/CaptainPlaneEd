@@ -98,6 +98,9 @@ void ProjectData::AssignInfo(const infoType type, char* content) {
         case infoType::ART_COMPRESSION:
 		art.compression = readComprType(trimString(content));
 		break;
+        case infoType::PALETTE_DESTINATION_OFFSET:
+		pal.destination_offset = strtol(content, NULL, 0);
+		break;
         case infoType::X_SIZE:
 		map.xSize = strtol(content, NULL, 0);
 		break;

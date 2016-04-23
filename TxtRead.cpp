@@ -39,6 +39,7 @@ struct
 	{ "Palette Compression:", infoType::PALETTE_COMPRESSION },
 	{ "Mapping Compression:", infoType::MAPPING_COMPRESSION },
 	{ "Art Compression:",     infoType::ART_COMPRESSION },
+	{ "Palette Destination Offset:", infoType::PALETTE_DESTINATION_OFFSET },
 	{ "x-Size:",              infoType::X_SIZE },
 	{ "y-Size:",              infoType::Y_SIZE },
 	{ "Tile Offset:",         infoType::TILE_OFFSET },
