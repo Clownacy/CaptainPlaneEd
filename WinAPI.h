@@ -45,7 +45,7 @@ extern HMENU hSubMenu_View;
 extern void SaveHWND(SDL_Window* const window);
 extern void CreateMenuBar(void);
 extern void HandleWindowsEvent(const SDL_Event* const event);
-extern bool OpenProjectFilePrompt(char* const filepath);
+extern bool OpenProjectFilePrompt(char** const filepath);
 extern void EnableMenuBarOption(bool enable, int menu_option);
 
 }

@@ -136,7 +136,8 @@ void HandleWindowsEvent(const SDL_Event* const event)
 
 bool OpenProjectFilePrompt(char** const filepath)
 {
-	*filepath = new char[500];
+	const int filepath_size = 500;
+	*filepath = new char[filepath_size];
 	(*filepath)[0] = '\0';
 	OPENFILENAME ofn;
         memset(&ofn, 0, sizeof(ofn));
@@ -146,10 +147,9 @@ bool OpenProjectFilePrompt(char** const filepath)
         ofn.lpstrFilter = TEXT("PlaneEd project file (*.txt)\0*.txt\0\0");
         ofn.nFilterIndex = 1;
         ofn.lpstrFile = *filepath;
-        ofn.nMaxFile = 500;
+        ofn.nMaxFile = filepath_size;
         ofn.Flags = OFN_FILEMUSTEXIST;
-        bool bRes = GetOpenFileName(&ofn);
-	return bRes;
+        return GetOpenFileName(&ofn);
 }
 
 void EnableMenuBarOption(bool enable, int menu_option)
