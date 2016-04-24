@@ -37,7 +37,7 @@ COLORREF custom_colours[16];
 void SaveHWND(SDL_Window* const window);
 void CreateMenuBar(void);
 void HandleWindowsEvent(const SDL_Event* const event);
-bool OpenProjectFilePrompt(char* const filepath);
+bool OpenProjectFilePrompt(char** const filepath);
 void EnableMenuBarOption(bool enable, int menu_option);
 
 void SaveHWND(SDL_Window* const window)
@@ -75,8 +75,8 @@ void HandleWindowsEvent(const SDL_Event* const event)
 		{
 			case MENUBAR_FILE_OPENPROJECT:
 			{
-				char filename[500] = "";
-				if (OpenProjectFilePrompt(filename) == true)
+				char* filename;
+				if (OpenProjectFilePrompt(&filename) == true)
 				{
 					if (CurProject != NULL)
 						delete CurProject;
@@ -89,6 +89,7 @@ void HandleWindowsEvent(const SDL_Event* const event)
 					MainScreen->Fill(MainScreen->BackgroundColour.red, MainScreen->BackgroundColour.green, MainScreen->BackgroundColour.blue);
 					CurProject->Redraw();
 				}
+				delete[] filename;
 				break;
 			}
 			case MENUBAR_FILE_SAVE:
@@ -133,8 +134,10 @@ void HandleWindowsEvent(const SDL_Event* const event)
 	}
 }
 
-bool OpenProjectFilePrompt(char* const filepath)
+bool OpenProjectFilePrompt(char** const filepath)
 {
+	*filepath = new char[500];
+	(*filepath)[0] = '\0';
 	OPENFILENAME ofn;
         memset(&ofn, 0, sizeof(ofn));
         ofn.lStructSize = sizeof(ofn);
@@ -142,7 +145,7 @@ bool OpenProjectFilePrompt(char* const filepath)
         ofn.hInstance = NULL;
         ofn.lpstrFilter = TEXT("PlaneEd project file (*.txt)\0*.txt\0\0");
         ofn.nFilterIndex = 1;
-        ofn.lpstrFile = filepath;
+        ofn.lpstrFile = *filepath;
         ofn.nMaxFile = 500;
         ofn.Flags = OFN_FILEMUSTEXIST;
         bool bRes = GetOpenFileName(&ofn);
