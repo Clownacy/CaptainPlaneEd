@@ -54,24 +54,16 @@ void Graphics::ReadPalette(const char* const filename)
 {
     FILE* palfile = fopen(filename,"rb");
     if (palfile==NULL)
-    {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Internal Error", "Decompressed palette file not found.", NULL);
-        exit(1);
-    }
+        MainScreen->InternalError("Decompressed palette file not found.");
 
     fseek(palfile, 0, SEEK_END);
     paletteLines = ftell(palfile)/(PALETTE_ENTRIES_PER_LINE*sizeof(uint16_t));
     rewind(palfile);
 
     if (paletteLines > 4)
-    {
         paletteLines = 4;
-    }
     else if (paletteLines == 0)
-    {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Palette file too small. It must contain at least one palette line.", NULL);
-        exit(1);        
-    }
+        MainScreen->Error("Palette file too small. It must contain at least one palette line.");
 
     palette = new uint16_t[paletteLines][PALETTE_ENTRIES_PER_LINE];
     for (int line=0; line < paletteLines; ++line)
@@ -96,10 +88,8 @@ void Graphics::ReadTiles(const char* const filename)
 {
     FILE* tilefile = fopen(filename,"rb");
     if (tilefile==NULL)
-    {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Internal Error", "Decompressed art file not found.", NULL);
-        exit(1);
-    }
+        MainScreen->InternalError("Decompressed art file not found.");
+
     uint8_t tilebuffer[(8*8)/2]; //space for one tile
     tileData = new uint16_t***[tileAmount];
     for (int tile=0; tile < tileAmount; ++tile)
@@ -158,10 +148,7 @@ SDL_Surface* Graphics::InitSurface(uint16_t* const pixelsT, const int width, con
                          height, bbp, width*((bbp+7)/8), 0x0F00, 0x00F0, 0x000F, 0xF000);
 
     if (surface == NULL)
-    {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Cannot make SDL Surface from tiles", SDL_GetError(), NULL);
-	exit(1);
-    }
+        MainScreen->InternalError("Cannot make SDL Surface from tiles");
 
     return surface;
 }

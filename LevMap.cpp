@@ -18,18 +18,16 @@
     USA
 */
 
+#include "Common.h"
 #include "Graphics.h"
 #include "LevMap.h"
 
 LevMap::LevMap(const uint8_t xSize, const uint8_t ySize, Graphics* const GfxStuff) {
-    if (xSize <= 0 || ySize <= 0) {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid map size. Must be at least 1x1.", NULL);
-        exit(1);
-    }
-    else if (xSize > 64 || ySize > 64) {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid map size. Must be 64x64 or smaller.", NULL);
-        exit(1);
-    }
+    if (xSize <= 0 || ySize <= 0)
+        MainScreen->Error("Invalid map size. Must be at least 1x1.");
+    else if (xSize > 64 || ySize > 64)
+        MainScreen->Error("Invalid map size. Must be 64x64 or smaller.");
+
     this->xSize=xSize;
     this->ySize=ySize;
     MapData = new Tile*[ySize];
@@ -42,10 +40,9 @@ LevMap::LevMap(const uint8_t xSize, const uint8_t ySize, Graphics* const GfxStuf
 
 void LevMap::LoadMap(const char* const filename) {
     FILE* mapfile = fopen(filename, "rb");
-    if (mapfile == NULL) {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Internal Error", "Decompressed map file not found.", NULL);
-        exit(1);
-    }
+    if (mapfile == NULL)
+        MainScreen->InternalError("Decompressed map file not found.");
+
     for (int y=0; y < ySize; ++y)
         for (int x=0; x < xSize; ++x)
             this->MapData[y][x].ReadTile(mapfile);
@@ -55,10 +52,9 @@ void LevMap::LoadMap(const char* const filename) {
 
 void LevMap::SaveMap(const char* const filename) {
     FILE* mapfile = fopen(filename, "wb");
-    if (mapfile == NULL) {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Internal Error", "Unable to create map file for saving.", NULL);
-        exit(1);
-    }
+    if (mapfile == NULL)
+        MainScreen->InternalError("Unable to create map file for saving.");
+
     for (int y=0; y < ySize; ++y)
         for (int x=0; x < xSize; ++x)
             MapData[y][x].WriteTile(mapfile);

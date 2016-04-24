@@ -19,8 +19,8 @@
 */
 
 #include <fstream>
-#include <SDL2/SDL.h>
 
+#include "Common.h"
 #include "PrjHndl.h"
 #include "TxtRead.h"
 #include "Resource.h"
@@ -121,23 +121,15 @@ ResourceArt::ResourceArt(void)
 void ResourceArt::Load(const char* const filename)
 {
 	if (this->compression == comprType::INVALID)
-	{
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid art compression format. Should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Moduled Kosinski'\n'Nemesis'\n'Kid Chameleon'\n'Comper'\n'Saxman'", NULL);
-		exit(1);
-	}
+		MainScreen->Error("Invalid art compression format. Should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Moduled Kosinski'\n'Nemesis'\n'Kid Chameleon'\n'Comper'\n'Saxman'");
 
 	long decompressed_length = DecompressToFile(filename);
 
 	if (decompressed_length == -2)
-	{
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not find art file. Are you sure the path is correct?", NULL);
-		exit(1);
-	}
+		MainScreen->Error("Could not find art file. Are you sure the path is correct?");
 	else if (decompressed_length < 0)
-	{
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not decompress art file. Are you sure the compression is correct?", NULL);
-		exit(1);
-	}
+		MainScreen->Error("Could not decompress art file. Are you sure the compression is correct?");
+
 	this->tileAmount = decompressed_length/0x20;
 }
 
@@ -151,10 +143,7 @@ ResourceMap::ResourceMap(void)
 void ResourceMap::Load(const char* const filename)
 {
 	if (this->compression == comprType::INVALID || this->compression == comprType::KID_CHAMELEON)
-	{
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid map compression format. Should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Moduled Kosinski'\n'Nemesis'\n'Comper'\n'Saxman'", NULL);
-		exit(1);
-	}
+		MainScreen->Error("Invalid map compression format. Should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Moduled Kosinski'\n'Nemesis'\n'Comper'\n'Saxman'");
 
 	long decompressed_length = DecompressToFile(filename);
 
@@ -163,17 +152,15 @@ void ResourceMap::Load(const char* const filename)
 		//file non-existant, blank template created
 		decompressed_length = 2*this->xSize*this->ySize;
 		CheckCreateBlankFile(this->name, filename, this->offset, decompressed_length);
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Information", "No map file found, created blank template.", NULL);
+		MainScreen->Information("No map file found, created blank template.");
 	}
-	else if (decompressed_length < 0) {
+	else if (decompressed_length < 0)
 		//file is existant but could not be decompressed
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not decompress map file. Are you sure the compression is correct?", NULL);
-		exit(1);
-	}
+		MainScreen->Error("Could not decompress map file. Are you sure the compression is correct?");
 
 	if (decompressed_length < 2*this->xSize*this->ySize)
 	{
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Warning", "Specified size exceeds map size.\nField has been trimmed vertically.", NULL);
+		MainScreen->Warning("Specified size exceeds map size.\nField has been trimmed vertically.");
 		this->ySize = (decompressed_length/this->xSize) / 2;
 		if (this->ySize == 0)
 			exit(1);
@@ -190,7 +177,7 @@ void ResourceMap::Load(const char* const filename)
 			const char* const part_message = "This tool cannot overwrite a ROM. Plane map will be saved to ";
 			char* whole_message = new char[strlen(part_message)+strlen(FILE_MAP_DEFAULT)+1];
 			sprintf(whole_message, "%s%s", part_message, FILE_MAP_DEFAULT);
-			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Information", whole_message, NULL);
+			MainScreen->Information(whole_message);
 			delete[] whole_message;
 			strcpy(this->saveName, FILE_MAP_DEFAULT); //write to default file
 		}
@@ -207,23 +194,14 @@ ResourcePal::ResourcePal(void)
 void ResourcePal::Load(const char* const filename)
 {
 	if (this->compression == comprType::INVALID)
-	{
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Invalid palette compression format. Should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Moduled Kosinski'\n'Nemesis'\n'Kid Chameleon'\n'Comper'\n'Saxman'", NULL);
-		exit(1);
-	}
+		MainScreen->Error("Invalid palette compression format. Should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Moduled Kosinski'\n'Nemesis'\n'Kid Chameleon'\n'Comper'\n'Saxman'");
 
 	long decompressed_length = DecompressToFile(filename);
 
 	if (decompressed_length == -2)
-	{
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not find palette file. Are you sure the path is correct?", NULL);
-		exit(1);
-	}
+		MainScreen->Error("Could not find palette file. Are you sure the path is correct?");
 	else if (decompressed_length < 0)
-	{
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Could not decompress palette file. Are you sure the compression is correct?", NULL);
-		exit(1);
-	}
+		MainScreen->Error("Could not decompress palette file. Are you sure the compression is correct?");
 
 	// Create blank palette file
 	std::ofstream palfilenew("temp.bin", std::ios::out|std::ios::binary);

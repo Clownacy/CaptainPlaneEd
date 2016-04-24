@@ -18,6 +18,7 @@
     USA
 */
 
+#include "Common.h"
 #include "LevMap.h"
 #include "Project.h"
 #include "PrjHndl.h"
@@ -53,7 +54,7 @@ void Project::Save(void)
 {
 	this->LevelMap->SaveMap(FILE_MAP_TEMP);
 	this->PrjData->map.Save(FILE_MAP_TEMP, this->PrjData->map.saveName);
-	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Information", "Save complete.", NULL);
+	MainScreen->Information("Save complete.");
 }
 
 void Project::Redraw(void)

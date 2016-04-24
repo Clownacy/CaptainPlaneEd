@@ -36,12 +36,17 @@ public:
 		uint8_t blue;
 	} BackgroundColour;
 
-	SDL_Window* window;
-	SDL_Renderer* render;
 	SDL_Surface* surface;
-	SDL_Texture* texture;
 
 	Screen(void);
 	void ProcessDisplay(void);
 	void Fill(uint8_t red, uint8_t green, uint8_t blue);
+	void Information(const char* const message);
+	void Warning(const char* const message);
+	void Error(const char* const message);
+	void InternalError(const char* const message);
+private:
+	SDL_Window* window;
+	SDL_Renderer* render;
+	SDL_Texture* texture;
 };

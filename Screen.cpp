@@ -29,42 +29,28 @@
 Screen::Screen(void)
 {
 	if (SDL_Init(SDL_INIT_VIDEO)<0)
-	{
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unable to init SDL video", SDL_GetError(), NULL);
-		exit(1);
-	}
+		InternalError("Unable to init SDL video");
+
 	atexit(SDL_Quit);
 
 	this->window = SDL_CreateWindow("Captain PlaneEd v1.0.1", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 	if (this->window == NULL)
-	{
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unable to init SDL Window", SDL_GetError(), NULL);
-		exit(1);
-	}
+		InternalError("Unable to init SDL Window");
 
 	this->render = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	if (this->render == NULL)
-	{
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unable to init SDL Renderer", SDL_GetError(), NULL);
-		exit(1);
-	}
+		InternalError("Unable to init SDL Renderer");
 
 	SDL_RenderSetLogicalSize(render, SCREEN_WIDTH, SCREEN_HEIGHT);
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
 
 	this->surface = SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0, 0, 0, 0);	// Implicitly ARGB8888, compatible with the below texture
 	if (this->surface==NULL)
-	{
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unable to init screen SDL Surface", SDL_GetError(), NULL);
-		exit(1);
-	}
+		InternalError("Unable to init screen SDL Surface");
 	
 	this->texture = SDL_CreateTexture(this->render, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT);
 	if (this->texture==NULL)
-	{
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unable to init screen SDL Texture", SDL_GetError(), NULL);
-		exit(1);
-	}
+		InternalError("Unable to init screen SDL Texture");
 
 	this->BackgroundColour = {.red = 0, .green = 0, .blue = 0};
 
@@ -88,4 +74,26 @@ void Screen::ProcessDisplay(void)
 void Screen::Fill(uint8_t red, uint8_t green, uint8_t blue)
 {
 	SDL_FillRect(this->surface, NULL, SDL_MapRGB(this->surface->format, red, green, blue));
+}
+
+void Screen::Information(const char* const message)
+{
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Information", message, this->window);
+}
+
+void Screen::Warning(const char* const message)
+{
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Warning", message, this->window);
+}
+
+void Screen::Error(const char* const message)
+{
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", message, this->window);
+	exit(1);
+}
+
+void Screen::InternalError(const char* const message)
+{
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Internal Error", message, this->window);
+	exit(1);
 }
