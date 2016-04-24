@@ -100,6 +100,11 @@ void ProjectData::AssignInfo(const infoType type, char* content) {
 		break;
         case infoType::PALETTE_DESTINATION_OFFSET:
 		pal.destination_offset = strtol(content, NULL, 0);
+		if (pal.destination_offset >= 0x80)
+		{
+			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Palette Destination Offset cannot be higher than 0x7F (16th entry of 4th palette line; the last palette entry)", NULL);
+			exit(1);
+		}
 		break;
         case infoType::X_SIZE:
 		map.xSize = strtol(content, NULL, 0);
