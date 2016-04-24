@@ -24,7 +24,6 @@
 #include "Common.h"
 #include "Graphics.h"
 #include "Screen.h"
-#include "WinAPI.h"
 
 #define PALETTE_ENTRIES_PER_LINE 16
 
