@@ -47,6 +47,6 @@ public:
 	void InternalError(const char* const message);
 private:
 	SDL_Window* window;
-	SDL_Renderer* render;
+	SDL_Renderer* renderer;
 	SDL_Texture* texture;
 };

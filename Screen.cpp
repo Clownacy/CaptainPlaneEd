@@ -37,18 +37,18 @@ Screen::Screen(void)
 	if (this->window == NULL)
 		InternalError("Unable to init SDL Window");
 
-	this->render = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-	if (this->render == NULL)
+	this->renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	if (this->renderer == NULL)
 		InternalError("Unable to init SDL Renderer");
 
-	SDL_RenderSetLogicalSize(render, SCREEN_WIDTH, SCREEN_HEIGHT);
+	SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
 
 	this->surface = SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0, 0, 0, 0);	// Implicitly ARGB8888, compatible with the below texture
 	if (this->surface==NULL)
 		InternalError("Unable to init screen SDL Surface");
 	
-	this->texture = SDL_CreateTexture(this->render, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT);
+	this->texture = SDL_CreateTexture(this->renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT);
 	if (this->texture==NULL)
 		InternalError("Unable to init screen SDL Texture");
 
@@ -67,8 +67,8 @@ void Screen::ProcessDisplay(void)
 	memcpy(pixels, this->surface->pixels, pitch*this->surface->h);
 	SDL_UnlockTexture(this->texture);
 
-	SDL_RenderCopy(this->render, this->texture, NULL, NULL);
-	SDL_RenderPresent(this->render);
+	SDL_RenderCopy(this->renderer, this->texture, NULL, NULL);
+	SDL_RenderPresent(this->renderer);
 }
 
 void Screen::Fill(uint8_t red, uint8_t green, uint8_t blue)
