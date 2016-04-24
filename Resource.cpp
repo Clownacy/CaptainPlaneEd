@@ -225,15 +225,21 @@ void ResourcePal::Load(const char* const filename)
 		exit(1);
 	}
 
+	// Create blank palette file
+	std::ofstream palfilenew("temp.bin", std::ios::out|std::ios::binary);
+	for (int i=0; i < 0x80; i++)
+		palfilenew.put(0x0E);
+	palfilenew.seekp(this->destination_offset);
+
+	// Insert the loaded palette
 	std::ifstream palfileold(filename, std::ios::in|std::ios::binary);
-	std::ofstream palfilenew("temp.bin", std::ios::out|std::ios::binary);;
-	for (int i=0; i < this->destination_offset; i++)
-		palfilenew.put(0);
-	char byte = 0;
+	char byte;
 	while (palfileold.get(byte))
 		palfilenew.put(byte);
+
 	palfileold.close();
 	palfilenew.close();
+
 	remove(filename);
 	rename("temp.bin", filename);
 }
