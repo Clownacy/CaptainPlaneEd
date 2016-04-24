@@ -31,7 +31,9 @@
 #include "Project.h"
 #include "PrjHndl.h"
 #include "Resource.h"
+#ifdef _WIN32
 #include "WinAPI.h"
+#endif
 
 Screen* MainScreen;
 Project* CurProject = NULL;
@@ -52,8 +54,10 @@ int main(int argc, char* argv[])
 	fclose(prjfile);
         CurProject = new Project(argv[1]);
 
+#ifdef _WIN32
 	WinAPI::EnableMenuBarOption(true, MENUBAR_FILE_SAVE);
 	WinAPI::EnableMenuBarOption(true, MENUBAR_FILE_CLOSE);
+#endif
 
         // Process initial display
         CurProject->Redraw();
@@ -424,10 +428,14 @@ int main(int argc, char* argv[])
                         CtrlPress = false; break;
                 }
             }
+
+#ifdef _WIN32
             if (event.type == SDL_SYSWMEVENT)
 	    {
 		    WinAPI::HandleWindowsEvent(&event);
 	    }
+#endif
+
             MainScreen->ProcessDisplay();
         }
     }

@@ -22,9 +22,15 @@
 #include <SDL2/SDL.h>
 
 #include "Screen.h"
+#ifdef _WIN32
 #include "WinAPI.h"
+#endif
 
-#define WINDOW_HEIGHT SCREEN_HEIGHT+20	//Windows menu bar adds 20 pixels
+#ifdef _WIN32
+#define WINDOW_HEIGHT SCREEN_HEIGHT+20	// Windows menu bar adds 20 pixels
+#else
+#define WINDOW_HEIGHT SCREEN_HEIGHT
+#endif
 
 Screen::Screen(void)
 {
@@ -54,9 +60,11 @@ Screen::Screen(void)
 
 	this->BackgroundColour = {.red = 0, .green = 0, .blue = 0};
 
+#ifdef _WIN32
 	// Windows-only crap to generate a menu bar
 	WinAPI::SaveHWND(this->window);
 	WinAPI::CreateMenuBar();
+#endif
 }
 
 void Screen::ProcessDisplay(void)

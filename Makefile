@@ -7,7 +7,9 @@ LIBS	= `sdl2-config --libs`
 OBJDIR = ./build
 
 OBJECTS = $(OBJDIR)/PlaneEd.o $(OBJDIR)/TxtRead.o $(OBJDIR)/PrjHndl.o $(OBJDIR)/Tile.o $(OBJDIR)/Graphics.o $(OBJDIR)/LevMap.o $(OBJDIR)/SelRect.o $(OBJDIR)/Resource.o $(OBJDIR)/Screen.o $(OBJDIR)/Project.o
+ifeq ($(OS),Windows_NT)
 OBJECTS += $(OBJDIR)/WinAPI.o
+endif
 OBJECTS += $(OBJDIR)/KidDec.o $(OBJDIR)/ReadPlain.o
 OBJECTS += $(OBJDIR)/comper.o $(OBJDIR)/enigma.o $(OBJDIR)/kosinski.o $(OBJDIR)/nemesis.o $(OBJDIR)/saxman.o
 
@@ -46,8 +48,10 @@ $(OBJDIR)/Screen.o: Screen.cpp
 $(OBJDIR)/Project.o: Project.cpp
 	$(GCC) $(CFLAGS) -c $^ -o $@
 
+ifeq ($(OS),Windows_NT)
 $(OBJDIR)/WinAPI.o: WinAPI.cpp
 	$(GCC) $(CFLAGS) -c $^ -o $@
+endif
 
 $(OBJDIR)/KidDec.o: compression/KidDec.c
 	$(GCC) $(CFLAGS) -c $^ -o $@
