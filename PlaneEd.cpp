@@ -49,19 +49,32 @@ int main(int argc, char* argv[])
     // onto the executable to be automatically loaded when it starts.
     // First, we have to make sure the file's actually there.
     FILE* prjfile = fopen(argv[1], "r");
+#ifdef _WIN32
+    // Windows build allows a blank window to open, where the user can open a
+    // project file using the menu bar
     if (prjfile != NULL)
     {
 	fclose(prjfile);
         CurProject = new Project(argv[1]);
 
-#ifdef _WIN32
 	WinAPI::EnableMenuBarOption(true, MENUBAR_FILE_SAVE);
 	WinAPI::EnableMenuBarOption(true, MENUBAR_FILE_CLOSE);
-#endif
 
         // Process initial display
         CurProject->Redraw();
     }
+#else
+    if (prjfile == NULL)
+    {
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "You must supply the project file as a parameter", NULL);
+        exit(1);
+    }
+    fclose(prjfile);
+    CurProject = new Project(argv[1]);
+
+    // Process initial display
+    CurProject->Redraw();
+#endif
 
     bool CtrlPress = false;
     
