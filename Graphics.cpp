@@ -162,7 +162,7 @@ void Graphics::DrawSurface(SDL_Surface* const img, SDL_Surface* const screen, co
 
 void Graphics::ClearMap(void)
 {
-    uint32_t color = SDL_MapRGB(MainScreen->surface->format, MainScreen->BackgroundColour.red, MainScreen->BackgroundColour.green, MainScreen->BackgroundColour.blue);
+    uint32_t color = SDL_MapRGB(MainScreen->surface->format, MainScreen->background_colour.r, MainScreen->background_colour.g, MainScreen->background_colour.b);
     SDL_Rect RectTemp;
     RectTemp.x = 0;
     RectTemp.y = 0;
@@ -173,7 +173,7 @@ void Graphics::ClearMap(void)
 
 void Graphics::ClearSelector(void)
 {
-    uint32_t color = SDL_MapRGB(MainScreen->surface->format, MainScreen->BackgroundColour.red, MainScreen->BackgroundColour.green, MainScreen->BackgroundColour.blue);
+    uint32_t color = SDL_MapRGB(MainScreen->surface->format, MainScreen->background_colour.r, MainScreen->background_colour.g, MainScreen->background_colour.b);
     SDL_Rect RectTemp;
     RectTemp.x = selXMin;
     RectTemp.y = 0;
@@ -228,7 +228,7 @@ bool Graphics::CheckSelValidPos(const int x, const int y)
 
 void Graphics::DrawTileNone(const int x, const int y)
 {
-    uint32_t color = SDL_MapRGB(MainScreen->surface->format, MainScreen->BackgroundColour.red, MainScreen->BackgroundColour.green, MainScreen->BackgroundColour.blue);
+    uint32_t color = SDL_MapRGB(MainScreen->surface->format, MainScreen->background_colour.r, MainScreen->background_colour.g, MainScreen->background_colour.b);
     DrawTileFullColor(x, y, color);
 }
 

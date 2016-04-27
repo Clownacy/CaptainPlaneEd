@@ -116,14 +116,14 @@ void HandleWindowsEvent(const SDL_Event* const event)
 				memset(&user_colour, 0, sizeof(user_colour));
 				user_colour.lStructSize = sizeof(user_colour);
 				user_colour.hwndOwner = hWnd;
-				user_colour.rgbResult = RGB(MainScreen->BackgroundColour.red,MainScreen->BackgroundColour.green,MainScreen->BackgroundColour.blue);
+				user_colour.rgbResult = RGB(MainScreen->background_colour.r,MainScreen->background_colour.g,MainScreen->background_colour.b);
 				user_colour.lpCustColors = custom_colours;
 				user_colour.Flags = CC_RGBINIT;
 				if (ChooseColor(&user_colour) == true)
 				{
-					MainScreen->BackgroundColour.red = GetRValue(user_colour.rgbResult);
-					MainScreen->BackgroundColour.green = GetGValue(user_colour.rgbResult);
-					MainScreen->BackgroundColour.blue = GetBValue(user_colour.rgbResult);
+					MainScreen->background_colour.r = GetRValue(user_colour.rgbResult);
+					MainScreen->background_colour.g = GetGValue(user_colour.rgbResult);
+					MainScreen->background_colour.b = GetBValue(user_colour.rgbResult);
 					MainScreen->Clear();
 					if (CurProject != NULL)
 						CurProject->Redraw();

@@ -29,13 +29,7 @@
 class Screen
 {
 public:
-	struct
-	{
-		uint8_t red;
-		uint8_t green;
-		uint8_t blue;
-	} BackgroundColour;
-
+	SDL_Color background_colour;
 	SDL_Surface* surface;
 
 	Screen(void);
