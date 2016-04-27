@@ -79,9 +79,9 @@ void Screen::ProcessDisplay(void)
 	SDL_RenderPresent(this->renderer);
 }
 
-void Screen::Fill(uint8_t red, uint8_t green, uint8_t blue)
+void Screen::Clear(void)
 {
-	SDL_FillRect(this->surface, NULL, SDL_MapRGB(this->surface->format, red, green, blue));
+	SDL_FillRect(this->surface, NULL, SDL_MapRGB(this->surface->format, this->BackgroundColour.red, this->BackgroundColour.green, this->BackgroundColour.blue));
 }
 
 void Screen::ShowInformation(const char* const message)

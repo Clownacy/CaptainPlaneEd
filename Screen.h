@@ -40,7 +40,7 @@ public:
 
 	Screen(void);
 	void ProcessDisplay(void);
-	void Fill(uint8_t red, uint8_t green, uint8_t blue);
+	void Clear(void);
 	void ShowInformation(const char* const message);
 	void ShowInformation(const char* const message1, const char* const message2);
 	void ShowWarning(const char* const message);

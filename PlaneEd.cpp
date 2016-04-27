@@ -43,7 +43,7 @@ int main(int argc, char* argv[])
     // Create our window
     MainScreen = new Screen;
 
-    MainScreen->Fill(MainScreen->BackgroundColour.red, MainScreen->BackgroundColour.green, MainScreen->BackgroundColour.blue);
+    MainScreen->Clear();
 
     // For backwards-compatibility, we want project files that are drag-and-dropped
     // onto the executable to be automatically loaded when it starts.

@@ -86,7 +86,7 @@ void HandleWindowsEvent(const SDL_Event* const event)
 					EnableMenuBarOption(true, MENUBAR_FILE_CLOSE);
 
 					//Process initial display
-					MainScreen->Fill(MainScreen->BackgroundColour.red, MainScreen->BackgroundColour.green, MainScreen->BackgroundColour.blue);
+					MainScreen->Clear();
 					CurProject->Redraw();
 				}
 				delete[] filename;
@@ -103,7 +103,7 @@ void HandleWindowsEvent(const SDL_Event* const event)
 				CurProject = NULL;	// Deleting an object does not NULL this pointer, so we have to do it ourselves
 				EnableMenuBarOption(false, MENUBAR_FILE_SAVE);
 				EnableMenuBarOption(false, MENUBAR_FILE_CLOSE);
-				MainScreen->Fill(MainScreen->BackgroundColour.red, MainScreen->BackgroundColour.green, MainScreen->BackgroundColour.blue);
+				MainScreen->Clear();
 				break;
 			}
 			case MENUBAR_FILE_EXIT:
@@ -124,7 +124,7 @@ void HandleWindowsEvent(const SDL_Event* const event)
 					MainScreen->BackgroundColour.red = GetRValue(user_colour.rgbResult);
 					MainScreen->BackgroundColour.green = GetGValue(user_colour.rgbResult);
 					MainScreen->BackgroundColour.blue = GetBValue(user_colour.rgbResult);
-					MainScreen->Fill(MainScreen->BackgroundColour.red, MainScreen->BackgroundColour.green, MainScreen->BackgroundColour.blue);
+					MainScreen->Clear();
 					if (CurProject != NULL)
 						CurProject->Redraw();
 				}
