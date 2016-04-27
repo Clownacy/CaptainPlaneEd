@@ -174,11 +174,7 @@ void ResourceMap::Load(const char* const filename)
 		}
 		else
 		{
-			const char* const part_message = "This tool cannot overwrite a ROM. Plane map will be saved to ";
-			char* whole_message = new char[strlen(part_message)+strlen(FILE_MAP_DEFAULT)+1];
-			sprintf(whole_message, "%s%s", part_message, FILE_MAP_DEFAULT);
-			MainScreen->ShowInformation(whole_message);
-			delete[] whole_message;
+			MainScreen->ShowInformation("This tool cannot overwrite a ROM. Plane map will be saved to ", FILE_MAP_DEFAULT);
 			strcpy(this->saveName, FILE_MAP_DEFAULT); //write to default file
 		}
 	}

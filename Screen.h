@@ -42,6 +42,7 @@ public:
 	void ProcessDisplay(void);
 	void Fill(uint8_t red, uint8_t green, uint8_t blue);
 	void ShowInformation(const char* const message);
+	void ShowInformation(const char* const message1, const char* const message2);
 	void ShowWarning(const char* const message);
 	void ShowError(const char* const message);
 	void ShowInternalError(const char* const message);

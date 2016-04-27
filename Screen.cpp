@@ -89,6 +89,14 @@ void Screen::ShowInformation(const char* const message)
 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Information", message, this->window);
 }
 
+void Screen::ShowInformation(const char* const message_part1, const char* const message_part2)
+{
+	char* const whole_message = new char[strlen(message_part1)+strlen(message_part2)+1];
+	sprintf(whole_message, "%s%s", message_part1, message_part2);
+	ShowInformation(whole_message);
+	delete[] whole_message;
+}
+
 void Screen::ShowWarning(const char* const message)
 {
 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Warning", message, this->window);
