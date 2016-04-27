@@ -41,10 +41,10 @@ public:
 	Screen(void);
 	void ProcessDisplay(void);
 	void Fill(uint8_t red, uint8_t green, uint8_t blue);
-	void Information(const char* const message);
-	void Warning(const char* const message);
-	void Error(const char* const message);
-	void InternalError(const char* const message);
+	void ShowInformation(const char* const message);
+	void ShowWarning(const char* const message);
+	void ShowError(const char* const message);
+	void ShowInternalError(const char* const message);
 private:
 	SDL_Window* window;
 	SDL_Renderer* renderer;

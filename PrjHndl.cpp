@@ -101,7 +101,7 @@ void ProjectData::AssignInfo(const infoType type, char* content) {
         case infoType::PALETTE_DESTINATION_OFFSET:
 		pal.destination_offset = strtol(content, NULL, 0);
 		if (pal.destination_offset >= 0x80)
-			MainScreen->Error("Palette Destination Offset cannot be higher than 0x7F (16th entry of 4th palette line; the last palette entry)");
+			MainScreen->ShowError("Palette Destination Offset cannot be higher than 0x7F (16th entry of 4th palette line; the last palette entry)");
 		break;
         case infoType::X_SIZE:
 		map.xSize = strtol(content, NULL, 0);
