@@ -18,6 +18,7 @@
     USA
 */
 
+#include <cstdio>
 #include <cstdint>
 #include <SDL2/SDL.h>
 
