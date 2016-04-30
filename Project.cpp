@@ -50,6 +50,15 @@ Project::Project(char* const parameter_filepath)
 	this->CopyRect = new SelRect(this->GfxStuff, this->LevelMap);
 }
 
+Project::~Project(void)
+{
+	delete this->PrjData;
+	delete this->GfxStuff;
+	delete this->LevelMap;
+	delete this->SelectionRect;
+	delete this->CopyRect;
+}
+
 void Project::Save(void)
 {
 	this->LevelMap->SaveMap(FILE_MAP_TEMP);
