@@ -63,7 +63,7 @@ void Project::Save(void)
 {
 	this->LevelMap->SaveMap(FILE_MAP_TEMP);
 	this->PrjData->map.Save(FILE_MAP_TEMP, this->PrjData->map.saveName);
-	MainScreen->ShowInformation("Save complete.");
+	MainScreen->ShowInformation("Save complete");
 }
 
 void Project::Redraw(void)

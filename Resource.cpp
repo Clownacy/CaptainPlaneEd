@@ -121,7 +121,7 @@ ResourceArt::ResourceArt(void)
 void ResourceArt::Load(const char* const filename)
 {
 	if (this->compression == comprType::INVALID)
-		MainScreen->ShowError("Invalid art compression format. Should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Moduled Kosinski'\n'Nemesis'\n'Kid Chameleon'\n'Comper'\n'Saxman'");
+		MainScreen->ShowError("Invalid art compression format: should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Moduled Kosinski'\n'Nemesis'\n'Kid Chameleon'\n'Comper'\n'Saxman'");
 
 	long decompressed_length = DecompressToFile(filename);
 
@@ -143,7 +143,7 @@ ResourceMap::ResourceMap(void)
 void ResourceMap::Load(const char* const filename)
 {
 	if (this->compression == comprType::INVALID || this->compression == comprType::KID_CHAMELEON)
-		MainScreen->ShowError("Invalid map compression format. Should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Moduled Kosinski'\n'Nemesis'\n'Comper'\n'Saxman'");
+		MainScreen->ShowError("Invalid map compression format: should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Moduled Kosinski'\n'Nemesis'\n'Comper'\n'Saxman'");
 
 	long decompressed_length = DecompressToFile(filename);
 
@@ -152,7 +152,7 @@ void ResourceMap::Load(const char* const filename)
 		//file non-existant, blank template created
 		decompressed_length = 2*this->xSize*this->ySize;
 		CheckCreateBlankFile(this->name, filename, this->offset, decompressed_length);
-		MainScreen->ShowInformation("No map file found, created blank template.");
+		MainScreen->ShowInformation("No map file found; created blank template");
 	}
 	else if (decompressed_length < 0)
 		//file is existant but could not be decompressed
@@ -174,7 +174,7 @@ void ResourceMap::Load(const char* const filename)
 		}
 		else
 		{
-			MainScreen->ShowInformation("This tool cannot overwrite a ROM. Plane map will be saved to ", FILE_MAP_DEFAULT);
+			MainScreen->ShowInformation("This tool cannot overwrite a ROM; plane map will be saved to ", FILE_MAP_DEFAULT);
 			strcpy(this->saveName, FILE_MAP_DEFAULT); //write to default file
 		}
 	}
@@ -190,7 +190,7 @@ ResourcePal::ResourcePal(void)
 void ResourcePal::Load(const char* const filename)
 {
 	if (this->compression == comprType::INVALID)
-		MainScreen->ShowError("Invalid palette compression format. Should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Moduled Kosinski'\n'Nemesis'\n'Kid Chameleon'\n'Comper'\n'Saxman'");
+		MainScreen->ShowError("Invalid palette compression format; should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Moduled Kosinski'\n'Nemesis'\n'Kid Chameleon'\n'Comper'\n'Saxman'");
 
 	long decompressed_length = DecompressToFile(filename);
 
