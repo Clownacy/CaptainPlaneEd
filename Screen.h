@@ -44,5 +44,6 @@ public:
 private:
 	SDL_Window* window;
 	SDL_Renderer* renderer;
-	SDL_Texture* texture;
+	SDL_Texture* base_texture;
+	SDL_Texture* final_texture;
 };

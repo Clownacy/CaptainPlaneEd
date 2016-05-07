@@ -44,19 +44,24 @@ Screen::Screen(void)
 	if (this->window == NULL)
 		this->ShowInternalError("Unable to init SDL Window\n\n", SDL_GetError());
 
-	this->renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	this->renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_ACCELERATED);
 	if (this->renderer == NULL)
 		this->ShowInternalError("Unable to init SDL Renderer\n\n", SDL_GetError());
 
 	SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
-	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
 
 	this->surface = SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0, 0, 0, 0);	// Implicitly ARGB8888, compatible with the below texture
 	if (this->surface==NULL)
 		this->ShowInternalError("Unable to init screen SDL Surface\n\n", SDL_GetError());
 	
-	this->texture = SDL_CreateTexture(this->renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT);
-	if (this->texture==NULL)
+	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
+	this->base_texture = SDL_CreateTexture(this->renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT);
+	if (this->base_texture==NULL)
+		this->ShowInternalError("Unable to init screen SDL Texture\n\n", SDL_GetError());
+	
+	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
+	this->final_texture = SDL_CreateTexture(this->renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, SCREEN_WIDTH*3, SCREEN_HEIGHT*3);
+	if (this->final_texture==NULL)
 		this->ShowInternalError("Unable to init screen SDL Texture\n\n", SDL_GetError());
 
 	this->background_colour = {.r = 0, .g = 0, .b = 0};
@@ -72,11 +77,14 @@ void Screen::ProcessDisplay(void)
 {
 	void* pixels;
 	int pitch;
-	SDL_LockTexture(this->texture, NULL, &pixels, &pitch);
+	SDL_LockTexture(this->base_texture, NULL, &pixels, &pitch);
 	memcpy(pixels, this->surface->pixels, pitch*this->surface->h);
-	SDL_UnlockTexture(this->texture);
+	SDL_UnlockTexture(this->base_texture);
 
-	SDL_RenderCopy(this->renderer, this->texture, NULL, NULL);
+	SDL_SetRenderTarget(this->renderer, this->final_texture);
+	SDL_RenderCopy(this->renderer, this->base_texture, NULL, NULL);
+	SDL_SetRenderTarget(this->renderer, NULL);
+	SDL_RenderCopy(this->renderer, this->final_texture, NULL, NULL);
 	SDL_RenderPresent(this->renderer);
 }
 
