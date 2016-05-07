@@ -18,6 +18,7 @@
     USA
 */
 
+#include <cstdio>
 #include <cstdint>
 #include <SDL2/SDL.h>
 
@@ -35,28 +36,28 @@
 Screen::Screen(void)
 {
 	if (SDL_Init(SDL_INIT_VIDEO)<0)
-		this->ShowInternalError("Unable to init SDL video");
+		this->ShowInternalError("Unable to init SDL video\n\n", SDL_GetError());
 
 	atexit(SDL_Quit);
 
 	this->window = SDL_CreateWindow("Captain PlaneEd v1.0.1", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 	if (this->window == NULL)
-		this->ShowInternalError("Unable to init SDL Window");
+		this->ShowInternalError("Unable to init SDL Window\n\n", SDL_GetError());
 
 	this->renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	if (this->renderer == NULL)
-		this->ShowInternalError("Unable to init SDL Renderer");
+		this->ShowInternalError("Unable to init SDL Renderer\n\n", SDL_GetError());
 
 	SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
 
 	this->surface = SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0, 0, 0, 0);	// Implicitly ARGB8888, compatible with the below texture
 	if (this->surface==NULL)
-		this->ShowInternalError("Unable to init screen SDL Surface");
+		this->ShowInternalError("Unable to init screen SDL Surface\n\n", SDL_GetError());
 	
 	this->texture = SDL_CreateTexture(this->renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT);
 	if (this->texture==NULL)
-		this->ShowInternalError("Unable to init screen SDL Texture");
+		this->ShowInternalError("Unable to init screen SDL Texture\n\n", SDL_GetError());
 
 	this->background_colour = {.r = 0, .g = 0, .b = 0};
 
@@ -104,13 +105,21 @@ void Screen::ShowWarning(const char* const message)
 
 void Screen::ShowError(const char* const message)
 {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", message, this->window);
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", message, this->window);
 	exit(1);
 }
 
 void Screen::ShowInternalError(const char* const message)
 {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Internal Error", message, this->window);
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Internal Error", message, this->window);
 	exit(1);
+}
+
+void Screen::ShowInternalError(const char* const message_part1, const char* const message_part2)
+{
+	char* const whole_message = new char[strlen(message_part1)+strlen(message_part2)+1];
+	sprintf(whole_message, "%s%s", message_part1, message_part2);
+	this->ShowInternalError(whole_message);
+	delete[] whole_message;
 }
 
