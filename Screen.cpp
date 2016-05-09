@@ -33,6 +33,8 @@
 #define WINDOW_HEIGHT SCREEN_HEIGHT
 #endif
 
+#define INTERNAL_UPSCALE_FACTOR 3
+
 Screen::Screen(void)
 {
 	if (SDL_Init(SDL_INIT_VIDEO)<0)
@@ -60,7 +62,7 @@ Screen::Screen(void)
 		this->ShowInternalError("Unable to init screen SDL Texture\n\n", SDL_GetError());
 	
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
-	this->final_texture = SDL_CreateTexture(this->renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, SCREEN_WIDTH*3, SCREEN_HEIGHT*3);
+	this->final_texture = SDL_CreateTexture(this->renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, SCREEN_WIDTH*INTERNAL_UPSCALE_FACTOR, SCREEN_HEIGHT*INTERNAL_UPSCALE_FACTOR);
 	if (this->final_texture==NULL)
 		this->ShowInternalError("Unable to init screen SDL Texture\n\n", SDL_GetError());
 
