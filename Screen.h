@@ -28,9 +28,9 @@
 
 class Screen
 {
+	friend class Graphics;
 public:
 	SDL_Color background_colour;
-	SDL_Surface* surface;
 
 	Screen(void);
 	void ProcessDisplay(void);
@@ -44,6 +44,7 @@ public:
 private:
 	SDL_Window* window;
 	SDL_Renderer* renderer;
-	SDL_Texture* texture;
 	SDL_Texture* upscaled_texture;
+	SDL_Texture* texture;
+	SDL_Surface* surface;
 };
