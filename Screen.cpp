@@ -81,10 +81,15 @@ void Screen::ProcessDisplay(void)
 	memcpy(pixels, this->surface->pixels, pitch*this->surface->h);
 	SDL_UnlockTexture(this->base_texture);
 
-	SDL_SetRenderTarget(this->renderer, this->final_texture);
-	SDL_RenderCopy(this->renderer, this->base_texture, NULL, NULL);
-	SDL_SetRenderTarget(this->renderer, NULL);
-	SDL_RenderCopy(this->renderer, this->final_texture, NULL, NULL);
+	// SDL2's 'linear' filter is ugly with pixel art, and the
+	// 'nearest' one gets pretty bad with non-integer scaling.
+	// Instead, we're going to emulate a type of upscale that
+	// preserves the quality of the image, while smoothing pixels
+	// that 'bleed'.
+	SDL_SetRenderTarget(this->renderer, this->final_texture);		// Render to texture...
+	SDL_RenderCopy(this->renderer, this->base_texture, NULL, NULL);		// ...and upscale using 'nearest'
+	SDL_SetRenderTarget(this->renderer, NULL);				// Render to screen...
+	SDL_RenderCopy(this->renderer, this->final_texture, NULL, NULL);	// ...and upscale/downscale using 'linear'
 	SDL_RenderPresent(this->renderer);
 }
 
