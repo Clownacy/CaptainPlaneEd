@@ -57,13 +57,13 @@ Screen::Screen(void)
 		this->ShowInternalError("Unable to init screen SDL Surface\n\n", SDL_GetError());
 	
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
-	this->base_texture = SDL_CreateTexture(this->renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT);
-	if (this->base_texture==NULL)
+	this->texture = SDL_CreateTexture(this->renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT);
+	if (this->texture==NULL)
 		this->ShowInternalError("Unable to init screen SDL Texture\n\n", SDL_GetError());
 	
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
-	this->final_texture = SDL_CreateTexture(this->renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, SCREEN_WIDTH*INTERNAL_UPSCALE_FACTOR, SCREEN_HEIGHT*INTERNAL_UPSCALE_FACTOR);
-	if (this->final_texture==NULL)
+	this->upscaled_texture = SDL_CreateTexture(this->renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, SCREEN_WIDTH*INTERNAL_UPSCALE_FACTOR, SCREEN_HEIGHT*INTERNAL_UPSCALE_FACTOR);
+	if (this->upscaled_texture==NULL)
 		this->ShowInternalError("Unable to init screen SDL Texture\n\n", SDL_GetError());
 
 	this->background_colour = {.r = 0, .g = 0, .b = 0};
@@ -79,19 +79,19 @@ void Screen::ProcessDisplay(void)
 {
 	void* pixels;
 	int pitch;
-	SDL_LockTexture(this->base_texture, NULL, &pixels, &pitch);
+	SDL_LockTexture(this->texture, NULL, &pixels, &pitch);
 	memcpy(pixels, this->surface->pixels, pitch*this->surface->h);
-	SDL_UnlockTexture(this->base_texture);
+	SDL_UnlockTexture(this->texture);
 
 	// SDL2's 'linear' filter is ugly with pixel art, and the
 	// 'nearest' one gets pretty bad with non-integer scaling.
 	// Instead, we're going to emulate a type of upscale that
 	// preserves the quality of the image, while smoothing pixels
 	// that 'bleed'.
-	SDL_SetRenderTarget(this->renderer, this->final_texture);		// Render to texture...
-	SDL_RenderCopy(this->renderer, this->base_texture, NULL, NULL);		// ...and upscale using 'nearest'
+	SDL_SetRenderTarget(this->renderer, this->upscaled_texture);		// Render to texture...
+	SDL_RenderCopy(this->renderer, this->texture, NULL, NULL);		// ...and upscale using 'nearest'
 	SDL_SetRenderTarget(this->renderer, NULL);				// Render to screen...
-	SDL_RenderCopy(this->renderer, this->final_texture, NULL, NULL);	// ...and upscale/downscale using 'linear'
+	SDL_RenderCopy(this->renderer, this->upscaled_texture, NULL, NULL);	// ...and upscale/downscale using 'linear'
 	SDL_RenderPresent(this->renderer);
 }
 
