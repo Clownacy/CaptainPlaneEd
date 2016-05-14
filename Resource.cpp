@@ -201,7 +201,7 @@ void ResourcePal::Load(const char* const filename)
 
 	// Create blank palette file
 	std::ofstream palfilenew("temp.bin", std::ios::out|std::ios::binary);
-	for (int i=0; i < 0x80; i++)
+	for (int i=0; i < 0x80; ++i)
 		palfilenew.put(0x0E);
 	palfilenew.seekp(this->destination_offset);
 
