@@ -52,7 +52,7 @@ Screen::Screen(void)
 
 	SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-	this->surface = SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0, 0, 0, 0);	// Implicitly ARGB8888, compatible with the below texture
+	this->surface = SDL_CreateRGBSurfaceFrom(NULL, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0, 0, 0, 0, 0);	// Implicitly ARGB8888, compatible with the below texture
 	if (this->surface==NULL)
 		this->ShowInternalError("Unable to init screen SDL Surface\n\n", SDL_GetError());
 	
@@ -61,6 +61,8 @@ Screen::Screen(void)
 	if (this->texture==NULL)
 		this->ShowInternalError("Unable to init screen SDL Texture\n\n", SDL_GetError());
 	
+	SDL_LockTexture(this->texture, NULL, &this->surface->pixels, &this->surface->pitch);
+
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
 	this->upscaled_texture = SDL_CreateTexture(this->renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, SCREEN_WIDTH*INTERNAL_UPSCALE_FACTOR, SCREEN_HEIGHT*INTERNAL_UPSCALE_FACTOR);
 	if (this->upscaled_texture==NULL)
@@ -77,21 +79,21 @@ Screen::Screen(void)
 
 void Screen::ProcessDisplay(void)
 {
-	void* pixels;
-	int pitch;
-	SDL_LockTexture(this->texture, NULL, &pixels, &pitch);
-	memcpy(pixels, this->surface->pixels, pitch*this->surface->h);
-	SDL_UnlockTexture(this->texture);
-
 	// SDL2's 'linear' filter is ugly with pixel art, and the
 	// 'nearest' one gets pretty bad with non-integer scaling.
 	// Instead, we're going to emulate a type of upscale that
 	// preserves the quality of the image, while smoothing pixels
 	// that 'bleed'.
+	SDL_UnlockTexture(this->texture);
+
 	SDL_SetRenderTarget(this->renderer, this->upscaled_texture);		// Render to texture...
 	SDL_RenderCopy(this->renderer, this->texture, NULL, NULL);		// ...and upscale using 'nearest'
+
+	SDL_LockTexture(this->texture, NULL, &this->surface->pixels, &this->surface->pitch);
+
 	SDL_SetRenderTarget(this->renderer, NULL);				// Render to screen...
 	SDL_RenderCopy(this->renderer, this->upscaled_texture, NULL, NULL);	// ...and upscale/downscale using 'linear'
+
 	SDL_RenderPresent(this->renderer);
 }
 
