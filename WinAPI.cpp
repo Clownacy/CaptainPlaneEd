@@ -53,19 +53,19 @@ void CreateMenuBar(void)
 	hMenu = CreateMenu();
 	hSubMenu_File = CreatePopupMenu();
 	AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu_File, "&File");
-	AppendMenu(hSubMenu_File, MF_STRING, MENUBAR_FILE_OPENPROJECT, "&Open");
-	AppendMenu(hSubMenu_File, MF_STRING | MF_GRAYED, MENUBAR_FILE_SAVE, "&Save");
-	AppendMenu(hSubMenu_File, MF_STRING | MF_GRAYED, MENUBAR_FILE_CLOSE, "&Close");
+	AppendMenu(hSubMenu_File, MF_STRING, MENUBAR_OPENPROJECT, "&Open");
+	AppendMenu(hSubMenu_File, MF_STRING | MF_GRAYED, MENUBAR_SAVE, "&Save");
+	AppendMenu(hSubMenu_File, MF_STRING | MF_GRAYED, MENUBAR_CLOSE, "&Close");
 	AppendMenu(hSubMenu_File, MF_SEPARATOR, 0, NULL);
-	AppendMenu(hSubMenu_File, MF_STRING, MENUBAR_FILE_EXIT, "&Exit");
+	AppendMenu(hSubMenu_File, MF_STRING, MENUBAR_EXIT, "&Exit");
 	hSubMenu_View = CreatePopupMenu();
 	AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu_View, "&View");
-	AppendMenu(hSubMenu_View, MF_STRING, MENUBAR_VIEW_BACKGROUNDCOLOUR, "&Background Colour...");
+	AppendMenu(hSubMenu_View, MF_STRING, MENUBAR_BACKGROUNDCOLOUR, "&Background Colour...");
 	AppendMenu(hSubMenu_View, MF_SEPARATOR, 0, NULL);
-	AppendMenu(hSubMenu_View, MF_STRING | MF_GRAYED | MF_UNCHECKED, MENUBAR_VIEW_PALETTELINE1, "Palette Line 1");
-	AppendMenu(hSubMenu_View, MF_STRING | MF_GRAYED | MF_UNCHECKED, MENUBAR_VIEW_PALETTELINE2, "Palette Line 2");
-	AppendMenu(hSubMenu_View, MF_STRING | MF_GRAYED | MF_UNCHECKED, MENUBAR_VIEW_PALETTELINE3, "Palette Line 3");
-	AppendMenu(hSubMenu_View, MF_STRING | MF_GRAYED | MF_UNCHECKED, MENUBAR_VIEW_PALETTELINE4, "Palette Line 4");
+	AppendMenu(hSubMenu_View, MF_STRING | MF_GRAYED | MF_UNCHECKED, MENUBAR_PALETTELINE1, "Palette Line 1");
+	AppendMenu(hSubMenu_View, MF_STRING | MF_GRAYED | MF_UNCHECKED, MENUBAR_PALETTELINE2, "Palette Line 2");
+	AppendMenu(hSubMenu_View, MF_STRING | MF_GRAYED | MF_UNCHECKED, MENUBAR_PALETTELINE3, "Palette Line 3");
+	AppendMenu(hSubMenu_View, MF_STRING | MF_GRAYED | MF_UNCHECKED, MENUBAR_PALETTELINE4, "Palette Line 4");
 
 	SetMenu(hWnd, hMenu);
 
@@ -78,7 +78,7 @@ void HandleWindowsEvent(const SDL_Event* const event)
 	{
 		switch (LOWORD(event->syswm.msg->msg.win.wParam))
 		{
-			case MENUBAR_FILE_OPENPROJECT:
+			case MENUBAR_OPENPROJECT:
 			{
 				char* filename;
 				if (OpenProjectFilePrompt(&filename) == true)
@@ -94,23 +94,23 @@ void HandleWindowsEvent(const SDL_Event* const event)
 				delete[] filename;
 				break;
 			}
-			case MENUBAR_FILE_SAVE:
+			case MENUBAR_SAVE:
 			{
 				CurProject->Save();
 				break;
 			}
-			case MENUBAR_FILE_CLOSE:
+			case MENUBAR_CLOSE:
 			{
 				delete CurProject;
 				CurProject = NULL;	// Deleting an object does not NULL this pointer, so we have to do it ourselves
 				MainScreen->Clear();
 				break;
 			}
-			case MENUBAR_FILE_EXIT:
+			case MENUBAR_EXIT:
 			{
 				exit(1);
 			}
-			case MENUBAR_VIEW_BACKGROUNDCOLOUR:
+			case MENUBAR_BACKGROUNDCOLOUR:
 			{
 				CHOOSECOLOR user_colour;
 				memset(&user_colour, 0, sizeof(user_colour));
@@ -130,25 +130,25 @@ void HandleWindowsEvent(const SDL_Event* const event)
 				}
 				break;
 			}
-			case MENUBAR_VIEW_PALETTELINE1:
+			case MENUBAR_PALETTELINE1:
 			{
 				CurProject->LevelMap->SetPalCurrent(0);
 				CurProject->GfxStuff->DrawSelector();
 				break;
 			}
-			case MENUBAR_VIEW_PALETTELINE2:
+			case MENUBAR_PALETTELINE2:
 			{
 				CurProject->LevelMap->SetPalCurrent(1);
 				CurProject->GfxStuff->DrawSelector();
 				break;
 			}
-			case MENUBAR_VIEW_PALETTELINE3:
+			case MENUBAR_PALETTELINE3:
 			{
 				CurProject->LevelMap->SetPalCurrent(2);
 				CurProject->GfxStuff->DrawSelector();
 				break;
 			}
-			case MENUBAR_VIEW_PALETTELINE4:
+			case MENUBAR_PALETTELINE4:
 			{
 				CurProject->LevelMap->SetPalCurrent(3);
 				CurProject->GfxStuff->DrawSelector();
