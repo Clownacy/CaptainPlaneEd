@@ -87,13 +87,6 @@ void HandleWindowsEvent(const SDL_Event* const event)
 						delete CurProject;
 					CurProject = new Project(filename);
 
-					EnableMenuBarOption(true, MENUBAR_FILE_SAVE);
-					EnableMenuBarOption(true, MENUBAR_FILE_CLOSE);
-					EnableMenuBarOption(true, MENUBAR_VIEW_PALETTELINE1);
-					EnableMenuBarOption(true, MENUBAR_VIEW_PALETTELINE2);
-					EnableMenuBarOption(true, MENUBAR_VIEW_PALETTELINE3);
-					EnableMenuBarOption(true, MENUBAR_VIEW_PALETTELINE4);
-
 					//Process initial display
 					MainScreen->Clear();
 					CurProject->Redraw();
@@ -110,12 +103,6 @@ void HandleWindowsEvent(const SDL_Event* const event)
 			{
 				delete CurProject;
 				CurProject = NULL;	// Deleting an object does not NULL this pointer, so we have to do it ourselves
-				EnableMenuBarOption(false, MENUBAR_FILE_SAVE);
-				EnableMenuBarOption(false, MENUBAR_FILE_CLOSE);
-				EnableMenuBarOption(false, MENUBAR_VIEW_PALETTELINE1);
-				EnableMenuBarOption(false, MENUBAR_VIEW_PALETTELINE2);
-				EnableMenuBarOption(false, MENUBAR_VIEW_PALETTELINE3);
-				EnableMenuBarOption(false, MENUBAR_VIEW_PALETTELINE4);
 				MainScreen->Clear();
 				break;
 			}

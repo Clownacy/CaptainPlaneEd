@@ -53,6 +53,12 @@ Project::Project(char* const parameter_filepath)
 	this->CopyRect = new SelRect(this->GfxStuff, this->LevelMap);
 
 #ifdef _WIN32
+	WinAPI::EnableMenuBarOption(true, MENUBAR_FILE_SAVE);
+	WinAPI::EnableMenuBarOption(true, MENUBAR_FILE_CLOSE);
+	WinAPI::EnableMenuBarOption(true, MENUBAR_VIEW_PALETTELINE1);
+	WinAPI::EnableMenuBarOption(true, MENUBAR_VIEW_PALETTELINE2);
+	WinAPI::EnableMenuBarOption(true, MENUBAR_VIEW_PALETTELINE3);
+	WinAPI::EnableMenuBarOption(true, MENUBAR_VIEW_PALETTELINE4);
 	WinAPI::CheckMenuBarOption(true, MENUBAR_VIEW_PALETTELINE1);
 	WinAPI::CheckMenuBarOption(false, MENUBAR_VIEW_PALETTELINE2);
 	WinAPI::CheckMenuBarOption(false, MENUBAR_VIEW_PALETTELINE3);
@@ -67,6 +73,15 @@ Project::~Project(void)
 	delete this->LevelMap;
 	delete this->SelectionRect;
 	delete this->CopyRect;
+
+#ifdef _WIN32
+	WinAPI::EnableMenuBarOption(false, MENUBAR_FILE_SAVE);
+	WinAPI::EnableMenuBarOption(false, MENUBAR_FILE_CLOSE);
+	WinAPI::EnableMenuBarOption(false, MENUBAR_VIEW_PALETTELINE1);
+	WinAPI::EnableMenuBarOption(false, MENUBAR_VIEW_PALETTELINE2);
+	WinAPI::EnableMenuBarOption(false, MENUBAR_VIEW_PALETTELINE3);
+	WinAPI::EnableMenuBarOption(false, MENUBAR_VIEW_PALETTELINE4);
+#endif
 }
 
 void Project::Save(void)
