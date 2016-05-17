@@ -21,6 +21,9 @@
 #include "Common.h"
 #include "Graphics.h"
 #include "LevMap.h"
+#ifdef _WIN32
+#include "WinAPI.h"
+#endif
 
 LevMap::LevMap(const uint8_t xSize, const uint8_t ySize, Graphics* const GfxStuff) {
     if (xSize <= 0 || ySize <= 0)
@@ -135,6 +138,12 @@ void LevMap::SetPalCurrent(const uint8_t palette) {
         MapData[CurY][CurX].SetPal(palette);
         GfxStuff->SetCurrentPal(palette);
         DrawCurrentTile();
+#ifdef _WIN32
+	WinAPI::CheckMenuBarOption(((palette == 0) ? true : false), MENUBAR_VIEW_PALETTELINE1);
+	WinAPI::CheckMenuBarOption(((palette == 1) ? true : false), MENUBAR_VIEW_PALETTELINE2);
+	WinAPI::CheckMenuBarOption(((palette == 2) ? true : false), MENUBAR_VIEW_PALETTELINE3);
+	WinAPI::CheckMenuBarOption(((palette == 3) ? true : false), MENUBAR_VIEW_PALETTELINE4);
+#endif
     }
 }
 

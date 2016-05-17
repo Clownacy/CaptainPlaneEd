@@ -33,6 +33,10 @@ enum
 
 	MENUBAR_VIEW_START,
 	MENUBAR_VIEW_BACKGROUNDCOLOUR,
+	MENUBAR_VIEW_PALETTELINE1,
+	MENUBAR_VIEW_PALETTELINE2,
+	MENUBAR_VIEW_PALETTELINE3,
+	MENUBAR_VIEW_PALETTELINE4,
 	MENUBAR_VIEW_END
 };
 
@@ -47,5 +51,6 @@ extern void CreateMenuBar(void);
 extern void HandleWindowsEvent(const SDL_Event* const event);
 extern bool OpenProjectFilePrompt(char** const filepath);
 extern void EnableMenuBarOption(bool enable, int menu_option);
+extern void CheckMenuBarOption(bool enable, int menu_option);
 
 }

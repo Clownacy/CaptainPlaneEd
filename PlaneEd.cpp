@@ -59,6 +59,10 @@ int main(int argc, char* argv[])
 
 	WinAPI::EnableMenuBarOption(true, MENUBAR_FILE_SAVE);
 	WinAPI::EnableMenuBarOption(true, MENUBAR_FILE_CLOSE);
+	WinAPI::EnableMenuBarOption(true, MENUBAR_VIEW_PALETTELINE1);
+	WinAPI::EnableMenuBarOption(true, MENUBAR_VIEW_PALETTELINE2);
+	WinAPI::EnableMenuBarOption(true, MENUBAR_VIEW_PALETTELINE3);
+	WinAPI::EnableMenuBarOption(true, MENUBAR_VIEW_PALETTELINE4);
 
         // Process initial display
         CurProject->Redraw();

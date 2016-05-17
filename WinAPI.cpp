@@ -61,6 +61,11 @@ void CreateMenuBar(void)
 	hSubMenu_View = CreatePopupMenu();
 	AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu_View, "&View");
 	AppendMenu(hSubMenu_View, MF_STRING, MENUBAR_VIEW_BACKGROUNDCOLOUR, "&Background Colour...");
+	AppendMenu(hSubMenu_View, MF_SEPARATOR, 0, NULL);
+	AppendMenu(hSubMenu_View, MF_STRING | MF_GRAYED | MF_CHECKED, MENUBAR_VIEW_PALETTELINE1, "Palette Line 1");
+	AppendMenu(hSubMenu_View, MF_STRING | MF_GRAYED | MF_UNCHECKED, MENUBAR_VIEW_PALETTELINE2, "Palette Line 2");
+	AppendMenu(hSubMenu_View, MF_STRING | MF_GRAYED | MF_UNCHECKED, MENUBAR_VIEW_PALETTELINE3, "Palette Line 3");
+	AppendMenu(hSubMenu_View, MF_STRING | MF_GRAYED | MF_UNCHECKED, MENUBAR_VIEW_PALETTELINE4, "Palette Line 4");
 
 	SetMenu(hWnd, hMenu);
 
@@ -84,6 +89,10 @@ void HandleWindowsEvent(const SDL_Event* const event)
 
 					EnableMenuBarOption(true, MENUBAR_FILE_SAVE);
 					EnableMenuBarOption(true, MENUBAR_FILE_CLOSE);
+					EnableMenuBarOption(true, MENUBAR_VIEW_PALETTELINE1);
+					EnableMenuBarOption(true, MENUBAR_VIEW_PALETTELINE2);
+					EnableMenuBarOption(true, MENUBAR_VIEW_PALETTELINE3);
+					EnableMenuBarOption(true, MENUBAR_VIEW_PALETTELINE4);
 
 					//Process initial display
 					MainScreen->Clear();
@@ -103,6 +112,10 @@ void HandleWindowsEvent(const SDL_Event* const event)
 				CurProject = NULL;	// Deleting an object does not NULL this pointer, so we have to do it ourselves
 				EnableMenuBarOption(false, MENUBAR_FILE_SAVE);
 				EnableMenuBarOption(false, MENUBAR_FILE_CLOSE);
+				EnableMenuBarOption(false, MENUBAR_VIEW_PALETTELINE1);
+				EnableMenuBarOption(false, MENUBAR_VIEW_PALETTELINE2);
+				EnableMenuBarOption(false, MENUBAR_VIEW_PALETTELINE3);
+				EnableMenuBarOption(false, MENUBAR_VIEW_PALETTELINE4);
 				MainScreen->Clear();
 				break;
 			}
@@ -128,6 +141,30 @@ void HandleWindowsEvent(const SDL_Event* const event)
 					if (CurProject != NULL)
 						CurProject->Redraw();
 				}
+				break;
+			}
+			case MENUBAR_VIEW_PALETTELINE1:
+			{
+				CurProject->LevelMap->SetPalCurrent(0);
+				CurProject->GfxStuff->DrawSelector();
+				break;
+			}
+			case MENUBAR_VIEW_PALETTELINE2:
+			{
+				CurProject->LevelMap->SetPalCurrent(1);
+				CurProject->GfxStuff->DrawSelector();
+				break;
+			}
+			case MENUBAR_VIEW_PALETTELINE3:
+			{
+				CurProject->LevelMap->SetPalCurrent(2);
+				CurProject->GfxStuff->DrawSelector();
+				break;
+			}
+			case MENUBAR_VIEW_PALETTELINE4:
+			{
+				CurProject->LevelMap->SetPalCurrent(3);
+				CurProject->GfxStuff->DrawSelector();
 				break;
 			}
 		}
@@ -161,6 +198,17 @@ void EnableMenuBarOption(bool enable, int menu_option)
 		submenu = hSubMenu_View;
 
 	EnableMenuItem(submenu, menu_option, enable ? MF_ENABLED : MF_DISABLED);
+}
+
+void CheckMenuBarOption(bool enable, int menu_option)
+{
+	HMENU submenu;
+	if (menu_option > MENUBAR_FILE_START && menu_option < MENUBAR_FILE_END)
+		submenu = hSubMenu_File;
+	else //if (menu_option > MENUBAR_VIEW_START && menu_option < MENUBAR_VIEW_END)
+		submenu = hSubMenu_View;
+
+	CheckMenuItem(submenu, menu_option, enable ? MF_CHECKED : MF_UNCHECKED);
 }
 
 }

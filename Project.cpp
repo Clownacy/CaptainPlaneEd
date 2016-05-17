@@ -24,6 +24,9 @@
 #include "PrjHndl.h"
 #include "Screen.h"
 #include "SelRect.h"
+#ifdef _WIN32
+#include "WinAPI.h"
+#endif
 
 const char* const FILE_MAP_TEMP = "tempmap.bin";
 const char* const FILE_ART_TEMP = "tempart.bin";
@@ -48,6 +51,13 @@ Project::Project(char* const parameter_filepath)
 
 	this->SelectionRect = new SelRect(this->GfxStuff, this->LevelMap);
 	this->CopyRect = new SelRect(this->GfxStuff, this->LevelMap);
+
+#ifdef _WIN32
+	WinAPI::CheckMenuBarOption(true, MENUBAR_VIEW_PALETTELINE1);
+	WinAPI::CheckMenuBarOption(false, MENUBAR_VIEW_PALETTELINE2);
+	WinAPI::CheckMenuBarOption(false, MENUBAR_VIEW_PALETTELINE3);
+	WinAPI::CheckMenuBarOption(false, MENUBAR_VIEW_PALETTELINE4);
+#endif
 }
 
 Project::~Project(void)
