@@ -62,7 +62,7 @@ void CreateMenuBar(void)
 	AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu_View, "&View");
 	AppendMenu(hSubMenu_View, MF_STRING, MENUBAR_VIEW_BACKGROUNDCOLOUR, "&Background Colour...");
 	AppendMenu(hSubMenu_View, MF_SEPARATOR, 0, NULL);
-	AppendMenu(hSubMenu_View, MF_STRING | MF_GRAYED | MF_CHECKED, MENUBAR_VIEW_PALETTELINE1, "Palette Line 1");
+	AppendMenu(hSubMenu_View, MF_STRING | MF_GRAYED | MF_UNCHECKED, MENUBAR_VIEW_PALETTELINE1, "Palette Line 1");
 	AppendMenu(hSubMenu_View, MF_STRING | MF_GRAYED | MF_UNCHECKED, MENUBAR_VIEW_PALETTELINE2, "Palette Line 2");
 	AppendMenu(hSubMenu_View, MF_STRING | MF_GRAYED | MF_UNCHECKED, MENUBAR_VIEW_PALETTELINE3, "Palette Line 3");
 	AppendMenu(hSubMenu_View, MF_STRING | MF_GRAYED | MF_UNCHECKED, MENUBAR_VIEW_PALETTELINE4, "Palette Line 4");

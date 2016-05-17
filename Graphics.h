@@ -46,6 +46,7 @@ private:
     bool lowPriorityDisplay;
 public:
     Graphics(const uint16_t xSize, const uint16_t tileOffset, const uint16_t tileAmount);
+    ~Graphics(void);
     void ReadPalette(const char* const filename);
     void ReadTiles(const char* const filename);
     void CreateTiles(void);
@@ -60,7 +61,7 @@ public:
     void DrawTileFullColor(const int x, const int y, const uint32_t color);
     void DrawTileNone(const int x, const int y);
     void DrawTileInvalid(const int x, const int y);
-    void SetCurrentPal(const uint8_t currentPal) {this->currentPal = currentPal;}
+    void SetCurrentPal(const uint8_t currentPal);
     uint8_t GetCurrentPal(void) {return currentPal;}
     uint8_t GetPaletteLines(void) {return paletteLines;}
     uint8_t GetSelectorWidth(void) {return selectorWidth;}

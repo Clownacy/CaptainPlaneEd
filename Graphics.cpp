@@ -24,6 +24,9 @@
 #include "Common.h"
 #include "Graphics.h"
 #include "Screen.h"
+#ifdef _WIN32
+#include "WinAPI.h"
+#endif
 
 #define PALETTE_ENTRIES_PER_LINE 16
 
@@ -33,7 +36,7 @@ Graphics::Graphics(const uint16_t xSize, const uint16_t tileOffset, const uint16
     this->xDisplaySize = std::min(64, 0+xSize);
     this->tileOffset = tileOffset;
     this->tileAmount = tileAmount;
-    this->currentPal = 0;
+    SetCurrentPal(0);
     this->highPriorityDisplay = true;
     this->lowPriorityDisplay = true;
     this->screenTileYOffset = 0;
@@ -47,6 +50,16 @@ Graphics::Graphics(const uint16_t xSize, const uint16_t tileOffset, const uint16
         if (8 * (xSize+selectorWidth) < SCREEN_WIDTH) selectorWidth += 8;
         else break;
     }
+}
+
+Graphics::~Graphics(void)
+{
+#ifdef _WIN32
+	WinAPI::CheckMenuBarOption(false, MENUBAR_VIEW_PALETTELINE1);
+	WinAPI::CheckMenuBarOption(false, MENUBAR_VIEW_PALETTELINE2);
+	WinAPI::CheckMenuBarOption(false, MENUBAR_VIEW_PALETTELINE3);
+	WinAPI::CheckMenuBarOption(false, MENUBAR_VIEW_PALETTELINE4);
+#endif
 }
 
 void Graphics::ReadPalette(const char* const filename)
@@ -261,6 +274,18 @@ void Graphics::DrawTileInvalid(const int x, const int y)
         DrawPixel(8*x+i, 8*y+i);
         DrawPixel(8*x+i, 8*y+7-i);
     }
+}
+
+void Graphics::SetCurrentPal(const uint8_t currentPal)
+{
+	this->currentPal = currentPal;
+
+#ifdef _WIN32
+	WinAPI::CheckMenuBarOption(((currentPal == 0) ? true : false), MENUBAR_VIEW_PALETTELINE1);
+	WinAPI::CheckMenuBarOption(((currentPal == 1) ? true : false), MENUBAR_VIEW_PALETTELINE2);
+	WinAPI::CheckMenuBarOption(((currentPal == 2) ? true : false), MENUBAR_VIEW_PALETTELINE3);
+	WinAPI::CheckMenuBarOption(((currentPal == 3) ? true : false), MENUBAR_VIEW_PALETTELINE4);
+#endif
 }
 
 void Graphics::DrawPixel(const int x, const int y)

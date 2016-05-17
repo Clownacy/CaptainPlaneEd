@@ -59,10 +59,6 @@ Project::Project(char* const parameter_filepath)
 	WinAPI::EnableMenuBarOption(true, MENUBAR_VIEW_PALETTELINE2);
 	WinAPI::EnableMenuBarOption(true, MENUBAR_VIEW_PALETTELINE3);
 	WinAPI::EnableMenuBarOption(true, MENUBAR_VIEW_PALETTELINE4);
-	WinAPI::CheckMenuBarOption(true, MENUBAR_VIEW_PALETTELINE1);
-	WinAPI::CheckMenuBarOption(false, MENUBAR_VIEW_PALETTELINE2);
-	WinAPI::CheckMenuBarOption(false, MENUBAR_VIEW_PALETTELINE3);
-	WinAPI::CheckMenuBarOption(false, MENUBAR_VIEW_PALETTELINE4);
 #endif
 }
 
