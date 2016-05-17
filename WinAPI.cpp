@@ -38,7 +38,7 @@ void SaveHWND(SDL_Window* const window);
 void CreateMenuBar(void);
 void HandleWindowsEvent(const SDL_Event* const event);
 bool OpenProjectFilePrompt(char** const filepath);
-void EnableMenuBarOption(bool enable, int menu_option);
+void SetMenuBarOptionGreyed(bool enable, int menu_option);
 
 void SaveHWND(SDL_Window* const window)
 {
@@ -176,7 +176,7 @@ bool OpenProjectFilePrompt(char** const filepath)
         return GetOpenFileName(&ofn);
 }
 
-void EnableMenuBarOption(bool enable, int menu_option)
+void SetMenuBarOptionGreyed(bool enable, int menu_option)
 {
 	HMENU submenu;
 	if (menu_option > MENUBAR_FILE_START && menu_option < MENUBAR_FILE_END)
@@ -187,7 +187,7 @@ void EnableMenuBarOption(bool enable, int menu_option)
 	EnableMenuItem(submenu, menu_option, enable ? MF_ENABLED : MF_DISABLED);
 }
 
-void CheckMenuBarOption(bool enable, int menu_option)
+void SetMenuBarOptionChecked(bool enable, int menu_option)
 {
 	HMENU submenu;
 	if (menu_option > MENUBAR_FILE_START && menu_option < MENUBAR_FILE_END)

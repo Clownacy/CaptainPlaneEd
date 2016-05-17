@@ -55,10 +55,10 @@ Graphics::Graphics(const uint16_t xSize, const uint16_t tileOffset, const uint16
 Graphics::~Graphics(void)
 {
 #ifdef _WIN32
-	WinAPI::CheckMenuBarOption(false, MENUBAR_VIEW_PALETTELINE1);
-	WinAPI::CheckMenuBarOption(false, MENUBAR_VIEW_PALETTELINE2);
-	WinAPI::CheckMenuBarOption(false, MENUBAR_VIEW_PALETTELINE3);
-	WinAPI::CheckMenuBarOption(false, MENUBAR_VIEW_PALETTELINE4);
+	WinAPI::SetMenuBarOptionChecked(false, MENUBAR_VIEW_PALETTELINE1);
+	WinAPI::SetMenuBarOptionChecked(false, MENUBAR_VIEW_PALETTELINE2);
+	WinAPI::SetMenuBarOptionChecked(false, MENUBAR_VIEW_PALETTELINE3);
+	WinAPI::SetMenuBarOptionChecked(false, MENUBAR_VIEW_PALETTELINE4);
 #endif
 }
 
@@ -281,10 +281,10 @@ void Graphics::SetCurrentPal(const uint8_t currentPal)
 	this->currentPal = currentPal;
 
 #ifdef _WIN32
-	WinAPI::CheckMenuBarOption(((currentPal == 0) ? true : false), MENUBAR_VIEW_PALETTELINE1);
-	WinAPI::CheckMenuBarOption(((currentPal == 1) ? true : false), MENUBAR_VIEW_PALETTELINE2);
-	WinAPI::CheckMenuBarOption(((currentPal == 2) ? true : false), MENUBAR_VIEW_PALETTELINE3);
-	WinAPI::CheckMenuBarOption(((currentPal == 3) ? true : false), MENUBAR_VIEW_PALETTELINE4);
+	WinAPI::SetMenuBarOptionChecked(((currentPal == 0) ? true : false), MENUBAR_VIEW_PALETTELINE1);
+	WinAPI::SetMenuBarOptionChecked(((currentPal == 1) ? true : false), MENUBAR_VIEW_PALETTELINE2);
+	WinAPI::SetMenuBarOptionChecked(((currentPal == 2) ? true : false), MENUBAR_VIEW_PALETTELINE3);
+	WinAPI::SetMenuBarOptionChecked(((currentPal == 3) ? true : false), MENUBAR_VIEW_PALETTELINE4);
 #endif
 }
 

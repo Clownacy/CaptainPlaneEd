@@ -53,12 +53,12 @@ Project::Project(char* const parameter_filepath)
 	this->CopyRect = new SelRect(this->GfxStuff, this->LevelMap);
 
 #ifdef _WIN32
-	WinAPI::EnableMenuBarOption(true, MENUBAR_FILE_SAVE);
-	WinAPI::EnableMenuBarOption(true, MENUBAR_FILE_CLOSE);
-	WinAPI::EnableMenuBarOption(true, MENUBAR_VIEW_PALETTELINE1);
-	WinAPI::EnableMenuBarOption(true, MENUBAR_VIEW_PALETTELINE2);
-	WinAPI::EnableMenuBarOption(true, MENUBAR_VIEW_PALETTELINE3);
-	WinAPI::EnableMenuBarOption(true, MENUBAR_VIEW_PALETTELINE4);
+	WinAPI::SetMenuBarOptionGreyed(true, MENUBAR_FILE_SAVE);
+	WinAPI::SetMenuBarOptionGreyed(true, MENUBAR_FILE_CLOSE);
+	WinAPI::SetMenuBarOptionGreyed(true, MENUBAR_VIEW_PALETTELINE1);
+	WinAPI::SetMenuBarOptionGreyed(true, MENUBAR_VIEW_PALETTELINE2);
+	WinAPI::SetMenuBarOptionGreyed(true, MENUBAR_VIEW_PALETTELINE3);
+	WinAPI::SetMenuBarOptionGreyed(true, MENUBAR_VIEW_PALETTELINE4);
 #endif
 }
 
@@ -71,12 +71,12 @@ Project::~Project(void)
 	delete this->CopyRect;
 
 #ifdef _WIN32
-	WinAPI::EnableMenuBarOption(false, MENUBAR_FILE_SAVE);
-	WinAPI::EnableMenuBarOption(false, MENUBAR_FILE_CLOSE);
-	WinAPI::EnableMenuBarOption(false, MENUBAR_VIEW_PALETTELINE1);
-	WinAPI::EnableMenuBarOption(false, MENUBAR_VIEW_PALETTELINE2);
-	WinAPI::EnableMenuBarOption(false, MENUBAR_VIEW_PALETTELINE3);
-	WinAPI::EnableMenuBarOption(false, MENUBAR_VIEW_PALETTELINE4);
+	WinAPI::SetMenuBarOptionGreyed(false, MENUBAR_FILE_SAVE);
+	WinAPI::SetMenuBarOptionGreyed(false, MENUBAR_FILE_CLOSE);
+	WinAPI::SetMenuBarOptionGreyed(false, MENUBAR_VIEW_PALETTELINE1);
+	WinAPI::SetMenuBarOptionGreyed(false, MENUBAR_VIEW_PALETTELINE2);
+	WinAPI::SetMenuBarOptionGreyed(false, MENUBAR_VIEW_PALETTELINE3);
+	WinAPI::SetMenuBarOptionGreyed(false, MENUBAR_VIEW_PALETTELINE4);
 #endif
 }
 
