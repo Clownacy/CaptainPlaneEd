@@ -139,4 +139,3 @@ void Screen::ShowInternalError(const char* const message_part1, const char* cons
 	this->ShowInternalError(whole_message);
 	delete[] whole_message;
 }
-
