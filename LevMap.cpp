@@ -25,8 +25,6 @@
 LevMap::LevMap(const uint8_t xSize, const uint8_t ySize, Graphics* const GfxStuff) {
     if (xSize <= 0 || ySize <= 0)
         MainScreen->ShowError("Invalid map size: must be at least 1x1");
-    else if (xSize > 64 || ySize > 64)
-        MainScreen->ShowError("Invalid map size: must be 64x64 or smaller");
 
     this->xSize=xSize;
     this->ySize=ySize;
