@@ -1,6 +1,6 @@
 NAME	= CaptainPlaneEd
 GCC	= g++
-CFLAGS	= `sdl2-config --cflags` -O3 -s -std=c++14 -Wall -Wextra
+CFLAGS	= `sdl2-config --cflags` -O3 -s -std=c++14 -Wall -Wextra -fno-ident
 DEFINES	= 
 LIBS	= `sdl2-config --libs`
 
