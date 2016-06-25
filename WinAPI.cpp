@@ -168,7 +168,7 @@ bool OpenProjectFilePrompt(char** const filepath)
         ofn.lStructSize = sizeof(ofn);
         ofn.hwndOwner = hWnd;
         ofn.hInstance = NULL;
-        ofn.lpstrFilter = TEXT("PlaneEd project file (*.txt)\0*.txt\0\0");
+        ofn.lpstrFilter = TEXT("PlaneEd project file (*.txt)\0*.txt\0All files (*.*)\0*.*\0\0");
         ofn.nFilterIndex = 1;
         ofn.lpstrFile = *filepath;
         ofn.nMaxFile = filepath_size;
