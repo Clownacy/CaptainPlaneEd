@@ -55,6 +55,7 @@ long Resource::DecompressToFile(const char* const dstfile)
 	int decompressed_length;
 	switch (this->compression)
 	{
+		default:
 		case comprType::NONE:
 			decompressed_length = ReadPlain(this->name, dstfile, this->offset, this->length);
 			break;
@@ -88,6 +89,7 @@ void Resource::CompressFile(const char* const srcfile, const char* const dstfile
 {
 	switch (this->compression)
 	{
+		default:
 		case comprType::NONE:
 			remove(dstfile);
 			rename(srcfile, dstfile);
@@ -103,6 +105,9 @@ void Resource::CompressFile(const char* const srcfile, const char* const dstfile
 			break;
 		case comprType::NEMESIS:
 			nemesis::encode(srcfile, dstfile);
+			break;
+		case comprType::KID_CHAMELEON:
+			MainScreen->ShowWarning("Cannot save Kid Chameleon-compressed files.");
 			break;
 		case comprType::COMPER:
 			comper::encode(srcfile, dstfile);

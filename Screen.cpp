@@ -68,7 +68,7 @@ Screen::Screen(void)
 	if (this->upscaled_texture==NULL)
 		this->ShowInternalError("Unable to init screen SDL Texture\n\n", SDL_GetError());
 
-	this->background_colour = {.r = 0, .g = 0, .b = 0};
+	this->background_colour = {.r = 0, .g = 0, .b = 0, .a = 0};
 
 #ifdef _WIN32
 	// Windows-only crap to generate a menu bar
