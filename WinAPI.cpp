@@ -60,12 +60,12 @@ void CreateMenuBar(void)
 	AppendMenu(hSubMenu_File, MF_STRING, MENUBAR_EXIT, "&Exit");
 	hSubMenu_View = CreatePopupMenu();
 	AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu_View, "&View");
-	AppendMenu(hSubMenu_View, MF_STRING, MENUBAR_BACKGROUNDCOLOUR, "&Background Colour...");
+	AppendMenu(hSubMenu_View, MF_STRING, MENUBAR_BACKGROUNDCOLOUR, "&Background colour...");
 	AppendMenu(hSubMenu_View, MF_SEPARATOR, 0, NULL);
-	AppendMenu(hSubMenu_View, MF_STRING | MF_GRAYED | MF_UNCHECKED, MENUBAR_PALETTELINE1, "Palette Line 1");
-	AppendMenu(hSubMenu_View, MF_STRING | MF_GRAYED | MF_UNCHECKED, MENUBAR_PALETTELINE2, "Palette Line 2");
-	AppendMenu(hSubMenu_View, MF_STRING | MF_GRAYED | MF_UNCHECKED, MENUBAR_PALETTELINE3, "Palette Line 3");
-	AppendMenu(hSubMenu_View, MF_STRING | MF_GRAYED | MF_UNCHECKED, MENUBAR_PALETTELINE4, "Palette Line 4");
+	AppendMenu(hSubMenu_View, MF_STRING | MF_GRAYED | MF_UNCHECKED, MENUBAR_PALETTELINE1, "Palette line &1");
+	AppendMenu(hSubMenu_View, MF_STRING | MF_GRAYED | MF_UNCHECKED, MENUBAR_PALETTELINE2, "Palette line &2");
+	AppendMenu(hSubMenu_View, MF_STRING | MF_GRAYED | MF_UNCHECKED, MENUBAR_PALETTELINE3, "Palette line &3");
+	AppendMenu(hSubMenu_View, MF_STRING | MF_GRAYED | MF_UNCHECKED, MENUBAR_PALETTELINE4, "Palette line &4");
 
 	SetMenu(hWnd, hMenu);
 
