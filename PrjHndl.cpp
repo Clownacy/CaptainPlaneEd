@@ -34,6 +34,15 @@ ProjectData::ProjectData(const char* const prjtxt) {
     tileOffset = 0;
     letterOffset = numberOffset = 0;
 
+    std::ifstream prjfile(prjtxt, std::ios::in);
+
+    while (!prjfile.eof()) {
+        char line[256];
+        prjfile.getline(line, 256);
+	infoType info_type = readInfoType(line);
+	AssignInfo(info_type, line+strcspn(line, ":")+1);
+    }
+
     // Make working directory from project path
     char prjdir[strlen(prjtxt)+1];
     strcpy(prjdir, prjtxt);
@@ -48,15 +57,6 @@ ProjectData::ProjectData(const char* const prjtxt) {
             (*windows_seperator) = '\0';
 
         chdir(prjdir);
-    }
-
-    std::ifstream prjfile(prjtxt, std::ios::in);
-
-    while (!prjfile.eof()) {
-        char line[256];
-        prjfile.getline(line, 256);
-	infoType info_type = readInfoType(line);
-	AssignInfo(info_type, line+strcspn(line, ":")+1);
     }
 }
 
