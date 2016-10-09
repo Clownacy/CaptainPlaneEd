@@ -20,6 +20,7 @@
 
 #include <cstdio>
 #include <cstdint>
+#include <cstring>
 #include <SDL2/SDL.h>
 
 #include "Screen.h"

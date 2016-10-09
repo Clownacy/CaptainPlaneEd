@@ -18,6 +18,7 @@
     USA
 */
 
+#include <cstring>
 #include <fstream>
 
 #include "Common.h"
