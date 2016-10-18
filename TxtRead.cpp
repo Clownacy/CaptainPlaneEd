@@ -61,7 +61,8 @@ struct
 	{ "Nemesis",          comprType::NEMESIS },
 	{ "Kid Chameleon",    comprType::KID_CHAMELEON },
 	{ "Comper",           comprType::COMPER },
-	{ "Saxman",           comprType::SAXMAN }
+	{ "Saxman",           comprType::SAXMAN },
+	{ "Rocket",           comprType::ROCKET }
 };
 
 infoType readInfoType(const char* const string)

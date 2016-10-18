@@ -11,7 +11,7 @@ ifeq ($(OS),Windows_NT)
 OBJECTS += $(OBJDIR)/WinAPI.o
 endif
 OBJECTS += $(OBJDIR)/KidDec.o $(OBJDIR)/ReadPlain.o
-OBJECTS += $(OBJDIR)/comper.o $(OBJDIR)/enigma.o $(OBJDIR)/kosinski.o $(OBJDIR)/nemesis.o $(OBJDIR)/saxman.o
+OBJECTS += $(OBJDIR)/comper.o $(OBJDIR)/enigma.o $(OBJDIR)/kosinski.o $(OBJDIR)/nemesis.o $(OBJDIR)/saxman.o $(OBJDIR)/rocket.o
 
 all: objdirectory $(OBJECTS) $(NAME)
 
@@ -72,6 +72,9 @@ $(OBJDIR)/nemesis.o: compression/FW_KENSC/nemesis.cc
 	$(GCC) $(CXXFLAGS) -c $^ -o $@
 
 $(OBJDIR)/saxman.o: compression/FW_KENSC/saxman.cc
+	$(GCC) $(CXXFLAGS) -c $^ -o $@
+
+$(OBJDIR)/rocket.o: compression/FW_KENSC/rocket.cc
 	$(GCC) $(CXXFLAGS) -c $^ -o $@
 
 $(NAME): $(OBJECTS)

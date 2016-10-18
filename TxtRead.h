@@ -55,6 +55,7 @@ enum class comprType {
 	KID_CHAMELEON,
 	COMPER,
 	SAXMAN,
+	ROCKET,
 	COMPR_TYPE_AMOUNT,
 	INVALID
 };

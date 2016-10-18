@@ -33,6 +33,7 @@
 #include "compression/FW_KENSC/kosinski.h"
 #include "compression/FW_KENSC/nemesis.h"
 #include "compression/FW_KENSC/saxman.h"
+#include "compression/FW_KENSC/rocket.h"
 
 const char* const FILE_MAP_DEFAULT = "MapDefault.bin";
 
@@ -69,6 +70,7 @@ long Resource::DecompressToFile(const char* const dstfile)
 		case comprType::NEMESIS:
 		case comprType::COMPER:
 		case comprType::SAXMAN:
+		case comprType::ROCKET:
 			std::ifstream srcfile_stream(this->name, std::ios::in|std::ios::binary);
 			if (!srcfile_stream.is_open())
 			{
@@ -99,6 +101,9 @@ long Resource::DecompressToFile(const char* const dstfile)
 				case comprType::SAXMAN:
 					saxman::decode(srcfile_stream, dstfile_stream, this->offset);
 					break;
+				case comprType::ROCKET:
+					rocket::decode(srcfile_stream, dstfile_stream, this->offset);
+					break;
 			}
 
 			dstfile_stream.seekp(0, std::ios_base::end);
@@ -127,6 +132,7 @@ void Resource::CompressFile(const char* const srcfile, const char* const dstfile
 		case comprType::NEMESIS:
 		case comprType::COMPER:
 		case comprType::SAXMAN:
+		case comprType::ROCKET:
 			std::ifstream srcfile_stream(this->name, std::ios::in|std::ios::binary);
 			if (!srcfile_stream.is_open())
 				break;
@@ -153,6 +159,9 @@ void Resource::CompressFile(const char* const srcfile, const char* const dstfile
 					break;
 				case comprType::SAXMAN:
 					saxman::encode(srcfile_stream, dstfile_stream, false);
+					break;
+				case comprType::ROCKET:
+					rocket::encode(srcfile_stream, dstfile_stream);
 					break;
 			}
 
