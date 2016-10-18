@@ -27,10 +27,10 @@ private:
 	static void encode_internal(std::ostream &Dst, unsigned char const *&Buffer,
 	                            std::streamsize const BSize, std::streamsize const Padding);
 public:
-	static long decode(const char* const srcfile, const char* const dstfile,
+	static bool decode(std::istream &Src, std::iostream &Dst,
 	                   std::streampos Location = 0, bool Moduled = false,
 	                   std::streamsize const ModulePadding = 16u);
-	static bool encode(const char* const srcfile, const char* const dstfile,
+	static bool encode(std::istream &Src, std::ostream &Dst,
 	                   bool Moduled = false, std::streamoff ModuleSize = 0x1000,
 	                   std::streamsize const ModulePadding = 16u);
 };

@@ -19,7 +19,8 @@
 
 //#define COUNT_FREQUENCIES 1
 
-#include <fstream>
+#include <istream>
+#include <ostream>
 #include <sstream>
 
 #ifdef COUNT_FREQUENCIES
@@ -96,11 +97,7 @@ struct KosinskiAdaptor {
 	                          size_t basenode,
 	                          size_t ubound, size_t lbound,
 	                          LZSSGraph<KosinskiAdaptor>::MatchVector &matches) noexcept {
-		ignore_unused_variable_warning(data);
-		ignore_unused_variable_warning(basenode);
-		ignore_unused_variable_warning(ubound);
-		ignore_unused_variable_warning(lbound);
-		ignore_unused_variable_warning(matches);
+		ignore_unused_variable_warning(data, basenode, ubound, lbound, matches);
 	}
 	// KosinskiM needs to pad each module to a multiple of 16 bytes.
 	constexpr static size_t get_padding(size_t totallen, size_t padmask) noexcept {
@@ -173,15 +170,9 @@ void kosinski::decode_internal(istream &in, iostream &Dst, size_t &DecBytes) {
 	}
 }
 
-long kosinski::decode(const char* const srcfile, const char* const dstfile,
+bool kosinski::decode(istream &Src, iostream &Dst,
                       streampos Location, bool Moduled,
                       streamsize const ModulePadding) {
-	ifstream Src(srcfile, ios::in|ios::binary);
-	if (!Src.is_open())
-		return -2;
-
-	fstream Dst(dstfile, ios::in|ios::out|ios::binary|ios::trunc);
-
 	size_t DecBytes = 0;
 
 	Src.seekg(0, ios::end);
@@ -219,7 +210,7 @@ long kosinski::decode(const char* const srcfile, const char* const dstfile,
 		decode_internal(in, Dst, DecBytes);
 	}
 
-	return Dst.tellp();
+	return true;
 }
 
 void kosinski::encode_internal(ostream &Dst, unsigned char const *&Buffer,
@@ -313,11 +304,8 @@ void kosinski::encode_internal(ostream &Dst, unsigned char const *&Buffer,
 	out.putbyte(0x00);
 }
 
-bool kosinski::encode(const char* const srcfile, const char* const dstfile, bool Moduled, streamoff ModuleSize,
+bool kosinski::encode(istream &Src, ostream &Dst, bool Moduled, streamoff ModuleSize,
                       streamsize const ModulePadding) {
-	ifstream Src(srcfile, ios::in|ios::binary);
-	fstream Dst(dstfile, ios::in|ios::out|ios::binary|ios::trunc);
-
 	Src.seekg(0, ios::end);
 	streamsize BSize = Src.tellg();
 	Src.seekg(0);

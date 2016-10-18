@@ -16,7 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <fstream>
+#include <istream>
+#include <ostream>
 #include <sstream>
 
 #include "comper.h"
@@ -64,8 +65,7 @@ struct ComperAdaptor {
 		// Preconditions:
 		// len > 1 && len <= LookAheadBufSize && dist != 0 && dist <= SearchBufSize
 		// Dictionary match: 1-bit descriptor, 8-bit distance, 8-bit length.
-		ignore_unused_variable_warning(dist);
-		ignore_unused_variable_warning(len);
+		ignore_unused_variable_warning(dist, len);
 		return 1 + 8 + 8;
 	}
 	// Given an edge, computes how many bits are used in the descriptor field.
@@ -79,16 +79,11 @@ struct ComperAdaptor {
 	                          size_t basenode,
 	                          size_t ubound, size_t lbound,
 	                          LZSSGraph<ComperAdaptor>::MatchVector &matches) noexcept {
-		ignore_unused_variable_warning(data);
-		ignore_unused_variable_warning(basenode);
-		ignore_unused_variable_warning(ubound);
-		ignore_unused_variable_warning(lbound);
-		ignore_unused_variable_warning(matches);
+		ignore_unused_variable_warning(data, basenode, ubound, lbound, matches);
 	}
 	// Comper needs no additional padding at the end-of-file.
 	constexpr static size_t get_padding(size_t totallen, size_t padmask) noexcept {
-		ignore_unused_variable_warning(totallen);
-		ignore_unused_variable_warning(padmask);
+		ignore_unused_variable_warning(totallen, padmask);
 		return 0;
 	}
 };
@@ -124,21 +119,14 @@ void comper::decode_internal(istream &in, iostream &Dst) {
 	}
 }
 
-long comper::decode(const char* const srcfile, const char* const dstfile, streampos Location) {
-	ifstream Src(srcfile, ios::in|ios::binary);
-	if (!Src.is_open())
-		return -2;
-
-	fstream Dst(dstfile, ios::in|ios::out|ios::binary|ios::trunc);
-
+bool comper::decode(istream &Src, iostream &Dst, streampos Location) {
 	Src.seekg(Location);
 	stringstream in(ios::in | ios::out | ios::binary);
 	in << Src.rdbuf();
 
 	in.seekg(0);
 	decode_internal(in, Dst);
-
-	return Dst.tellp();
+	return true;
 }
 
 void comper::encode_internal(ostream &Dst, unsigned char const *&Buffer,
@@ -178,10 +166,7 @@ void comper::encode_internal(ostream &Dst, unsigned char const *&Buffer,
 	out.putbyte(0x00);
 }
 
-bool comper::encode(const char* const srcfile, const char* const dstfile) {
-	ifstream Src(srcfile, ios::in|ios::binary);
-	fstream Dst(dstfile, ios::in|ios::out|ios::binary|ios::trunc);
-
+bool comper::encode(istream &Src, ostream &Dst) {
 	Src.seekg(0, ios::end);
 	streamsize ISize = Src.tellg();
 	Src.seekg(0);

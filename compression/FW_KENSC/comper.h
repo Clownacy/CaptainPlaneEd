@@ -28,9 +28,9 @@ private:
 	static void encode_internal(std::ostream &Dst, unsigned char const *&Buffer,
 	                            std::streamsize const BSize);
 public:
-	static long decode(const char* const srcfile, const char* const dstfile,
+	static bool decode(std::istream &Src, std::iostream &Dst,
 	                   std::streampos Location = 0);
-	static bool encode(const char* const srcfile, const char* const dstfile);
+	static bool encode(std::istream &Src, std::ostream &Dst);
 };
 
 #endif // __LIB_COMPER_H

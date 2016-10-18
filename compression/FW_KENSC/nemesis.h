@@ -38,9 +38,9 @@ private:
 	static size_t encode_internal(std::istream &Src, std::ostream &Dst, int mode,
 	                              size_t sz, Compare const &comp);
 public:
-	static long decode(const char* const srcfile, const char* const dstfile, std::streampos Location = 0,
+	static bool decode(std::istream &Src, std::ostream &Dst, std::streampos Location = 0,
 	                   int *endptr = nullptr);
-	static bool encode(const char* const srcfile, const char* const dstfile);
+	static bool encode(std::istream &Src, std::ostream &Dst);
 };
 
 #endif // __LIB_NEMESIS_H

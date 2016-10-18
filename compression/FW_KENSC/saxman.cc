@@ -17,7 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <fstream>
+#include <istream>
+#include <ostream>
 #include <sstream>
 #include <cstdio>
 
@@ -105,8 +106,7 @@ struct SaxmanAdaptor {
 	}
 	// Saxman needs no additional padding at the end-of-file.
 	constexpr static size_t get_padding(size_t totallen, size_t padmask) noexcept {
-		ignore_unused_variable_warning(totallen);
-		ignore_unused_variable_warning(padmask);
+		ignore_unused_variable_warning(totallen, padmask);
 		return 0;
 	}
 };
@@ -168,14 +168,8 @@ void saxman::decode_internal(istream &in, iostream &Dst,
 	}
 }
 
-long saxman::decode(const char* const srcfile, const char* const dstfile,
+bool saxman::decode(istream &Src, iostream &Dst,
                     streampos Location, streamsize const BSize) {
-	ifstream Src(srcfile, ios::in|ios::binary);
-	if (!Src.is_open())
-		return -2;
-
-	fstream Dst(dstfile, ios::in|ios::out|ios::binary|ios::trunc);
-
 	Src.seekg(Location);
 	size_t size = BSize == 0 ? LittleEndian::Read2(Src) : BSize;
 
@@ -184,8 +178,7 @@ long saxman::decode(const char* const srcfile, const char* const dstfile,
 
 	in.seekg(0);
 	decode_internal(in, Dst, size);
-
-	return Dst.tellp();
+	return true;
 }
 
 void saxman::encode_internal(ostream &Dst, unsigned char const *&Buffer,
@@ -222,10 +215,7 @@ void saxman::encode_internal(ostream &Dst, unsigned char const *&Buffer,
 	}
 }
 
-bool saxman::encode(const char* const srcfile, const char* const dstfile, bool WithSize) {
-	ifstream Src(srcfile, ios::in|ios::binary);
-	fstream Dst(dstfile, ios::in|ios::out|ios::binary|ios::trunc);
-
+bool saxman::encode(istream &Src, ostream &Dst, bool WithSize) {
 	Src.seekg(0, ios::end);
 	streamsize BSize = Src.tellg();
 	Src.seekg(0);

@@ -19,7 +19,8 @@
  */
 
 #include <memory>
-#include <fstream>
+#include <istream>
+#include <ostream>
 #include <sstream>
 #include <map>
 #include <set>
@@ -418,13 +419,7 @@ void nemesis::decode_internal(istream &Src, ostream &Dst,
 	}
 }
 
-long nemesis::decode(const char* const srcfile, const char* const dstfile, streampos Location, int *endptr) {
-	ifstream Src(srcfile, ios::in|ios::binary);
-	if (!Src.is_open())
-		return -2;
-
-	fstream Dst(dstfile, ios::in|ios::out|ios::binary|ios::trunc);
-
+bool nemesis::decode(istream &Src, ostream &Dst, streampos Location, int *endptr) {
 	Src.seekg(Location);
 
 	CodeNibbleMap codemap;
@@ -439,7 +434,7 @@ long nemesis::decode(const char* const srcfile, const char* const dstfile, strea
 	} else if (endptr) {
 		*endptr = Src.tellg();
 	}
-	return Dst.tellp();
+	return true;
 }
 
 static size_t estimate_file_size(NibbleCodeMap &tempcodemap, RunCountMap &counts) {
@@ -940,10 +935,7 @@ size_t nemesis::encode_internal(istream &Src, ostream &Dst, int mode,
 	return Dst.tellp();
 }
 
-bool nemesis::encode(const char* const srcfile, const char* const dstfile) {
-	ifstream Src(srcfile, ios::in|ios::binary);
-	fstream Dst(dstfile, ios::in|ios::out|ios::binary|ios::trunc);
-
+bool nemesis::encode(istream &Src, ostream &Dst) {
 	// We will use these as output buffers, as well as an input/output
 	// buffers for the padded Nemesis input.
 	stringstream src(ios::in | ios::out | ios::binary);

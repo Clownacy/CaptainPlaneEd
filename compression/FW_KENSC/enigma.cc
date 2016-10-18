@@ -18,7 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <fstream>
+#include <istream>
+#include <ostream>
 #include <sstream>
 #include <map>
 #include <string>
@@ -225,14 +226,8 @@ void enigma::decode_internal(istream &Src, ostream &Dst) {
 	}
 }
 
-long enigma::decode(const char* const srcfile, const char* const dstfile, streampos Location,
+bool enigma::decode(istream &Src, ostream &Dst, streampos Location,
                     bool padding) {
-	ifstream Src(srcfile, ios::in|ios::binary);
-	if (!Src.is_open())
-		return -2;
-
-	fstream Dst(dstfile, ios::in|ios::out|ios::binary|ios::trunc);
-
 	Src.seekg(Location);
 	if (padding) {
 		// This is a plane map into a full pattern name table.
@@ -255,8 +250,7 @@ long enigma::decode(const char* const srcfile, const char* const dstfile, stream
 	} else {
 		decode_internal(Src, Dst);
 	}
-
-	return Dst.tellp();
+	return true;
 }
 
 // Blazing fast function that gives the index of the MSB.
@@ -437,10 +431,7 @@ void enigma::encode_internal(istream &Src, ostream &Dst) {
 	bits.flush();
 }
 
-bool enigma::encode(const char* const srcfile, const char* const dstfile, bool padding) {
-	ifstream Src(srcfile, ios::in|ios::binary);
-	fstream Dst(dstfile, ios::in|ios::out|ios::binary|ios::trunc);
-
+bool enigma::encode(istream &Src, ostream &Dst, bool padding) {
 	Src.seekg(0, ios::end);
 	streamsize sz = Src.tellg();
 	Src.seekg(0);

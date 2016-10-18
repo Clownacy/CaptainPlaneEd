@@ -60,26 +60,49 @@ long Resource::DecompressToFile(const char* const dstfile)
 		case comprType::NONE:
 			decompressed_length = ReadPlain(this->name, dstfile, this->offset, this->length);
 			break;
-		case comprType::ENIGMA:
-			decompressed_length = enigma::decode(this->name, dstfile, this->offset, false);
-			break;
-		case comprType::KOSINSKI:
-			decompressed_length = kosinski::decode(this->name, dstfile, this->offset, false, 16u);
-			break;
-		case comprType::MODULED_KOSINSKI:
-			decompressed_length = kosinski::decode(this->name, dstfile, this->offset, true, 16u);
-			break;
-		case comprType::NEMESIS:
-			decompressed_length = nemesis::decode(this->name, dstfile, this->offset, 0);
-			break;
 		case comprType::KID_CHAMELEON:
 			decompressed_length = KidDec(this->name, dstfile, this->offset);
 			break;
+		case comprType::ENIGMA:
+		case comprType::KOSINSKI:
+		case comprType::MODULED_KOSINSKI:
+		case comprType::NEMESIS:
 		case comprType::COMPER:
-			decompressed_length = comper::decode(this->name, dstfile, this->offset);
-			break;
 		case comprType::SAXMAN:
-			decompressed_length = saxman::decode(this->name, dstfile, this->offset, 0);
+			std::ifstream srcfile_stream(this->name, std::ios::in|std::ios::binary);
+			if (!srcfile_stream.is_open())
+			{
+				decompressed_length = -2;
+				break;
+			}
+
+			std::fstream dstfile_stream(dstfile, std::ios::in|std::ios::out|std::ios::binary|std::ios::trunc);
+
+			switch (this->compression)
+			{
+				default:
+				case comprType::ENIGMA:
+					enigma::decode(srcfile_stream, dstfile_stream, this->offset);
+					break;
+				case comprType::KOSINSKI:
+					kosinski::decode(srcfile_stream, dstfile_stream, this->offset);
+					break;
+				case comprType::MODULED_KOSINSKI:
+					kosinski::decode(srcfile_stream, dstfile_stream, this->offset, true);
+					break;
+				case comprType::NEMESIS:
+					nemesis::decode(srcfile_stream, dstfile_stream, this->offset);
+					break;
+				case comprType::COMPER:
+					comper::decode(srcfile_stream, dstfile_stream, this->offset);
+					break;
+				case comprType::SAXMAN:
+					saxman::decode(srcfile_stream, dstfile_stream, this->offset);
+					break;
+			}
+
+			dstfile_stream.seekp(0, std::ios_base::end);
+			decompressed_length = dstfile_stream.tellp();
 			break;
 	}
 
@@ -95,26 +118,44 @@ void Resource::CompressFile(const char* const srcfile, const char* const dstfile
 			remove(dstfile);
 			rename(srcfile, dstfile);
 			break;
-		case comprType::ENIGMA:
-			enigma::encode(srcfile, dstfile, false);
-			break;
-		case comprType::KOSINSKI:
-			kosinski::encode(srcfile, dstfile, false, this->kosinski_module_size, 16u);
-			break;
-		case comprType::MODULED_KOSINSKI:
-			kosinski::encode(srcfile, dstfile, true, this->kosinski_module_size, 16u);
-			break;
-		case comprType::NEMESIS:
-			nemesis::encode(srcfile, dstfile);
-			break;
 		case comprType::KID_CHAMELEON:
 			MainScreen->ShowWarning("Cannot save Kid Chameleon-compressed files.");
 			break;
+		case comprType::ENIGMA:
+		case comprType::KOSINSKI:
+		case comprType::MODULED_KOSINSKI:
+		case comprType::NEMESIS:
 		case comprType::COMPER:
-			comper::encode(srcfile, dstfile);
-			break;
 		case comprType::SAXMAN:
-			saxman::encode(srcfile, dstfile, false);
+			std::ifstream srcfile_stream(this->name, std::ios::in|std::ios::binary);
+			if (!srcfile_stream.is_open())
+				break;
+
+			std::ofstream dstfile_stream(dstfile, std::ios::out|std::ios::binary|std::ios::trunc);
+
+			switch (this->compression)
+			{
+				default:
+				case comprType::ENIGMA:
+					enigma::encode(srcfile_stream, dstfile_stream);
+					break;
+				case comprType::KOSINSKI:
+					kosinski::encode(srcfile_stream, dstfile_stream);
+					break;
+				case comprType::MODULED_KOSINSKI:
+					kosinski::encode(srcfile_stream, dstfile_stream, true, this->kosinski_module_size);
+					break;
+				case comprType::NEMESIS:
+					nemesis::encode(srcfile_stream, dstfile_stream);
+					break;
+				case comprType::COMPER:
+					comper::encode(srcfile_stream, dstfile_stream);
+					break;
+				case comprType::SAXMAN:
+					saxman::encode(srcfile_stream, dstfile_stream, false);
+					break;
+			}
+
 			break;
 	}
 }
