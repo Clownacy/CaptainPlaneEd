@@ -57,7 +57,6 @@ long Resource::DecompressToFile(const char* const dstfile)
 	int decompressed_length;
 	switch (this->compression)
 	{
-		default:
 		case comprType::NONE:
 			decompressed_length = ReadPlain(this->name, dstfile, this->offset, this->length);
 			break;
@@ -77,32 +76,32 @@ long Resource::DecompressToFile(const char* const dstfile)
 				decompressed_length = -2;
 				break;
 			}
+			srcfile_stream.seekg(this->offset);
 
 			std::fstream dstfile_stream(dstfile, std::ios::in|std::ios::out|std::ios::binary|std::ios::trunc);
 
 			switch (this->compression)
 			{
-				default:
 				case comprType::ENIGMA:
-					enigma::decode(srcfile_stream, dstfile_stream, this->offset);
+					enigma::decode(srcfile_stream, dstfile_stream);
 					break;
 				case comprType::KOSINSKI:
-					kosinski::decode(srcfile_stream, dstfile_stream, this->offset);
+					kosinski::decode(srcfile_stream, dstfile_stream);
 					break;
 				case comprType::MODULED_KOSINSKI:
-					kosinski::decode(srcfile_stream, dstfile_stream, this->offset, true);
+					kosinski::moduled_decode(srcfile_stream, dstfile_stream);
 					break;
 				case comprType::NEMESIS:
-					nemesis::decode(srcfile_stream, dstfile_stream, this->offset);
+					nemesis::decode(srcfile_stream, dstfile_stream);
 					break;
 				case comprType::COMPER:
-					comper::decode(srcfile_stream, dstfile_stream, this->offset);
+					comper::decode(srcfile_stream, dstfile_stream);
 					break;
 				case comprType::SAXMAN:
-					saxman::decode(srcfile_stream, dstfile_stream, this->offset);
+					saxman::decode(srcfile_stream, dstfile_stream);
 					break;
 				case comprType::ROCKET:
-					rocket::decode(srcfile_stream, dstfile_stream, this->offset);
+					rocket::decode(srcfile_stream, dstfile_stream);
 					break;
 			}
 
@@ -118,7 +117,6 @@ void Resource::CompressFile(const char* const srcfile, const char* const dstfile
 {
 	switch (this->compression)
 	{
-		default:
 		case comprType::NONE:
 			remove(dstfile);
 			rename(srcfile, dstfile);
@@ -141,7 +139,6 @@ void Resource::CompressFile(const char* const srcfile, const char* const dstfile
 
 			switch (this->compression)
 			{
-				default:
 				case comprType::ENIGMA:
 					enigma::encode(srcfile_stream, dstfile_stream);
 					break;
@@ -149,7 +146,7 @@ void Resource::CompressFile(const char* const srcfile, const char* const dstfile
 					kosinski::encode(srcfile_stream, dstfile_stream);
 					break;
 				case comprType::MODULED_KOSINSKI:
-					kosinski::encode(srcfile_stream, dstfile_stream, true, this->kosinski_module_size);
+					kosinski::moduled_encode(srcfile_stream, dstfile_stream, this->kosinski_module_size);
 					break;
 				case comprType::NEMESIS:
 					nemesis::encode(srcfile_stream, dstfile_stream);

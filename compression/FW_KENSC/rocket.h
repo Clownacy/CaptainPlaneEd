@@ -1,7 +1,7 @@
 /* -*- Mode: C++; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- */
 /*
- * Copyright (C) Flamewing 2013-2015 <flamewing.sonic@gmail.com>
- * Copyright (C) 2002-2004 The KENS Project Development Team
+ * Copyright (C) Clownacy 2016
+ * Copyright (C) Flamewing 2016 <flamewing.sonic@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published
@@ -21,16 +21,18 @@
 #define __LIB_ROCKET_H
 
 #include <iosfwd>
+#include "basic_decoder.h"
+#include "moduled_adaptor.h"
 
-class rocket {
-private:
-	static void decode_internal(std::istream &in, std::ostream &Dst);
-	static void encode_internal(std::ostream &Dst, unsigned char const *&Buffer,
-	                            std::streamsize const BSize);
+class rocket;
+typedef BasicDecoder<rocket, false> basic_rocket;
+typedef ModuledAdaptor<rocket, 4096u, 1u> moduled_rocket;
+
+class rocket : public basic_rocket, public moduled_rocket {
 public:
-	static bool decode(std::istream &Src, std::ostream &Dst,
-	                   std::streampos Location = 0);
-	static bool encode(std::istream &Src, std::ostream &Dst);
+	using basic_rocket::encode;
+	static bool decode(std::istream &Src, std::iostream &Dst);
+	static bool encode(std::ostream &Dst, unsigned char const *data, size_t const Size);
 };
 
 #endif // __LIB_ROCKET_H
