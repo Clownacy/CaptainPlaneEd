@@ -105,7 +105,6 @@ long Resource::DecompressToFile(const char* const dstfile)
 					break;
 			}
 
-			dstfile_stream.seekp(0, std::ios_base::end);
 			decompressed_length = dstfile_stream.tellp();
 			break;
 	}

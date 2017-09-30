@@ -17,6 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <cstdint>
 #include <istream>
 #include <ostream>
 #include <sstream>
@@ -24,17 +25,20 @@
 #include "kosinski.h"
 #include "bigendian_io.h"
 #include "bitstream.h"
-#include "lzss.h"
 #include "ignore_unused_variable_warning.h"
+#include "lzss.h"
 
 using namespace std;
+
+template<>
+size_t moduled_kosinski::PadMaskBits = 1u;
 
 class kosinski_internal {
 	// NOTE: This has to be changed for other LZSS-based compression schemes.
 	struct KosinskiAdaptor {
-		typedef unsigned char stream_t;
-		typedef unsigned char descriptor_t;
-		typedef bigendian<descriptor_t> descriptor_endian_t;
+		using stream_t = unsigned char;
+		using descriptor_t = uint16_t;
+		using descriptor_endian_t = littleendian<descriptor_t>;
 		// Number of bits on descriptor bitfield.
 		constexpr static size_t const NumDescBits = sizeof(descriptor_t) * 8;
 		// Number of bits used in descriptor bitfield to signal the end-of-file
@@ -42,10 +46,10 @@ class kosinski_internal {
 		constexpr static size_t const NumTermBits = 2;
 		// Flag that tells the compressor that new descriptor fields are needed
 		// as soon as the last bit in the previous one is used up.
-		constexpr static bool const NeedEarlyDescriptor = false;
+		constexpr static bool const NeedEarlyDescriptor = true;
 		// Flag that marks the descriptor bits as being in little-endian bit
 		// order (that is, lowest bits come out first).
-		constexpr static bool const DescriptorLittleEndianBits = false;
+		constexpr static bool const DescriptorLittleEndianBits = true;
 		// Size of the search buffer.
 		constexpr static size_t const SearchBufSize = 8192;
 		// Size of the look-ahead buffer.
@@ -102,16 +106,16 @@ class kosinski_internal {
 		}
 	};
 
-	typedef LZSSIStream<KosinskiAdaptor> KosIStream;
-	typedef LZSSGraph<KosinskiAdaptor> KosGraph;
-	typedef LZSSOStream<KosinskiAdaptor> KosOStream;
+	using KosIStream = LZSSIStream<KosinskiAdaptor>;
+	using KosGraph = LZSSGraph<KosinskiAdaptor>;
+	using KosOStream = LZSSOStream<KosinskiAdaptor>;
 
 public:
 	static void decode(istream &in, iostream &Dst) {
 		KosIStream src(in);
 
 		while (in.good()) {
-			if (src.descbit()) {
+			if (src.descbit() != 0u) {
 				// Symbolwise match.
 				Write1(Dst, src.getbyte());
 			} else {
@@ -120,16 +124,16 @@ public:
 				size_t Count = 0;
 				size_t distance = 0;
 
-				if (src.descbit()) {
+				if (src.descbit() != 0u) {
 					// Separate dictionary match.
 					unsigned char Low = src.getbyte(), High = src.getbyte();
 
 					Count = size_t(High & 0x07);
 
-					if (!Count) {
+					if (Count == 0u) {
 						// 3-byte dictionary match.
 						Count = src.getbyte();
-						if (!Count) {
+						if (Count == 0u) {
 							break;
 						} else if (Count == 1) {
 							continue;
@@ -198,8 +202,8 @@ public:
 					out.descbit(0);
 					out.descbit(1);
 					dist = (-dist) & 0x1FFF;
-					unsigned short high = (dist >> 5) & 0xF8,
-						           low  = (dist & 0xFF);
+					uint16_t high = (dist >> 5) & 0xF8,
+					         low  = (dist & 0xFF);
 					if (edge.get_weight() == 18) {
 						// 2-byte dictionary match.
 						out.putbyte(low);
@@ -230,9 +234,6 @@ public:
 		out.putbyte(0x00);
 	}
 };
-
-template<>
-size_t moduled_kosinski::PadMaskBits = 1u;
 
 bool kosinski::decode(istream &Src, iostream &Dst) {
 	size_t Location = Src.tellg();
