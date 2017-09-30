@@ -17,6 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <cstdint>
 #include <istream>
 #include <ostream>
 #include <sstream>
@@ -24,17 +25,20 @@
 #include "rocket.h"
 #include "bigendian_io.h"
 #include "bitstream.h"
-#include "lzss.h"
 #include "ignore_unused_variable_warning.h"
+#include "lzss.h"
 
 using namespace std;
+
+template<>
+size_t moduled_rocket::PadMaskBits = 1u;
 
 class rocket_internal {
 	// NOTE: This has to be changed for other LZSS-based compression schemes.
 	struct RocketAdaptor {
-		typedef unsigned char stream_t;
-		typedef unsigned char descriptor_t;
-		typedef littleendian<descriptor_t> descriptor_endian_t;
+		using stream_t = unsigned char;
+		using descriptor_t = unsigned char;
+		using descriptor_endian_t = littleendian<descriptor_t>;
 		// Number of bits on descriptor bitfield.
 		constexpr static size_t const NumDescBits = sizeof(descriptor_t) * 8;
 		// Number of bits used in descriptor bitfield to signal the end-of-file
@@ -91,12 +95,12 @@ class rocket_internal {
 		}
 	};
 
-	typedef LZSSGraph<RocketAdaptor> RockGraph;
-	typedef LZSSOStream<RocketAdaptor> RockOStream;
-	typedef LZSSIStream<RocketAdaptor> RockIStream;
+	using RockGraph = LZSSGraph<RocketAdaptor>;
+	using RockOStream = LZSSOStream<RocketAdaptor>;
+	using RockIStream = LZSSIStream<RocketAdaptor>;
 
 public:
-	static void decode(istream &in, iostream &Dst, unsigned short Size) {
+	static void decode(istream &in, iostream &Dst, uint16_t Size) {
 		RockIStream src(in);
 
 		// Initialise buffer (needed by Rocket Knight Adventures plane maps)
@@ -108,7 +112,7 @@ public:
 		size_t buffer_index = 0x3C0;
 
 		while (in.good() && in.tellg() < Size) {
-			if (src.descbit()) {
+			if (src.descbit() != 0u) {
 				// Symbolwise match.
 				unsigned char Byte = Read1(in);
 				Write1(Dst, Byte);
@@ -155,7 +159,7 @@ public:
 			} else {
 				// Dictionary match.
 				out.descbit(0);
-				unsigned short index = (0x3C0 + pos - dist) & 0x3FF;
+				uint16_t index = (0x3C0 + pos - dist) & 0x3FF;
 				out.putbyte(((len-1)<<2)|(index>>8));
 				out.putbyte(index);
 			}
@@ -164,9 +168,6 @@ public:
 		}
 	}
 };
-
-template<>
-size_t moduled_rocket::PadMaskBits = 1u;
 
 bool rocket::decode(istream &Src, iostream &Dst) {
 	Src.ignore(2);
