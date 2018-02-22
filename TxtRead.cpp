@@ -85,13 +85,13 @@ comprType readComprType(const char* const string)
 
 char* trimString(char* string)
 {
-	string[strcspn(string, "\n")] = '\0';	// Replace newline with terminator character
+	string[strcspn(string, "\n\r")] = '\0';	// Replace newline with terminator character
 	// Move pointer to start of text
-	while (string[0] == ' ' || string[0] == '\n' || string[0] == '\t')
+	while (string[0] == ' ' || string[0] == '\t')
 		++string;
 	// Fill 'empty' characters after text with terminator characters
 	int i = strlen(string)-1;
-	while (string[i] == ' ' || string[i] == '\n' || string[i] == '\t')
+	while (string[i] == ' ' || string[i] == '\t')
 	{
 		string[i] = '\0';
 		--i;
