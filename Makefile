@@ -1,8 +1,8 @@
 NAME	= CaptainPlaneEd
 GCC	= g++
-CXXFLAGS	= `sdl2-config --cflags` -O3 -std=c++14 -Wall -Wextra -fno-ident
+CXXFLAGS	= `sdl2-config --cflags` -O3 -s -static -std=c++14 -Wall -Wextra -fno-ident
 DEFINES	= 
-LIBS	= `sdl2-config --libs`
+LIBS	= `sdl2-config --static-libs`
 
 OBJDIR = ./build
 
