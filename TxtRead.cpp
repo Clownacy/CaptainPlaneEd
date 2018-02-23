@@ -1,6 +1,6 @@
 /*
     Copyright (C) 2009-2011 qiuu
-    Copyright (C) 2016 Clownacy
+    Copyright (C) 2016-2018 Clownacy
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
