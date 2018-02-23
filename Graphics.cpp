@@ -81,15 +81,15 @@ void Graphics::ReadPalette(const char* const filename)
 	for (int line=0; line < paletteLines; ++line)
 	{
 		for (int entry=0; entry < PALETTE_ENTRIES_PER_LINE; ++entry)
-	{
-		// Convert BGR to RGB
-		const uint16_t palette_entry = (fgetc(palfile)<<8)|fgetc(palfile);
-		const uint16_t blue = (palette_entry&0x0F00) >> 8;
-		const uint16_t green = palette_entry&0x00F0;
-		const uint16_t red = (palette_entry&0x000F) << 8;
-		const uint16_t alpha = 0xF000;
-		palette[line][entry] = alpha|red|green|blue;
-	}
+		{
+			// Convert BGR to RGB
+			const uint16_t palette_entry = (fgetc(palfile)<<8)|fgetc(palfile);
+			const uint16_t blue = (palette_entry&0x0F00) >> 8;
+			const uint16_t green = palette_entry&0x00F0;
+			const uint16_t red = (palette_entry&0x000F) << 8;
+			const uint16_t alpha = 0xF000;
+			palette[line][entry] = alpha|red|green|blue;
+		}
 	}
 
 	fclose(palfile);
@@ -112,21 +112,21 @@ void Graphics::ReadTiles(const char* const filename)
 	{
 			tileData[tile][pal_line] = new uint16_t*[4];
 			for (int flip=0; flip < 4; ++flip)
-		{
-				tileData[tile][pal_line][flip] = new uint16_t[8*8];
-		}
+			{
+					tileData[tile][pal_line][flip] = new uint16_t[8*8];
+			}
 			for (int i=0; i < (8*8)/2; ++i)
-		{
-		// Normal tile
+			{
+				// Normal tile
 				tileData[tile][pal_line][0][2*i]   = palette[pal_line][(tilebuffer[i] & 0xF0)>>4];
 				tileData[tile][pal_line][0][2*i+1] = palette[pal_line][(tilebuffer[i] & 0x0F)];
-		// X-flipped tile
+				// X-flipped tile
 				tileData[tile][pal_line][1][8*(i/4)+7-2*(i%4)]   = palette[pal_line][(tilebuffer[i] & 0xF0)>>4];
 				tileData[tile][pal_line][1][8*(i/4)+7-2*(i%4)-1] = palette[pal_line][(tilebuffer[i] & 0x0F)];
-		// Y-flipped tile
+				// Y-flipped tile
 				tileData[tile][pal_line][2][56-8*(i/4)+2*(i%4)]   = palette[pal_line][(tilebuffer[i] & 0xF0)>>4];
 				tileData[tile][pal_line][2][56-8*(i/4)+2*(i%4)+1] = palette[pal_line][(tilebuffer[i] & 0x0F)];
-		// X-flipped + Y-flipped tile
+				// X-flipped + Y-flipped tile
 				tileData[tile][pal_line][3][63-2*i]   = palette[pal_line][(tilebuffer[i] & 0xF0)>>4];
 				tileData[tile][pal_line][3][63-2*i-1] = palette[pal_line][(tilebuffer[i] & 0x0F)];
 			}
@@ -146,9 +146,9 @@ void Graphics::CreateTiles(void)
 		{
 			tiles[t][p] = new SDL_Surface*[4];
 			for (int f=0; f < 4; ++f)
-		{
+			{
 				tiles[t][p][f] = InitSurface(tileData[t][p][f], 8, 8, 16);
-		}
+			}
 		}
 	}
 }
@@ -156,8 +156,7 @@ void Graphics::CreateTiles(void)
 SDL_Surface* Graphics::InitSurface(uint16_t* const pixelsT, const int width, const int height, const int bbp)
 {
 	void* const pixels = pixelsT;
-	SDL_Surface* surface = SDL_CreateRGBSurfaceFrom (pixels, width,
-						 height, bbp, width*((bbp+7)/8), 0x0F00, 0x00F0, 0x000F, 0xF000);
+	SDL_Surface* surface = SDL_CreateRGBSurfaceFrom (pixels, width, height, bbp, width*((bbp+7)/8), 0x0F00, 0x00F0, 0x000F, 0xF000);
 
 	if (surface == NULL)
 		MainScreen->ShowInternalError("Cannot make SDL Surface from tiles\n\n", SDL_GetError());
