@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016 Clownacy
+    Copyright (C) 2016-2018 Clownacy
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -164,19 +164,14 @@ bool OpenProjectFilePrompt(char** const filepath)
 	*filepath = new char[filepath_size];
 	(*filepath)[0] = '\0';
 	OPENFILENAME ofn;
+	memset(&ofn, 0, sizeof(ofn));
 	ofn.lStructSize = sizeof(ofn);
 	ofn.hwndOwner = hWnd;
 	ofn.lpstrFilter = TEXT("PlaneEd project file (*.txt)\0*.txt\0All files (*.*)\0*.*\0\0");
-	ofn.lpstrCustomFilter = NULL;
-	ofn.nFilterIndex = 0;
 	ofn.lpstrFile = *filepath;
 	ofn.nMaxFile = filepath_size;
-	ofn.lpstrFileTitle = NULL;
-	ofn.lpstrInitialDir = NULL;
 	ofn.lpstrTitle = TEXT("Open project file");
 	ofn.Flags = OFN_FILEMUSTEXIST;
-	ofn.lpstrDefExt = NULL;
-	ofn.FlagsEx = 0;
 	return GetOpenFileName(&ofn);
 }
 
