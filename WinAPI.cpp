@@ -83,8 +83,7 @@ void HandleWindowsEvent(const SDL_Event* const event)
 				char* filename;
 				if (OpenProjectFilePrompt(&filename) == true)
 				{
-					if (CurProject != NULL)
-						delete CurProject;
+					delete CurProject;
 					CurProject = new Project(filename);
 
 					//Process initial display

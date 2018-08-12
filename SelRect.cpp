@@ -29,6 +29,10 @@ LevMap* SelRect::LevelMap = NULL;
 SelRect::SelRect(Graphics* GfxStuff, LevMap* LevelMap) {
     this->GfxStuff = GfxStuff;
     this->LevelMap = LevelMap;
+    this->xStart = 0;
+    this->yStart = 0;
+    this->xSize = 0;
+    this->ySize = 0;
     MapData = NULL;
 }
 

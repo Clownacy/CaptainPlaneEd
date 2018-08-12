@@ -54,7 +54,7 @@ void Resource::Save(const char* const filename, const char* const dstfilename)
 
 long Resource::DecompressToFile(const char* const dstfile)
 {
-	int decompressed_length;
+	int decompressed_length = 0;
 	switch (this->compression)
 	{
 		case comprType::NONE:

@@ -797,12 +797,12 @@ public:
 			// "carry" is how many nibble runs were demoted to a higher bit length
 			// at an earlier step.
 			// "cnt" is how many nibble runs have a given bit length.
-			size_t base = 0, carry = 0, cnt;
+			size_t base = 0, carry = 0;
 			// This vector contains the codes sorted by size.
 			vector<Code> codes;
 			for (unsigned char i = 1; i <= 8; i++) {
 				// How many nibble runs have the desired bit length.
-				cnt = sizecounts[i - 1] + carry;
+				size_t cnt = sizecounts[i - 1] + carry;
 				carry = 0;
 				size_t mask  = (size_t(1) << i) - 1,
 					   mask2 = (i > 6) ? (mask & ~((size_t(1) << (i - 6)) - 1)) : 0;

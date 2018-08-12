@@ -42,7 +42,10 @@ Graphics::Graphics(const uint16_t xSize, const uint16_t tileOffset, const uint16
 	this->screenTileYOffset = 0;
 	this->screenTileXOffset = 0;
 	this->selTileYOffset = 0;
-
+	this->tiles = nullptr;
+	this->tileData = nullptr;
+	this->paletteLines = 0;
+	
 	/* calculate selector width */
 	this->selectorWidth = 8;
 	while (8*tileAmount / selectorWidth > SCREEN_HEIGHT)
