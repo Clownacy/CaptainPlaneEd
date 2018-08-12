@@ -23,7 +23,7 @@
 #include "LevMap.h"
 
 LevMap::LevMap(const uint8_t xSize, const uint8_t ySize, Graphics* const GfxStuff) {
-	if (xSize == 0 || ySize == 0)
+    if (xSize == 0 || ySize == 0)
         MainScreen->ShowError("Invalid map size: must be at least 1x1");
 	
     this->xSize=xSize;
@@ -33,8 +33,8 @@ LevMap::LevMap(const uint8_t xSize, const uint8_t ySize, Graphics* const GfxStuf
     for (int i=0; i < ySize; ++i)
         MapData[i] = new Tile[xSize];
 
-	CurY = 0; 
-	CurX = 0;
+    CurY = 0; 
+    CurX = 0;
     this->SelectedTile = MapData[CurY][CurX];
     this->GfxStuff = GfxStuff;
 }

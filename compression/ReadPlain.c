@@ -49,7 +49,6 @@ long ReadPlain(const char* const srcfile, const char* const dstfile, const long 
     rewind(dst);
 
     char* buffer = (char*) malloc(length);
-		
     fread(buffer, length, 1, src);
     fwrite(buffer, length, 1, dst);
     free(buffer);
