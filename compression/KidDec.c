@@ -62,7 +62,6 @@ int Decompress(const int address_data, const unsigned short size, FILE* rom)
 	unsigned short in2;	// extra input byte for long references
 	unsigned short in3;
 	unsigned char bitpos;
-	unsigned short keybit;
 	unsigned short unit;	// keep track of how many blocks we have when decompressing
 	unsigned short key;		// key data
 	unsigned short count;	// counter
@@ -82,12 +81,12 @@ int Decompress(const int address_data, const unsigned short size, FILE* rom)
 		fread(&key, 2, 1, rom);
 		key = swap_endian(key, 2);
 		fseek(rom, -2, SEEK_CUR);
-		keybit = (((key << bitpos) & 0x8000) >> 15);	// get bit
+		unsigned short keybit = (((key << bitpos) & 0x8000) >> 15);	// get bit
 		bitpos++;
 		switch(keybit){
 			case 1:		// direct copy
 				#ifdef DEBUG
-				printf("%05X %05X %X  direct          u-%04X-%04X\n", address_key_data, address_input_data, bitpos, unit, ftell(dump));// system("PAUSE");
+				printf("%05X %05X %X  direct          u-%04X-%04X\n", address_key_data, address_input_data, bitpos, unit, (unsigned)ftell(dump));// system("PAUSE");
 				#endif
 				unit++;	// increase block count
 				address_key_data = ftell(rom);
@@ -112,7 +111,7 @@ int Decompress(const int address_data, const unsigned short size, FILE* rom)
 						fseek(rom, address_input_data, SEEK_SET);
 						fread(&in1, 1, 1, rom);	// get source
 						#ifdef DEBUG
-						printf("%05X %05X %X  ref-short       u-%04X-%04X  s-%04X  c-%04X\n", address_key_data, address_input_data, bitpos, unit, ftell(dump), in1, keybit+2);// system("PAUSE");
+						printf("%05X %05X %X  ref-short       u-%04X-%04X  s-%04X  c-%04X\n", address_key_data, address_input_data, bitpos, unit, (unsigned)ftell(dump), in1, keybit+2);// system("PAUSE");
 						#endif
 						if (in1 != 0){
 							for (count=keybit+2; count > 0; count--){
@@ -156,7 +155,7 @@ int Decompress(const int address_data, const unsigned short size, FILE* rom)
 								count=in2;
 								in3=0;
 								#ifdef DEBUG
-								printf("%05X %05X %X  ref-long-large  u-%04X-%04X  s-%04X  c-%04X\n", address_key_data, address_input_data, bitpos, unit, ftell(dump), in1+(keybit<<8), in2); //system("PAUSE");
+								printf("%05X %05X %X  ref-long-large  u-%04X-%04X  s-%04X  c-%04X\n", address_key_data, address_input_data, bitpos, unit, (unsigned)ftell(dump), in1+(keybit<<8), in2); //system("PAUSE");
 								#endif
 								if (count < 6) {
                                     if (count == 0) terminate = true;
@@ -197,7 +196,7 @@ int Decompress(const int address_data, const unsigned short size, FILE* rom)
 								in2 = count;		// keeping a backup for later use
 								in3=0;
 								#ifdef DEBUG
-								printf("%05X %05X %X  ref-long-small  u-%04X-%04X  s-%04X  c-%04X\n", address_key_data, address_input_data, bitpos, unit, ftell(dump), in1+(keybit<<8), in2);// system("PAUSE");
+								printf("%05X %05X %X  ref-long-small  u-%04X-%04X  s-%04X  c-%04X\n", address_key_data, address_input_data, bitpos, unit, (unsigned)ftell(dump), in1+(keybit<<8), in2);// system("PAUSE");
 								#endif
 								if (in1+(keybit<<8) != 0){
 									for (; count > 0; count--){
@@ -261,7 +260,7 @@ int Decompress(const int address_data, const unsigned short size, FILE* rom)
 }
 
 int swap_endian(const unsigned int in, const char size){
-	unsigned int out;
+	unsigned int out = 0;
 	
 	switch(size){
 		case 2:
