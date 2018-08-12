@@ -378,7 +378,7 @@ int main(int argc, char* argv[])
 				        if (CurProject != NULL)
 					{
                                             if (CurProject->SelectionRect->isActive()) {
-                                                if (CurProject->CopyRect != NULL) delete CurProject->CopyRect;
+                                                delete CurProject->CopyRect;
                                                 CurProject->CopyRect = new SelRect(CurProject->SelectionRect);
                                             }
 					}
@@ -387,7 +387,7 @@ int main(int argc, char* argv[])
 				        if (CurProject != NULL)
 					{
                                             if (CurProject->SelectionRect->isActive()) {
-                                                if (CurProject->CopyRect != NULL) delete CurProject->CopyRect;
+                                                delete CurProject->CopyRect;
                                                 CurProject->CopyRect = new SelRect(CurProject->SelectionRect);
                                                 CurProject->SelectionRect->clear();
                                                 CurProject->SelectionRect->AssignSection();

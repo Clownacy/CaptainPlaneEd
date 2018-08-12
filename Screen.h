@@ -38,8 +38,13 @@ public:
 	void ShowInformation(const char* const message);
 	void ShowInformation(const char* const message_part1, const char* const message_part2);
 	void ShowWarning(const char* const message);
+#if __cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1900)
+	[[noreturn]] void ShowError(const char* const message);
+	[[noreturn]] void ShowInternalError(const char* const message);
+#else
 	void ShowError(const char* const message);
 	void ShowInternalError(const char* const message);
+#endif
 	void ShowInternalError(const char* const message_part1, const char* const message_part2);
 private:
 	SDL_Window* window;

@@ -29,7 +29,7 @@
 #endif
 
 #ifdef _WIN32
-#define WINDOW_HEIGHT SCREEN_HEIGHT+20	// Windows menu bar adds 20 pixels
+#define WINDOW_HEIGHT (SCREEN_HEIGHT+20)	// Windows menu bar adds 20 pixels
 #else
 #define WINDOW_HEIGHT SCREEN_HEIGHT
 #endif
