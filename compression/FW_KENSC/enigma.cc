@@ -231,6 +231,7 @@ public:
 				switch (mode) {
 					case 2:
 						mode = -1;
+						// fallthrough
 					case 1:
 					case 0: {
 						size_t cnt = bits.read(4) + 1;
