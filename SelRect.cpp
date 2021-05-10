@@ -186,8 +186,6 @@ void SelRect::FlipX() {
         for (int y=0; y < ySize; ++y) {
             for (int x=0; x < xSize; ++x) {
                 if ((x+xStart < LevelMap->xSize) && (y+yStart < LevelMap->ySize)) {
-                    //condition to prevent weird crash
-                    if (xStart != 0) delete &LevelMap->MapData[y+yStart][x+xStart];
                     LevelMap->MapData[y+yStart][x+xStart] = *MapData[y][xSize-x-1];
                     LevelMap->MapData[y+yStart][x+xStart].FlipX();
                 }
@@ -203,8 +201,6 @@ void SelRect::FlipY() {
         for (int y=0; y < ySize; ++y) {
             for (int x=0; x < xSize; ++x) {
                 if ((x+xStart < LevelMap->xSize) && (y+yStart < LevelMap->ySize)) {
-                    //condition to prevent weird crash
-                    if (xStart != 0) delete &LevelMap->MapData[y+yStart][x+xStart];
                     LevelMap->MapData[y+yStart][x+xStart] = *MapData[ySize-y-1][x];
                     LevelMap->MapData[y+yStart][x+xStart].FlipY();
                 }
