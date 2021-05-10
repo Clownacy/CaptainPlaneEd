@@ -35,6 +35,7 @@ public:
 	Screen(void);
 	void ProcessDisplay(void);
 	void Clear(void);
+	void WindowResized(int width, int height);
 	void ShowInformation(const char* const message);
 	void ShowInformation(const char* const message_part1, const char* const message_part2);
 	void ShowWarning(const char* const message);

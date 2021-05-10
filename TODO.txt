@@ -2,3 +2,7 @@ Figure out where that line of colour on the right is coming from
 - Apparently it's a bug with DirectX's blurring; unfixable
 
 Smooth upscaling
+
+Optimise events
+
+Remove that useless paramter

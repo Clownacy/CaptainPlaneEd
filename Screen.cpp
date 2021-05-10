@@ -21,6 +21,7 @@
 #include <cstdio>
 #include <cstdint>
 #include <cstring>
+#include <algorithm>
 #include <SDL2/SDL.h>
 
 #include "Screen.h"
@@ -57,6 +58,8 @@ Screen::Screen(void)
 	if (this->texture==NULL)
 		this->ShowInternalError("Unable to init screen SDL Texture\n\n", SDL_GetError());
 
+	this->upscaled_texture = nullptr;
+
 	this->background_colour.r = 0;
 	this->background_colour.g = 0;
 	this->background_colour.b = 0;
@@ -71,10 +74,16 @@ Screen::Screen(void)
 
 void Screen::ProcessDisplay(void)
 {
+	if (this->upscaled_texture != nullptr)
+	{
+	    SDL_SetRenderTarget(this->renderer, this->upscaled_texture);
+	    SDL_RenderCopy(this->renderer, this->texture, nullptr, nullptr);
+	}
+
 	SDL_SetRenderTarget(this->renderer, NULL);
 	SDL_SetRenderDrawColor(this->renderer, 0, 0, 0, 0xFF);
 	SDL_RenderClear(this->renderer);
-	SDL_RenderCopy(this->renderer, this->texture, NULL, NULL);
+	SDL_RenderCopy(this->renderer, this->upscaled_texture != nullptr ? this->upscaled_texture : this->texture, NULL, NULL);
 
 	SDL_RenderPresent(this->renderer);
 }
@@ -83,6 +92,34 @@ void Screen::Clear(void)
 {
 	SDL_SetRenderDrawColor(this->renderer, this->background_colour.r, this->background_colour.g, this->background_colour.b, this->background_colour.a);
 	SDL_RenderFillRect(this->renderer, NULL);
+}
+
+void Screen::WindowResized(int width, int height)
+{
+	static unsigned int upscale_factor;
+
+#ifdef _WIN32
+	height -= GetSystemMetrics(SM_CYMENU);
+#endif
+
+	unsigned int new_upscale_factor = std::max(1, std::min((width + SCREEN_WIDTH / 2) / SCREEN_WIDTH, (height + SCREEN_HEIGHT / 2) / SCREEN_HEIGHT));
+
+	if (new_upscale_factor != upscale_factor)
+	{
+	    upscale_factor = new_upscale_factor;
+
+	    if (this->upscaled_texture != nullptr)
+	    {
+		SDL_DestroyTexture(this->upscaled_texture);
+		this->upscaled_texture = nullptr;
+	    }
+
+	    if (upscale_factor != 1)
+	    {
+		SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
+		this->upscaled_texture = SDL_CreateTexture(this->renderer, SDL_PIXELFORMAT_RGB24, SDL_TEXTUREACCESS_TARGET, SCREEN_WIDTH * upscale_factor, SCREEN_HEIGHT * upscale_factor);
+	    }
+	}
 }
 
 void Screen::ShowInformation(const char* const message)
