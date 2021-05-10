@@ -52,21 +52,21 @@ ProjectData::ProjectData(const char *prjtxt)
 		char line[256];
 		prjfile.getline(line, 256);
 		infoType info_type = readInfoType(line);
-		AssignInfo(info_type, line + strcspn(line, ":") + 1);
+		AssignInfo(info_type, trimString(line + strcspn(line, ":") + 1));
 	}
 }
 
-void ProjectData::AssignInfo(infoType type, char *content) {
+void ProjectData::AssignInfo(infoType type, const char *content) {
 	switch (type)
 	{
 		case infoType::PALETTE_FILE:
-			strcpy(pal.name, trimString(content));
+			strcpy(pal.name, content);
 			break;
 		case infoType::MAPPING_FILE:
-			strcpy(map.name, trimString(content));
+			strcpy(map.name, content);
 			break;
 		case infoType::ART_FILE:
-			strcpy(art.name, trimString(content));
+			strcpy(art.name, content);
 			break;
 		case infoType::PALETTE_OFFSET:
 			pal.offset = strtol(content, NULL, 0);
@@ -87,13 +87,13 @@ void ProjectData::AssignInfo(infoType type, char *content) {
 			art.length = strtol(content, NULL, 0);
 			break;
 		case infoType::PALETTE_COMPRESSION:
-			pal.compression = readComprType(trimString(content));
+			pal.compression = readComprType(content);
 			break;
 		case infoType::MAPPING_COMPRESSION:
-			map.compression = readComprType(trimString(content));
+			map.compression = readComprType(content);
 			break;
 		case infoType::ART_COMPRESSION:
-			art.compression = readComprType(trimString(content));
+			art.compression = readComprType(content);
 			break;
 		case infoType::PALETTE_DESTINATION_OFFSET:
 			pal.destination_offset = strtol(content, NULL, 0);
@@ -116,7 +116,7 @@ void ProjectData::AssignInfo(infoType type, char *content) {
 			numberOffset = strtol(content, NULL, 0);
 			break;
 		case infoType::SAVE_FILE:
-			strcpy(map.saveName, trimString(content));
+			strcpy(map.saveName, content);
 			break;
 		case infoType::KOSINSKI_MODULE_SIZE:
 			art.kosinski_module_size = strtol(content, NULL, 0);

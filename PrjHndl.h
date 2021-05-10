@@ -36,5 +36,5 @@ public:
     ProjectData(const char *prjtxt);
 
 private:
-    void AssignInfo(infoType type, char *content);
+    void AssignInfo(infoType type, const char *content);
 };
