@@ -127,6 +127,8 @@ void SelRect::SelInit(int x, int y)
    parameters: the cursor position */
 void SelRect::SelFinalize(int x, int y)
 {
+	Kill();
+
 	GfxStuff->PosScreenToTileRound(&x, &y);
 
 	if (x < xStart)
