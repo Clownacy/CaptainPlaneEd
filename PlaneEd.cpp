@@ -414,14 +414,17 @@ int main(int argc, char* argv[])
 	    }
 #endif
 
-	    CurProject->LevelMap->DrawMap();
-	    CurProject->GfxStuff->DrawSelector();
-	    CurProject->SelectionRect->SelDrawRect();
+	    if (CurProject != NULL)
+	    {
+		CurProject->LevelMap->DrawMap();
+		CurProject->GfxStuff->DrawSelector();
+		CurProject->SelectionRect->SelDrawRect();
 
-	    CurProject->LevelMap->DrawCurrentTile();
-	    CurProject->LevelMap->DrawSelectedTile(mouse_x, mouse_y);
+		CurProject->LevelMap->DrawCurrentTile();
+		CurProject->LevelMap->DrawSelectedTile(mouse_x, mouse_y);
+	    }
 
-            MainScreen->ProcessDisplay();
+	    MainScreen->ProcessDisplay();
         }
     }
     return 0;
