@@ -51,5 +51,4 @@ private:
 	SDL_Renderer* renderer;
 	SDL_Texture* upscaled_texture;
 	SDL_Texture* texture;
-	SDL_Surface* surface;
 };

@@ -46,22 +46,16 @@ Screen::Screen(void)
 	if (this->window == NULL)
 		this->ShowInternalError("Unable to init SDL Window\n\n", SDL_GetError());
 
-	this->renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	this->renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_ACCELERATED);
 	if (this->renderer == NULL)
 		this->ShowInternalError("Unable to init SDL Renderer\n\n", SDL_GetError());
 
 	SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-	this->surface = SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0, 0, 0, 0);	// Implicitly ARGB8888, compatible with the below texture
-	if (this->surface==NULL)
-		this->ShowInternalError("Unable to init screen SDL Surface\n\n", SDL_GetError());
-
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
-	this->texture = SDL_CreateTexture(this->renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT);
+	this->texture = SDL_CreateTexture(this->renderer, SDL_PIXELFORMAT_RGB24, SDL_TEXTUREACCESS_TARGET, SCREEN_WIDTH, SCREEN_HEIGHT);
 	if (this->texture==NULL)
 		this->ShowInternalError("Unable to init screen SDL Texture\n\n", SDL_GetError());
-
-	SDL_LockTexture(this->texture, NULL, &this->surface->pixels, &this->surface->pitch);
 
 	this->background_colour = {.r = 0, .g = 0, .b = 0, .a = 0};
 
@@ -74,19 +68,18 @@ Screen::Screen(void)
 
 void Screen::ProcessDisplay(void)
 {
-	SDL_UnlockTexture(this->texture);
-
+	SDL_SetRenderTarget(this->renderer, NULL);
+	SDL_SetRenderDrawColor(MainScreen->renderer, 0, 0, 0, 0xFF);
 	SDL_RenderClear(this->renderer);
 	SDL_RenderCopy(this->renderer, this->texture, NULL, NULL);
 
 	SDL_RenderPresent(this->renderer);
-
-	SDL_LockTexture(this->texture, NULL, &this->surface->pixels, &this->surface->pitch);
 }
 
 void Screen::Clear(void)
 {
-	SDL_FillRect(this->surface, NULL, SDL_MapRGB(this->surface->format, this->background_colour.r, this->background_colour.g, this->background_colour.b));
+	SDL_SetRenderDrawColor(this->renderer, this->background_colour.r, this->background_colour.g, this->background_colour.b, 0xFF);
+	SDL_RenderFillRect(this->renderer, NULL);
 }
 
 void Screen::ShowInformation(const char* const message)

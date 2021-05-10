@@ -30,7 +30,7 @@ class Graphics
 {
 private:
     uint16_t (*palette)[16];
-    SDL_Surface**** tiles;    //surface data: [tile][pal][flip]
+    SDL_Texture**** tiles;    //surface data: [tile][pal][flip]
     uint16_t**** tileData;   //pixel data: [tile][pal][flip][64]
     uint8_t paletteLines;
     uint8_t currentPal;
@@ -50,15 +50,15 @@ public:
     void ReadPalette(const char* const filename);
     void ReadTiles(const char* const filename);
     void CreateTiles(void);
-    SDL_Surface* InitSurface(uint16_t* const pixelsT, int const width, const int height, const int bbp);
-    void DrawSurface(SDL_Surface* const img, SDL_Surface* const screen, const int x, const int y);
+    SDL_Texture* InitSurface(uint16_t* const pixelsT, int const width, const int height, const int bbp);
+    void DrawSurface(SDL_Texture* const img, SDL_Texture* const screen, const int x, const int y);
     void ClearMap(void);
     void ClearSelector(void);
     void DrawSelector(void);
     bool CheckSelValidPos(const int x, const int y);
     void DrawTileSingle(const int x, const int y, const Tile* const tile);
     void DrawTileBlank(const int x, const int y, const Tile* const tile);
-    void DrawTileFullColor(const int x, const int y, const uint32_t color);
+    void DrawTileFullColor(const int x, const int y, const unsigned char red, const unsigned char green, const unsigned char blue);
     void DrawTileNone(const int x, const int y);
     void DrawTileInvalid(const int x, const int y);
     void SetCurrentPal(const uint8_t currentPal);
@@ -69,7 +69,6 @@ public:
     uint16_t GetTileOffset(void) {return tileOffset;}
     void ToggleHighPriority(void) {highPriorityDisplay = !highPriorityDisplay;}
     void ToggleLowPriority(void) {lowPriorityDisplay = !lowPriorityDisplay;}
-    void DrawPixel(const int x, const int y);
     void DrawRect(int x, int y); //x, y = tile coordinates (not pixel)
     void DrawFreeRect(int x, int y, const int xSize, const int ySize);
     void IncScreenOffset(void) {++screenTileYOffset;}
