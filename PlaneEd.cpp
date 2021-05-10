@@ -274,12 +274,12 @@ int main(int argc, char* argv[])
                             CurProject->Save();
 			}
 			break;
-                    case SDLK_F10: //redraw whole screen
+                    /*case SDLK_F10: //redraw whole screen
 		        if (CurProject != NULL)
 			{
                             CurProject->Redraw();
 			}
-			break;
+			break;*/
                     case SDLK_BACKSPACE:
 		        if (CurProject != NULL)
 			{
@@ -414,9 +414,10 @@ int main(int argc, char* argv[])
 	    }
 #endif
 
-	    CurProject->GfxStuff->DrawSelector();
 	    CurProject->LevelMap->DrawMap();
+	    CurProject->GfxStuff->DrawSelector();
 	    CurProject->SelectionRect->SelDrawRect();
+
 	    CurProject->LevelMap->DrawCurrentTile();
 	    CurProject->LevelMap->DrawSelectedTile(mouse_x, mouse_y);
 
