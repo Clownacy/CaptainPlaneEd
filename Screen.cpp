@@ -31,6 +31,12 @@
 
 #define INTERNAL_UPSCALE_FACTOR 3
 
+#ifdef _WIN32
+#define ADJUSTED_SCREEN_HEIGHT (SCREEN_HEIGHT + GetSystemMetrics(SM_CYMENU))
+#else
+#define ADJUSTED_SCREEN_HEIGHT SCREEN_HEIGHT
+#endif
+
 Screen::Screen(void)
 {
 	if (SDL_Init(SDL_INIT_VIDEO)<0)
@@ -38,7 +44,7 @@ Screen::Screen(void)
 
 	atexit(SDL_Quit);
 
-	this->window = SDL_CreateWindow("Captain PlaneEd v1.0.1+", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT + GetSystemMetrics(SM_CYMENU), SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+	this->window = SDL_CreateWindow("Captain PlaneEd v1.0.1+", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, ADJUSTED_SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 	if (this->window == NULL)
 		this->ShowInternalError("Unable to init SDL Window\n\n", SDL_GetError());
 
