@@ -37,19 +37,13 @@ ProjectData::ProjectData(const char* const prjtxt) {
     std::ifstream prjfile(prjtxt, std::ios::in);
 
     // Make working directory from project path
-    char prjdir[strlen(prjtxt)+1];
-    strcpy(prjdir, prjtxt);
-    // Find last path separator
-    char* posix_seperator = strrchr(prjdir, '/');	// First, POSIX
-    char* windows_seperator = strrchr(prjdir, '\\');	// Then whatever Windows uses
-    if (posix_seperator != NULL || windows_seperator != NULL)
-    {
-        if (posix_seperator != NULL)
-            (*posix_seperator) = '\0';
-        else if (windows_seperator != NULL)
-            (*windows_seperator) = '\0';
+    std::string prjdir = prjtxt;
+    std::size_t separator = prjdir.find_last_of("/\\");
 
-        chdir(prjdir);
+    if (separator != std::string::npos)
+    {
+	prjdir[separator] = '\0';
+	chdir(prjdir.c_str());
     }
 
     while (!prjfile.eof()) {
