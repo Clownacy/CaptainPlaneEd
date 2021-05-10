@@ -441,6 +441,7 @@ int main(int argc, char* argv[])
 	    }
 #endif
 
+	    CurProject->GfxStuff->DrawSelector();
 	    CurProject->LevelMap->DrawMap();
 	    CurProject->SelectionRect->SelDrawRect();
 	    CurProject->LevelMap->DrawCurrentTile();
