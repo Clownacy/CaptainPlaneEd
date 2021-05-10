@@ -202,8 +202,6 @@ void Graphics::DrawSelector(void)
 	ClearSelector();
 	for (int i=0; i < tileAmount; ++i)
 		DrawSurface(tiles[i][currentPal][0], MainScreen->surface, selXMin + 8*(i%selectorWidth), 8*(i/selectorWidth - selTileYOffset));
-	//SDL_Flip(screen);
-	MainScreen->ProcessDisplay();
 }
 
 /* map coords */
