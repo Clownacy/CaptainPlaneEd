@@ -115,7 +115,7 @@ void SelRect::TakeSection(void)
    parameters: the cursor position */
 void SelRect::SelInit(int x, int y)
 {
-	if (MapData != NULL)
+	if (MapData != nullptr)
 		SelClearRect();
 	GfxStuff->PosScreenToTileRound(&x, &y);
 	xStart = x;

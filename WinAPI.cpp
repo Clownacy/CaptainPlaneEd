@@ -52,12 +52,12 @@ void CreateMenuBar(void)
 	AppendMenu(hSubMenu_File, MF_STRING, MENUBAR_OPENPROJECT, "&Open");
 	AppendMenu(hSubMenu_File, MF_STRING | MF_GRAYED, MENUBAR_SAVE, "&Save");
 	AppendMenu(hSubMenu_File, MF_STRING | MF_GRAYED, MENUBAR_CLOSE, "&Close");
-	AppendMenu(hSubMenu_File, MF_SEPARATOR, 0, NULL);
+	AppendMenu(hSubMenu_File, MF_SEPARATOR, 0, nullptr);
 	AppendMenu(hSubMenu_File, MF_STRING, MENUBAR_EXIT, "&Exit");
 	hSubMenu_View = CreatePopupMenu();
 	AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu_View, "&View");
 	AppendMenu(hSubMenu_View, MF_STRING, MENUBAR_BACKGROUNDCOLOUR, "&Background colour...");
-	AppendMenu(hSubMenu_View, MF_SEPARATOR, 0, NULL);
+	AppendMenu(hSubMenu_View, MF_SEPARATOR, 0, nullptr);
 	AppendMenu(hSubMenu_View, MF_STRING | MF_GRAYED | MF_UNCHECKED, MENUBAR_PALETTELINE1, "Palette line &1");
 	AppendMenu(hSubMenu_View, MF_STRING | MF_GRAYED | MF_UNCHECKED, MENUBAR_PALETTELINE2, "Palette line &2");
 	AppendMenu(hSubMenu_View, MF_STRING | MF_GRAYED | MF_UNCHECKED, MENUBAR_PALETTELINE3, "Palette line &3");
@@ -96,7 +96,7 @@ void HandleWindowsEvent(const SDL_Event *event)
 			case MENUBAR_CLOSE:
 			{
 				delete CurProject;
-				CurProject = NULL;	// Deleting an object does not NULL this pointer, so we have to do it ourselves
+				CurProject = nullptr;	// Deleting an object does not null this pointer, so we have to do it ourselves
 				MainScreen->Clear();
 				break;
 			}

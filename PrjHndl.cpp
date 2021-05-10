@@ -69,22 +69,22 @@ void ProjectData::AssignInfo(infoType type, const char *content) {
 			strcpy(art.name, content);
 			break;
 		case infoType::PALETTE_OFFSET:
-			pal.offset = strtol(content, NULL, 0);
+			pal.offset = strtol(content, nullptr, 0);
 			break;
 		case infoType::MAPPING_OFFSET:
-			map.offset = strtol(content, NULL, 0);
+			map.offset = strtol(content, nullptr, 0);
 			break;
 		case infoType::ART_OFFSET:
-			art.offset = strtol(content, NULL, 0);
+			art.offset = strtol(content, nullptr, 0);
 			break;
 		case infoType::PALETTE_LENGTH:
-			pal.length = strtol(content, NULL, 0);
+			pal.length = strtol(content, nullptr, 0);
 			break;
 		case infoType::MAPPING_LENGTH:
-			map.length = strtol(content, NULL, 0);
+			map.length = strtol(content, nullptr, 0);
 			break;
 		case infoType::ART_LENGTH:
-			art.length = strtol(content, NULL, 0);
+			art.length = strtol(content, nullptr, 0);
 			break;
 		case infoType::PALETTE_COMPRESSION:
 			pal.compression = readComprType(content);
@@ -96,30 +96,30 @@ void ProjectData::AssignInfo(infoType type, const char *content) {
 			art.compression = readComprType(content);
 			break;
 		case infoType::PALETTE_DESTINATION_OFFSET:
-			pal.destination_offset = strtol(content, NULL, 0);
+			pal.destination_offset = strtol(content, nullptr, 0);
 			if (pal.destination_offset >= 0x80)
 				MainScreen->ShowError("Palette Destination Offset cannot be higher than 0x7F (16th entry of 4th palette line; the last palette entry)");
 			break;
 		case infoType::X_SIZE:
-			map.xSize = strtol(content, NULL, 0);
+			map.xSize = strtol(content, nullptr, 0);
 			break;
 		case infoType::Y_SIZE:
-			map.ySize = strtol(content, NULL, 0);
+			map.ySize = strtol(content, nullptr, 0);
 			break;
 		case infoType::TILE_OFFSET:
-			tileOffset = strtol(content, NULL, 0);
+			tileOffset = strtol(content, nullptr, 0);
 			break;
 		case infoType::LETTER_OFFSET:
-			letterOffset = strtol(content, NULL, 0);
+			letterOffset = strtol(content, nullptr, 0);
 			break;
 		case infoType::NUMBER_OFFSET:
-			numberOffset = strtol(content, NULL, 0);
+			numberOffset = strtol(content, nullptr, 0);
 			break;
 		case infoType::SAVE_FILE:
 			strcpy(map.saveName, content);
 			break;
 		case infoType::KOSINSKI_MODULE_SIZE:
-			art.kosinski_module_size = strtol(content, NULL, 0);
+			art.kosinski_module_size = strtol(content, nullptr, 0);
 			break;
 	}
 }

@@ -37,7 +37,7 @@
 #endif
 
 Screen *MainScreen;
-Project *CurProject = NULL;
+Project *CurProject = nullptr;
 
 static int mouse_x, mouse_y;
 
@@ -55,15 +55,15 @@ int main(int argc, char **argv)
 #ifdef _WIN32
     // Windows build allows a blank window to open, where the user can open a
     // project file using the menu bar
-    if (prjfile != NULL)
+    if (prjfile != nullptr)
     {
 	fclose(prjfile);
         CurProject = new Project(argv[1]);
     }
 #else
-    if (prjfile == NULL)
+    if (prjfile == nullptr)
     {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "You must supply the project file as a parameter", NULL);
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "You must supply the project file as a parameter", nullptr);
         exit(1);
     }
     fclose(prjfile);
@@ -85,7 +85,7 @@ int main(int argc, char **argv)
             if (event.type == SDL_QUIT) quit = true;
             if (event.type == SDL_MOUSEBUTTONDOWN) 
             {
-		if (CurProject != NULL)
+		if (CurProject != nullptr)
 		{
                     CurProject->SelectionRect->Unselect();
                     //Checks if within selector bounds and selects tile
@@ -103,7 +103,7 @@ int main(int argc, char **argv)
             if (event.type == SDL_MOUSEBUTTONUP) 
             {
                 if (event.button.button == SDL_BUTTON_RIGHT) {
-		    if (CurProject != NULL)
+		    if (CurProject != nullptr)
 		    {
                         //Checks if valid map position and selects tile
                         CurProject->LevelMap->CheckSelectTile(event.button.x, event.button.y);
@@ -113,12 +113,12 @@ int main(int argc, char **argv)
             }
             if (event.type == SDL_MOUSEMOTION)
             {
-		if (CurProject != NULL)
+		if (CurProject != nullptr)
 		{
 		    mouse_x = event.motion.x;
 		    mouse_y = event.motion.y;
 
-                    if (SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(1))
+                    if (SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1))
                         CurProject->LevelMap->CheckSetTile(event.motion.x, event.motion.y);
 		}
             }
@@ -132,7 +132,7 @@ int main(int argc, char **argv)
                         CtrlPress = true; break;
                     case '/':
                     case '-':
-		        if (CurProject != NULL)
+		        if (CurProject != nullptr)
 			{
                             if (!CurProject->SelectionRect->isActive()) CurProject->LevelMap->CurSwapPriority();
                             else {
@@ -141,7 +141,7 @@ int main(int argc, char **argv)
 			}
                         break;
                     case ',':
-		        if (CurProject != NULL)
+		        if (CurProject != nullptr)
 			{
                             if (!CurProject->SelectionRect->isActive()) CurProject->LevelMap->CurFlipX();
                             else {
@@ -150,7 +150,7 @@ int main(int argc, char **argv)
 			}
                         break;
                     case '.':
-		        if (CurProject != NULL)
+		        if (CurProject != nullptr)
 			{
                             if (!CurProject->SelectionRect->isActive()) CurProject->LevelMap->CurFlipY();
                             else {
@@ -159,35 +159,35 @@ int main(int argc, char **argv)
 			}
                         break;
                     case SDLK_RIGHT:
-		        if (CurProject != NULL)
+		        if (CurProject != nullptr)
 			{
                             CurProject->LevelMap->CurShiftRight();
                             CurProject->SelectionRect->Unselect();
 			}
 			break;
                     case SDLK_LEFT:
-		        if (CurProject != NULL)
+		        if (CurProject != nullptr)
 			{
                             CurProject->LevelMap->CurShiftLeft();
                             CurProject->SelectionRect->Unselect();
 			}
 			break;
                     case SDLK_DOWN:
-		        if (CurProject != NULL)
+		        if (CurProject != nullptr)
 			{
                             CurProject->LevelMap->CurShiftDown();
                             CurProject->SelectionRect->Unselect();
 			}
 			break;
                     case SDLK_UP:
-		        if (CurProject != NULL)
+		        if (CurProject != nullptr)
 			{
                             CurProject->LevelMap->CurShiftUp();
                             CurProject->SelectionRect->Unselect();
 			}
 			break;
                     case SDLK_DELETE:
-		        if (CurProject != NULL)
+		        if (CurProject != nullptr)
 			{
                             if (!CurProject->SelectionRect->isActive()) CurProject->LevelMap->ClearCurrentTile();
                             else {
@@ -199,7 +199,7 @@ int main(int argc, char **argv)
                     case SDLK_ESCAPE:
                         quit = true; break;
                     case SDLK_RETURN:
-		        if (CurProject != NULL)
+		        if (CurProject != nullptr)
 			{
                             CurProject->LevelMap->SetTileSelected();
                             CurProject->SelectionRect->Unselect();
@@ -207,14 +207,14 @@ int main(int argc, char **argv)
 			break;
                     case '=':
                     case '´':
-		        if (CurProject != NULL)
+		        if (CurProject != nullptr)
 			{
                             CurProject->LevelMap->SelectTileCur();
                             CurProject->SelectionRect->Unselect();
 			}
 			break;
                     case SDLK_PAGEDOWN:
-		        if (CurProject != NULL)
+		        if (CurProject != nullptr)
 			{
                             if (!CurProject->SelectionRect->isActive()) CurProject->LevelMap->SelectedTileIncrID();
                             else {
@@ -224,7 +224,7 @@ int main(int argc, char **argv)
 			}
                         break;
                     case SDLK_PAGEUP:
-		        if (CurProject != NULL)
+		        if (CurProject != nullptr)
 			{
                             if (!CurProject->SelectionRect->isActive()) CurProject->LevelMap->SelectedTileDecrID();
                             else {
@@ -234,55 +234,55 @@ int main(int argc, char **argv)
 			}
                         break;
                     case SDLK_F1:
-		        if (CurProject != NULL)
+		        if (CurProject != nullptr)
 			{
                             CurProject->LevelMap->SetPalCurrent(0);
 			}
 			break;
                     case SDLK_F2:
-		        if (CurProject != NULL)
+		        if (CurProject != nullptr)
 			{
                             CurProject->LevelMap->SetPalCurrent(1);
 			}
 			break;
                     case SDLK_F3:
-		        if (CurProject != NULL)
+		        if (CurProject != nullptr)
 			{
                             CurProject->LevelMap->SetPalCurrent(2);
 			}
 			break;
                     case SDLK_F4:
-		        if (CurProject != NULL)
+		        if (CurProject != nullptr)
 			{
                             CurProject->LevelMap->SetPalCurrent(3);
 			}
 			break;
                     case SDLK_F5:
-		        if (CurProject != NULL)
+		        if (CurProject != nullptr)
 			{
                             CurProject->GfxStuff->ToggleHighPriority();
 			}
 			break;
                     case SDLK_F6:
-		        if (CurProject != NULL)
+		        if (CurProject != nullptr)
 			{
                             CurProject->GfxStuff->ToggleLowPriority();
 			}
 			break;
                     case SDLK_F9:
-		        if (CurProject != NULL)
+		        if (CurProject != nullptr)
 			{
                             CurProject->Save();
 			}
 			break;
                     /*case SDLK_F10: //redraw whole screen
-		        if (CurProject != NULL)
+		        if (CurProject != nullptr)
 			{
                             CurProject->Redraw();
 			}
 			break;*/
                     case SDLK_BACKSPACE:
-		        if (CurProject != NULL)
+		        if (CurProject != nullptr)
 			{
                             CurProject->LevelMap->CurShiftLeft();
                             CurProject->LevelMap->ClearCurrentTile(); 
@@ -291,21 +291,21 @@ int main(int argc, char **argv)
 			break;
                     case '[':
                     case 'ü':
-		        if (CurProject != NULL)
+		        if (CurProject != nullptr)
 			{
                             CurProject->GfxStuff->DecScreenOffset();
 			}
 			break;
                     case '\'':
                     case 'ä':
-		        if (CurProject != NULL)
+		        if (CurProject != nullptr)
 			{
                             CurProject->GfxStuff->IncScreenOffset();
 			}
 			break;
                     case ';':
                     case 'ö':
-		        if (CurProject != NULL)
+		        if (CurProject != nullptr)
 			{
                             CurProject->GfxStuff->DecScreenXOffset();
 			}
@@ -314,25 +314,25 @@ int main(int argc, char **argv)
                     case '#':
                     case '+':
                     case ']':
-		        if (CurProject != NULL)
+		        if (CurProject != nullptr)
 			{
                             CurProject->GfxStuff->IncScreenXOffset();
 			}
 			break;
                     case SDLK_END:
-		        if (CurProject != NULL)
+		        if (CurProject != nullptr)
 			{
                             CurProject->GfxStuff->IncSelOffset();
 			}
 			break;
                     case SDLK_HOME:
-		        if (CurProject != NULL)
+		        if (CurProject != nullptr)
 			{
                             CurProject->GfxStuff->DecSelOffset();
 			}
 			break;
                     case SDLK_SPACE:
-		        if (CurProject != NULL)
+		        if (CurProject != nullptr)
 			{
                             CurProject->LevelMap->ClearCurrentTile();
                             CurProject->LevelMap->CurShiftRight();
@@ -344,7 +344,7 @@ int main(int argc, char **argv)
                                 switch(event.key.keysym.sym)
                                 {
                                     case 'c':
-				        if (CurProject != NULL)
+				        if (CurProject != nullptr)
 					{
                                             if (CurProject->SelectionRect->isActive()) {
                                                 delete CurProject->CopyRect;
@@ -353,7 +353,7 @@ int main(int argc, char **argv)
 					}
                                         break;
                                     case 'x':
-				        if (CurProject != NULL)
+				        if (CurProject != nullptr)
 					{
                                             if (CurProject->SelectionRect->isActive()) {
                                                 delete CurProject->CopyRect;
@@ -365,14 +365,14 @@ int main(int argc, char **argv)
 					}
                                         break;
                                     case 'v':
-				        if (CurProject != NULL)
+				        if (CurProject != nullptr)
 					{
                                             CurProject->CopyRect->PasteSection();
                                             CurProject->LevelMap->DrawMap();
 					}
                                         break;
                                     case 'a':
-				        if (CurProject != NULL)
+				        if (CurProject != nullptr)
 					{
                                             CurProject->SelectionRect->SelInit(0, 0);
                                             CurProject->SelectionRect->SelFinalize(CurProject->PrjData->map.xSize*8, CurProject->PrjData->map.ySize*8);
@@ -380,7 +380,7 @@ int main(int argc, char **argv)
                                         break;
                                 }
                             } else {
-				if (CurProject != NULL)
+				if (CurProject != nullptr)
 				{
                                     CurProject->LevelMap->SetCurrentTile(event.key.keysym.sym - 'a' + CurProject->GfxStuff->GetTileOffset() + CurProject->PrjData->letterOffset);
                                     CurProject->LevelMap->CurShiftRight();
@@ -389,7 +389,7 @@ int main(int argc, char **argv)
                             }
                         }
                         else if (event.key.keysym.sym >= '0' && event.key.keysym.sym <= '9') {
-			    if (CurProject != NULL)
+			    if (CurProject != nullptr)
 			    {
                                 CurProject->LevelMap->SetCurrentTile(event.key.keysym.sym - '0' + CurProject->GfxStuff->GetTileOffset() + CurProject->PrjData->numberOffset);
                                 CurProject->LevelMap->CurShiftRight();
@@ -426,7 +426,7 @@ int main(int argc, char **argv)
 	    }
 #endif
 
-	    if (CurProject != NULL)
+	    if (CurProject != nullptr)
 	    {
 		CurProject->LevelMap->DrawMap();
 		CurProject->GfxStuff->DrawSelector();
