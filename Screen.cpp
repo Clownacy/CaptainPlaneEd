@@ -18,11 +18,12 @@
 	USA
 */
 
-#include <cstdio>
-#include <cstdint>
-#include <cstring>
+#include <stdio.h>
+#include <stdint.h>
+#include <string.h>
 #include <algorithm>
-#include <SDL2/SDL.h>
+
+#include "SDL.h"
 
 #include "Screen.h"
 #ifdef _WIN32
@@ -38,24 +39,24 @@
 
 Screen::Screen(void)
 {
-	if (SDL_Init(SDL_INIT_VIDEO)<0)
+	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 		this->ShowInternalError("Unable to init SDL video\n\n", SDL_GetError());
 
 	atexit(SDL_Quit);
 
 	this->window = SDL_CreateWindow("Captain PlaneEd v1.1", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, ADJUSTED_SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-	if (this->window == NULL)
+	if (this->window == nullptr)
 		this->ShowInternalError("Unable to init SDL Window\n\n", SDL_GetError());
 
 	this->renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_ACCELERATED);
-	if (this->renderer == NULL)
+	if (this->renderer == nullptr)
 		this->ShowInternalError("Unable to init SDL Renderer\n\n", SDL_GetError());
 
 	SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
 	this->texture = SDL_CreateTexture(this->renderer, SDL_PIXELFORMAT_RGB24, SDL_TEXTUREACCESS_TARGET, SCREEN_WIDTH, SCREEN_HEIGHT);
-	if (this->texture==NULL)
+	if (this->texture == nullptr)
 		this->ShowInternalError("Unable to init screen SDL Texture\n\n", SDL_GetError());
 
 	this->upscaled_texture = nullptr;
@@ -80,10 +81,10 @@ void Screen::ProcessDisplay(void)
 		SDL_RenderCopy(this->renderer, this->texture, nullptr, nullptr);
 	}
 
-	SDL_SetRenderTarget(this->renderer, NULL);
+	SDL_SetRenderTarget(this->renderer, nullptr);
 	SDL_SetRenderDrawColor(this->renderer, 0, 0, 0, 0xFF);
 	SDL_RenderClear(this->renderer);
-	SDL_RenderCopy(this->renderer, this->upscaled_texture != nullptr ? this->upscaled_texture : this->texture, NULL, NULL);
+	SDL_RenderCopy(this->renderer, this->upscaled_texture != nullptr ? this->upscaled_texture : this->texture, nullptr, nullptr);
 
 	SDL_RenderPresent(this->renderer);
 }
@@ -91,7 +92,7 @@ void Screen::ProcessDisplay(void)
 void Screen::Clear(void)
 {
 	SDL_SetRenderDrawColor(this->renderer, this->background_colour.r, this->background_colour.g, this->background_colour.b, this->background_colour.a);
-	SDL_RenderFillRect(this->renderer, NULL);
+	SDL_RenderFillRect(this->renderer, nullptr);
 }
 
 void Screen::WindowResized(int width, int height)
@@ -122,39 +123,39 @@ void Screen::WindowResized(int width, int height)
 	}
 }
 
-void Screen::ShowInformation(const char* const message)
+void Screen::ShowInformation(const char *message)
 {
 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Information", message, this->window);
 }
 
-void Screen::ShowInformation(const char* const message_part1, const char* const message_part2)
+void Screen::ShowInformation(const char *message_part1, const char *message_part2)
 {
-	char* const whole_message = new char[strlen(message_part1)+strlen(message_part2)+1];
+	char *whole_message = new char[strlen(message_part1)+strlen(message_part2)+1];
 	sprintf(whole_message, "%s%s", message_part1, message_part2);
 	this->ShowInformation(whole_message);
 	delete[] whole_message;
 }
 
-void Screen::ShowWarning(const char* const message)
+void Screen::ShowWarning(const char *message)
 {
 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Warning", message, this->window);
 }
 
-void Screen::ShowError(const char* const message)
+void Screen::ShowError(const char *message)
 {
 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", message, this->window);
 	exit(1);
 }
 
-void Screen::ShowInternalError(const char* const message)
+void Screen::ShowInternalError(const char *message)
 {
 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Internal Error", message, this->window);
 	exit(1);
 }
 
-void Screen::ShowInternalError(const char* const message_part1, const char* const message_part2)
+void Screen::ShowInternalError(const char *message_part1, const char *message_part2)
 {
-	char* const whole_message = new char[strlen(message_part1)+strlen(message_part2)+1];
+	char *whole_message = new char[strlen(message_part1)+strlen(message_part2)+1];
 	sprintf(whole_message, "%s%s", message_part1, message_part2);
 	this->ShowInternalError(whole_message);
 	delete[] whole_message;

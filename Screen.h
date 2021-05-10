@@ -20,11 +20,10 @@
 
 #pragma once
 
-#include <cstdint>
-#include <SDL2/SDL.h>
+#include "SDL.h"
 
 #define SCREEN_WIDTH 640
-#define SCREEN_HEIGHT 480	//minimum size to allow for 64x64 maps
+#define SCREEN_HEIGHT 480	//minimum size to allow for 64x64 maps (TODO - what about 128x64?)
 
 class Screen
 {
@@ -36,20 +35,20 @@ public:
 	void ProcessDisplay(void);
 	void Clear(void);
 	void WindowResized(int width, int height);
-	void ShowInformation(const char* const message);
-	void ShowInformation(const char* const message_part1, const char* const message_part2);
-	void ShowWarning(const char* const message);
+	void ShowInformation(const char *message);
+	void ShowInformation(const char *message_part1, const char *message_part2);
+	void ShowWarning(const char *message);
 #if __cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1900)
-	[[noreturn]] void ShowError(const char* const message);
-	[[noreturn]] void ShowInternalError(const char* const message);
+	[[noreturn]] void ShowError(const char *message);
+	[[noreturn]] void ShowInternalError(const char *message);
 #else
-	void ShowError(const char* const message);
-	void ShowInternalError(const char* const message);
+	void ShowError(const char *message);
+	void ShowInternalError(const char *message);
 #endif
-	void ShowInternalError(const char* const message_part1, const char* const message_part2);
+	void ShowInternalError(const char *message_part1, const char *message_part2);
 private:
-	SDL_Window* window;
-	SDL_Renderer* renderer;
-	SDL_Texture* upscaled_texture;
-	SDL_Texture* texture;
+	SDL_Window *window;
+	SDL_Renderer *renderer;
+	SDL_Texture *upscaled_texture;
+	SDL_Texture *texture;
 };

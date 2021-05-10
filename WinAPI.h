@@ -20,7 +20,8 @@
 #pragma once
 
 #include <windows.h>
-#include <SDL2/SDL.h>
+
+#include "SDL.h"
 
 enum
 {
@@ -46,10 +47,10 @@ namespace WinAPI
 extern HMENU hSubMenu_File;
 extern HMENU hSubMenu_View;
 
-extern void SaveHWND(SDL_Window* const window);
+extern void SaveHWND(const SDL_Window *window);
 extern void CreateMenuBar(void);
-extern void HandleWindowsEvent(const SDL_Event* const event);
-extern bool OpenProjectFilePrompt(char** const filepath);
+extern void HandleWindowsEvent(const SDL_Event *event);
+extern bool OpenProjectFilePrompt(char **filepath);
 extern void SetMenuBarOptionGreyed(bool enable, int menu_option);
 extern void SetMenuBarOptionChecked(bool enable, int menu_option);
 

@@ -1,24 +1,24 @@
 /*
-    Copyright (C) 2009-2011 qiuu
-    Copyright (C) 2016 Clownacy
+	Copyright (C) 2009-2011 qiuu
+	Copyright (C) 2016 Clownacy
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+	This library is free software; you can redistribute it and/or
+	modify it under the terms of the GNU Lesser General Public
+	License as published by the Free Software Foundation; either
+	version 2.1 of the License, or (at your option) any later version.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+	This library is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+	Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
-    USA
+	You should have received a copy of the GNU Lesser General Public
+	License along with this library; if not, write to the Free Software
+	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+	USA
 */
 
-#include <cstring>
+#include <string.h>
 #include <fstream>
 
 #include "Common.h"
@@ -35,7 +35,7 @@
 #include "compression/FW_KENSC/saxman.h"
 #include "compression/FW_KENSC/rocket.h"
 
-const char* const FILE_MAP_DEFAULT = "MapDefault.bin";
+static const char* const FILE_MAP_DEFAULT = "MapDefault.bin";
 
 Resource::Resource(void)
 {
@@ -46,13 +46,13 @@ Resource::Resource(void)
 	this->kosinski_module_size = 0x1000;
 }
 
-void Resource::Save(const char* const filename, const char* const dstfilename)
+void Resource::Save(const char *filename, const char *dstfilename)
 {
 	CompressFile(filename, dstfilename);
 	remove(filename);
 }
 
-long Resource::DecompressToFile(const char* const dstfile)
+long Resource::DecompressToFile(const char *dstfile)
 {
 	int decompressed_length = 0;
 	switch (this->compression)
@@ -70,7 +70,7 @@ long Resource::DecompressToFile(const char* const dstfile)
 		case comprType::COMPER:
 		case comprType::SAXMAN:
 		case comprType::ROCKET:
-			std::ifstream srcfile_stream(this->name, std::ios::in|std::ios::binary);
+			std::ifstream srcfile_stream(this->name, std::ios::in | std::ios::binary);
 			if (!srcfile_stream.is_open())
 			{
 				decompressed_length = -2;
@@ -78,7 +78,7 @@ long Resource::DecompressToFile(const char* const dstfile)
 			}
 			srcfile_stream.seekg(this->offset);
 
-			std::fstream dstfile_stream(dstfile, std::ios::in|std::ios::out|std::ios::binary|std::ios::trunc);
+			std::fstream dstfile_stream(dstfile, std::ios::in | std::ios::out | std::ios::binary | std::ios::trunc);
 
 			switch (this->compression)
 			{
@@ -112,7 +112,7 @@ long Resource::DecompressToFile(const char* const dstfile)
 	return decompressed_length;
 }
 
-void Resource::CompressFile(const char* const srcfile, const char* const dstfile)
+void Resource::CompressFile(const char *srcfile, const char *dstfile)
 {
 	switch (this->compression)
 	{
@@ -130,11 +130,11 @@ void Resource::CompressFile(const char* const srcfile, const char* const dstfile
 		case comprType::COMPER:
 		case comprType::SAXMAN:
 		case comprType::ROCKET:
-			std::ifstream srcfile_stream(this->name, std::ios::in|std::ios::binary);
+			std::ifstream srcfile_stream(this->name, std::ios::in | std::ios::binary);
 			if (!srcfile_stream.is_open())
 				break;
 
-			std::ofstream dstfile_stream(dstfile, std::ios::out|std::ios::binary|std::ios::trunc);
+			std::ofstream dstfile_stream(dstfile, std::ios::out | std::ios::binary | std::ios::trunc);
 
 			switch (this->compression)
 			{
@@ -170,7 +170,7 @@ ResourceArt::ResourceArt(void)
 	this->tileAmount = 0;
 }
 
-void ResourceArt::Load(const char* const filename)
+void ResourceArt::Load(const char *filename)
 {
 	if (this->compression == comprType::INVALID)
 		MainScreen->ShowError("Invalid art compression format: should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Moduled Kosinski'\n'Nemesis'\n'Kid Chameleon'\n'Comper'\n'Saxman'");
@@ -192,7 +192,7 @@ ResourceMap::ResourceMap(void)
 	strcpy(this->saveName, "");
 }
 
-void ResourceMap::Load(const char* const filename)
+void ResourceMap::Load(const char *filename)
 {
 	if (this->compression == comprType::INVALID || this->compression == comprType::KID_CHAMELEON)
 		MainScreen->ShowError("Invalid map compression format: should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Moduled Kosinski'\n'Nemesis'\n'Comper'\n'Saxman'");
@@ -202,18 +202,20 @@ void ResourceMap::Load(const char* const filename)
 	if (decompressed_length == -2)
 	{
 		//file non-existant, blank template created
-		decompressed_length = 2*this->xSize*this->ySize;
+		decompressed_length =  2 * this->xSize * this->ySize;
 		CheckCreateBlankFile(this->name, filename, this->offset, decompressed_length);
 		MainScreen->ShowInformation("No map file found; created blank template");
 	}
 	else if (decompressed_length < 0)
+	{
 		//file is existant but could not be decompressed
 		MainScreen->ShowError("Could not decompress map file. Are you sure the compression is correct?");
+	}
 
-	if (decompressed_length < 2*this->xSize*this->ySize)
+	if (decompressed_length < 2 * this->xSize * this->ySize)
 	{
 		MainScreen->ShowWarning("Specified size exceeds map size.\nField has been trimmed vertically.");
-		this->ySize = (decompressed_length/this->xSize) / 2;
+		this->ySize = (decompressed_length / this->xSize) / 2;
 		if (this->ySize == 0)
 			exit(1);
 	}
@@ -239,7 +241,7 @@ ResourcePal::ResourcePal(void)
 	this->compression = comprType::NONE;
 }
 
-void ResourcePal::Load(const char* const filename)
+void ResourcePal::Load(const char *filename)
 {
 	if (this->compression == comprType::INVALID)
 		MainScreen->ShowError("Invalid palette compression format; should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Moduled Kosinski'\n'Nemesis'\n'Kid Chameleon'\n'Comper'\n'Saxman'");
@@ -252,13 +254,13 @@ void ResourcePal::Load(const char* const filename)
 		MainScreen->ShowError("Could not decompress palette file. Are you sure the compression is correct?");
 
 	// Create blank palette file
-	std::ofstream palfilenew("temp.bin", std::ios::out|std::ios::binary);
+	std::ofstream palfilenew("temp.bin", std::ios::out | std::ios::binary);
 	for (int i=0; i < 0x80; ++i)
 		palfilenew.put(0x0E);
 	palfilenew.seekp(this->destination_offset);
 
 	// Insert the loaded palette
-	std::ifstream palfileold(filename, std::ios::in|std::ios::binary);
+	std::ifstream palfileold(filename, std::ios::in | std::ios::binary);
 	char byte;
 	while (palfileold.get(byte))
 		palfilenew.put(byte);

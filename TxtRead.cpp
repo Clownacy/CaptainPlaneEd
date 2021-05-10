@@ -18,7 +18,7 @@
     USA
 */
 
-#include <cstring>
+#include <string.h>
 
 #include "TxtRead.h"
 
@@ -65,25 +65,25 @@ struct
 	{ "Rocket",           comprType::ROCKET }
 };
 
-infoType readInfoType(const char* const string)
+infoType readInfoType(const char *string)
 {
-	for (int i=0; i < (int)infoType::INFO_TYPE_AMOUNT; ++i)
+	for (int i = 0; i < (int)infoType::INFO_TYPE_AMOUNT; ++i)
 		if (!strncmp(string, infoTypes[i].string, strlen(infoTypes[i].string)))
 			return infoTypes[i].info_type;
 
 	return infoType::INVALID;
 }
 
-comprType readComprType(const char* const string)
+comprType readComprType(const char *string)
 {
-	for (int i=0; i < (int)comprType::COMPR_TYPE_AMOUNT; ++i)
+	for (int i = 0; i < (int)comprType::COMPR_TYPE_AMOUNT; ++i)
 		if (!strncmp(string, comprTypes[i].string, strlen(comprTypes[i].string)))
 			return comprTypes[i].compr_type;
 
 	return comprType::INVALID;
 }
 
-char* trimString(char* string)
+char* trimString(char *string)
 {
 	string[strcspn(string, "\n\r")] = '\0';	// Replace newline with terminator character
 	// Move pointer to start of text

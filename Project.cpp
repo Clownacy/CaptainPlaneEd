@@ -28,11 +28,11 @@
 #include "WinAPI.h"
 #endif
 
-const char* const FILE_MAP_TEMP = "tempmap.bin";
-const char* const FILE_ART_TEMP = "tempart.bin";
-const char* const FILE_PAL_TEMP = "temppal.bin";
+static const char* const FILE_MAP_TEMP = "tempmap.bin";
+static const char* const FILE_ART_TEMP = "tempart.bin";
+static const char* const FILE_PAL_TEMP = "temppal.bin";
 
-Project::Project(char* const parameter_filepath)
+Project::Project(const char *parameter_filepath)
 {
 	this->PrjData = new ProjectData(parameter_filepath);
 	this->PrjData->art.Load(FILE_ART_TEMP);

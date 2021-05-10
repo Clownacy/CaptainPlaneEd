@@ -20,7 +20,8 @@
 
 #pragma once
 
-enum class infoType {
+enum class infoType
+{
 	PALETTE_FILE,
 	MAPPING_FILE,
 	ART_FILE,
@@ -46,7 +47,8 @@ enum class infoType {
 };
 
 // compression types
-enum class comprType {
+enum class comprType
+{
 	NONE,
 	ENIGMA,
 	KOSINSKI,
@@ -60,6 +62,6 @@ enum class comprType {
 	INVALID
 };
 
-infoType readInfoType(const char* const string);
-comprType readComprType(const char* const string);
-char* trimString(char* string);
+infoType readInfoType(const char *string);
+comprType readComprType(const char *string);
+char* trimString(char *string);

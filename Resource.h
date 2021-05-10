@@ -32,12 +32,12 @@ public:
 	int kosinski_module_size;
 
 	Resource(void);
-	virtual void Load(const char* const filename) = 0;
-	void Save(const char* const filename, const char* const dstfilename);
+	virtual void Load(const char *filename) = 0;
+	void Save(const char *filename, const char *dstfilename);
 
 protected:
-	long DecompressToFile(const char* const dstfile);
-	void CompressFile(const char* const srcfile, const char* const dstfile);
+	long DecompressToFile(const char *dstfile);
+	void CompressFile(const char *srcfile, const char *dstfile);
 };
 
 class ResourceArt : public Resource
@@ -46,7 +46,7 @@ public:
 	int tileAmount;
 
 	ResourceArt(void);
-	void Load(const char* const filename);
+	void Load(const char *filename);
 };
 
 class ResourceMap : public Resource
@@ -57,7 +57,7 @@ public:
 	char saveName[128];
 
 	ResourceMap(void);
-	void Load(const char* const filename);
+	void Load(const char *filename);
 };
 
 class ResourcePal : public Resource
@@ -66,5 +66,5 @@ public:
 	int destination_offset;
 
 	ResourcePal(void);
-	void Load(const char* const filename);
+	void Load(const char *filename);
 };

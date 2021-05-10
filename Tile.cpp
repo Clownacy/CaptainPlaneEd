@@ -18,8 +18,8 @@
     USA
 */
 
-#include <cstdint>
-#include <cstdio>
+#include <stdint.h>
+#include <stdio.h>
 
 #include "Tile.h"
 
@@ -32,7 +32,7 @@ Tile::Tile(void)
 	this->priority = 0;
 }
 
-Tile::Tile(const Tile* const tile)
+Tile::Tile(const Tile *tile)
 {
 	this->tileID = tile->tileID;
 	this->paletteLine = tile->paletteLine;
@@ -41,20 +41,20 @@ Tile::Tile(const Tile* const tile)
 	this->priority = tile->priority;
 }
 
-void Tile::ReadTile(FILE* file)
+void Tile::ReadTile(FILE *file)
 {
-	uint16_t tile = (fgetc(file)<<8)|fgetc(file);
+	uint16_t tile = (fgetc(file) << 8) | fgetc(file);
 	LoadFromRawTile(tile);
 }
 
-void Tile::WriteTile(FILE* file)
+void Tile::WriteTile(FILE *file)
 {
 	uint16_t tile = GetRawTile();
-	fputc(tile>>8, file);
+	fputc(tile >> 8, file);
 	fputc(tile, file);
 }
 
-void Tile::LoadFromRawTile(const uint16_t tile)
+void Tile::LoadFromRawTile(uint16_t tile)
 {
 	this->priority = (tile & 0x8000) >> 15;
 	this->paletteLine = (tile & 0x6000) >> 13;
@@ -81,12 +81,12 @@ void Tile::ClearTile(void)
 	this->priority = 0;
 }
 
-void Tile::SetPal(const uint8_t paletteLine)
+void Tile::SetPal(uint8_t paletteLine)
 {
 	this->paletteLine = paletteLine;
 }
 
-void Tile::SetID(const int ID)
+void Tile::SetID(int ID)
 {
 	this->tileID = ID;
 	this->xFlip = 0;

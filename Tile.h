@@ -20,8 +20,8 @@
 
 #pragma once
 
-#include <cstdint>
-#include <cstdio>
+#include <stdint.h>
+#include <stdio.h>
 
 class Tile
 {

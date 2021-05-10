@@ -18,8 +18,9 @@
 */
 
 #include <windows.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_syswm.h>
+
+#include "SDL.h"
+#include "SDL_syswm.h"
 
 #include "Common.h"
 #include "PrjHndl.h"
@@ -28,19 +29,14 @@
 namespace WinAPI
 {
 
-HWND hWnd;
-HMENU hMenu;
 HMENU hSubMenu_File;
 HMENU hSubMenu_View;
-COLORREF custom_colours[16];
 
-void SaveHWND(SDL_Window* const window);
-void CreateMenuBar(void);
-void HandleWindowsEvent(const SDL_Event* const event);
-bool OpenProjectFilePrompt(char** const filepath);
-void SetMenuBarOptionGreyed(bool enable, int menu_option);
+static HWND hWnd;
+static HMENU hMenu;
+static COLORREF custom_colours[16];
 
-void SaveHWND(SDL_Window* const window)
+void SaveHWND(const SDL_Window *window)
 {
 	SDL_SysWMinfo info;
 	SDL_VERSION(&info.version)
@@ -72,7 +68,7 @@ void CreateMenuBar(void)
 	SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
 }
 
-void HandleWindowsEvent(const SDL_Event* const event)
+void HandleWindowsEvent(const SDL_Event *event)
 {
 	if (event->syswm.msg->msg.win.msg == WM_COMMAND)
 	{
@@ -150,7 +146,7 @@ void HandleWindowsEvent(const SDL_Event* const event)
 	}
 }
 
-bool OpenProjectFilePrompt(char** const filepath)
+bool OpenProjectFilePrompt(char **filepath)
 {
 	const int filepath_size = 500;
 	*filepath = new char[filepath_size];
