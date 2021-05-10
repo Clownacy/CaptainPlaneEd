@@ -29,8 +29,6 @@
 #include <windows.h>
 #endif
 
-#define INTERNAL_UPSCALE_FACTOR 3
-
 #ifdef _WIN32
 #define ADJUSTED_SCREEN_HEIGHT (SCREEN_HEIGHT + GetSystemMetrics(SM_CYMENU))
 #else
@@ -48,7 +46,7 @@ Screen::Screen(void)
 	if (this->window == NULL)
 		this->ShowInternalError("Unable to init SDL Window\n\n", SDL_GetError());
 
-	this->renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_ACCELERATED);
+	this->renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	if (this->renderer == NULL)
 		this->ShowInternalError("Unable to init SDL Renderer\n\n", SDL_GetError());
 
@@ -65,11 +63,6 @@ Screen::Screen(void)
 
 	SDL_LockTexture(this->texture, NULL, &this->surface->pixels, &this->surface->pitch);
 
-	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
-	this->upscaled_texture = SDL_CreateTexture(this->renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, SCREEN_WIDTH*INTERNAL_UPSCALE_FACTOR, SCREEN_HEIGHT*INTERNAL_UPSCALE_FACTOR);
-	if (this->upscaled_texture==NULL)
-		this->ShowInternalError("Unable to init screen SDL Texture\n\n", SDL_GetError());
-
 	this->background_colour = {.r = 0, .g = 0, .b = 0, .a = 0};
 
 #ifdef _WIN32
@@ -81,23 +74,14 @@ Screen::Screen(void)
 
 void Screen::ProcessDisplay(void)
 {
-	// SDL2's 'linear' filter is ugly with pixel art, and the
-	// 'nearest' one gets pretty bad with non-integer scaling.
-	// Instead, we're going to emulate a type of upscale that
-	// preserves the quality of the image, while smoothing pixels
-	// that 'bleed'.
 	SDL_UnlockTexture(this->texture);
 
-	SDL_SetRenderTarget(this->renderer, this->upscaled_texture);		// Render to texture...
-	SDL_RenderCopy(this->renderer, this->texture, NULL, NULL);		// ...and upscale using 'nearest'
-
-	SDL_LockTexture(this->texture, NULL, &this->surface->pixels, &this->surface->pitch);
-
-	SDL_SetRenderTarget(this->renderer, NULL);				// Render to screen...
 	SDL_RenderClear(this->renderer);
-	SDL_RenderCopy(this->renderer, this->upscaled_texture, NULL, NULL);	// ...and upscale/downscale using 'linear'
+	SDL_RenderCopy(this->renderer, this->texture, NULL, NULL);
 
 	SDL_RenderPresent(this->renderer);
+
+	SDL_LockTexture(this->texture, NULL, &this->surface->pixels, &this->surface->pitch);
 }
 
 void Screen::Clear(void)
