@@ -1,4 +1,6 @@
-Figure out why the selected tile 'ghosts' when mouse is moved after window is resized
-
 Figure out where that line of colour on the right is coming from
 - Apparently it's a bug with DirectX's blurring; unfixable
+
+Smooth upscaling
+
+Invalid tile rendering
