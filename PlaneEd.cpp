@@ -136,8 +136,6 @@ int main(int argc, char* argv[])
                             if (!CurProject->SelectionRect->isActive()) CurProject->LevelMap->CurSwapPriority();
                             else {
                                 CurProject->SelectionRect->SwapPriority();
-                                CurProject->LevelMap->DrawMap();
-                                CurProject->SelectionRect->SelDrawRect();
                             }
 			}
                         break;
@@ -147,8 +145,6 @@ int main(int argc, char* argv[])
                             if (!CurProject->SelectionRect->isActive()) CurProject->LevelMap->CurFlipX();
                             else {
                                 CurProject->SelectionRect->FlipX();
-                                CurProject->LevelMap->DrawMap();
-                                CurProject->SelectionRect->SelDrawRect();
                             }
 			}
                         break;
@@ -158,8 +154,6 @@ int main(int argc, char* argv[])
                             if (!CurProject->SelectionRect->isActive()) CurProject->LevelMap->CurFlipY();
                             else {
                                 CurProject->SelectionRect->FlipY();
-                                CurProject->LevelMap->DrawMap();
-                                CurProject->SelectionRect->SelDrawRect();
                             }
 			}
                         break;
@@ -198,7 +192,6 @@ int main(int argc, char* argv[])
                             else {
                                 CurProject->SelectionRect->clear();
                                 CurProject->SelectionRect->AssignSection();
-                                CurProject->LevelMap->DrawMap();
                             }
 			}
                         break;
@@ -226,7 +219,6 @@ int main(int argc, char* argv[])
                             else {
                                 CurProject->SelectionRect->IncrID();
                                 CurProject->SelectionRect->AssignSection();
-                                CurProject->LevelMap->DrawMap();
                             }
 			}
                         break;
@@ -237,7 +229,6 @@ int main(int argc, char* argv[])
                             else {
                                 CurProject->SelectionRect->DecrID();
                                 CurProject->SelectionRect->AssignSection();
-                                CurProject->LevelMap->DrawMap();
                             }
 			}
                         break;
@@ -245,44 +236,36 @@ int main(int argc, char* argv[])
 		        if (CurProject != NULL)
 			{
                             CurProject->LevelMap->SetPalCurrent(0);
-                            CurProject->GfxStuff->DrawSelector();
 			}
 			break;
                     case SDLK_F2:
 		        if (CurProject != NULL)
 			{
                             CurProject->LevelMap->SetPalCurrent(1);
-                            CurProject->GfxStuff->DrawSelector();
 			}
 			break;
                     case SDLK_F3:
 		        if (CurProject != NULL)
 			{
                             CurProject->LevelMap->SetPalCurrent(2);
-                            CurProject->GfxStuff->DrawSelector();
 			}
 			break;
                     case SDLK_F4:
 		        if (CurProject != NULL)
 			{
                             CurProject->LevelMap->SetPalCurrent(3);
-                            CurProject->GfxStuff->DrawSelector();
 			}
 			break;
                     case SDLK_F5:
 		        if (CurProject != NULL)
 			{
                             CurProject->GfxStuff->ToggleHighPriority();
-                            CurProject->LevelMap->DrawMap();
-                            CurProject->SelectionRect->SelDrawRect();
 			}
 			break;
                     case SDLK_F6:
 		        if (CurProject != NULL)
 			{
                             CurProject->GfxStuff->ToggleLowPriority();
-                            CurProject->LevelMap->DrawMap();
-                            CurProject->SelectionRect->SelDrawRect();
 			}
 			break;
                     case SDLK_F9:
@@ -310,8 +293,6 @@ int main(int argc, char* argv[])
 		        if (CurProject != NULL)
 			{
                             CurProject->GfxStuff->DecScreenOffset();
-                            CurProject->LevelMap->DrawMap();
-                            CurProject->SelectionRect->SelDrawRect();
 			}
 			break;
                     case '\'':
@@ -319,8 +300,6 @@ int main(int argc, char* argv[])
 		        if (CurProject != NULL)
 			{
                             CurProject->GfxStuff->IncScreenOffset();
-                            CurProject->LevelMap->DrawMap();
-                            CurProject->SelectionRect->SelDrawRect();
 			}
 			break;
                     case ';':
@@ -328,8 +307,6 @@ int main(int argc, char* argv[])
 		        if (CurProject != NULL)
 			{
                             CurProject->GfxStuff->DecScreenXOffset();
-                            CurProject->LevelMap->DrawMap();
-                            CurProject->SelectionRect->SelDrawRect();
 			}
 			break;
                     case '\\':
@@ -339,22 +316,18 @@ int main(int argc, char* argv[])
 		        if (CurProject != NULL)
 			{
                             CurProject->GfxStuff->IncScreenXOffset();
-                            CurProject->LevelMap->DrawMap();
-                            CurProject->SelectionRect->SelDrawRect();
 			}
 			break;
                     case SDLK_END:
 		        if (CurProject != NULL)
 			{
                             CurProject->GfxStuff->IncSelOffset();
-                            CurProject->GfxStuff->DrawSelector();
 			}
 			break;
                     case SDLK_HOME:
 		        if (CurProject != NULL)
 			{
                             CurProject->GfxStuff->DecSelOffset();
-                            CurProject->GfxStuff->DrawSelector();
 			}
 			break;
                     case SDLK_SPACE:
