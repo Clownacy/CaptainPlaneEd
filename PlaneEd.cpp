@@ -462,18 +462,28 @@ int main(int argc, char **argv)
 			#endif
 			}
 
-			// Redraw everything
-			if (CurProject != nullptr)
+			// Only redraw up to 30 times a second
+			static Uint32 next_ticks;
+
+			Uint32 current_ticks = SDL_GetTicks();
+
+			if (current_ticks > next_ticks)
 			{
-				CurProject->LevelMap->DrawMap();
-				CurProject->GfxStuff->DrawSelector();
-				CurProject->SelectionRect->SelDrawRect();
+				next_ticks = current_ticks + 1000 / 30;
 
-				CurProject->LevelMap->DrawCurrentTile();
-				CurProject->LevelMap->DrawSelectedTile(mouse_x, mouse_y);
+				// Redraw everything
+				if (CurProject != nullptr)
+				{
+					CurProject->LevelMap->DrawMap();
+					CurProject->GfxStuff->DrawSelector();
+					CurProject->SelectionRect->SelDrawRect();
+
+					CurProject->LevelMap->DrawCurrentTile();
+					CurProject->LevelMap->DrawSelectedTile(mouse_x, mouse_y);
+				}
+
+				MainScreen->ProcessDisplay();
 			}
-
-			MainScreen->ProcessDisplay();
 		}
 	}
 	return 0;
