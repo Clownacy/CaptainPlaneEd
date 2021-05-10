@@ -18,9 +18,10 @@
     USA
 */
 
-#include <cstdio>
-#include <cstdlib>
-#include <SDL2/SDL.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "SDL.h"
 
 #include "Common.h"
 #include "Tile.h"
@@ -35,12 +36,12 @@
 #include "WinAPI.h"
 #endif
 
-Screen* MainScreen;
-Project* CurProject = NULL;
+Screen *MainScreen;
+Project *CurProject = NULL;
 
 static int mouse_x, mouse_y;
 
-int main(int argc, char* argv[])
+int main(int argc, char **argv)
 {
     // Create our window
     MainScreen = new Screen;
@@ -50,7 +51,7 @@ int main(int argc, char* argv[])
     // For backwards-compatibility, we want project files that are drag-and-dropped
     // onto the executable to be automatically loaded when it starts.
     // First, we have to make sure the file's actually there.
-    FILE* prjfile = (argc > 1) ? fopen(argv[1], "r") : NULL;
+    FILE *prjfile = (argc > 1) ? fopen(argv[1], "r") : nullptr;
 #ifdef _WIN32
     // Windows build allows a blank window to open, where the user can open a
     // project file using the menu bar

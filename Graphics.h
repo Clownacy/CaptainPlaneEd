@@ -20,9 +20,10 @@
 
 #pragma once
 
-#include <cstddef>
-#include <cstdint>
-#include <SDL2/SDL.h>
+#include <stddef.h>
+#include <stdint.h>
+
+#include "SDL.h"
 
 #include "Screen.h"
 #include "Tile.h"
@@ -31,8 +32,8 @@ class Graphics
 {
 private:
     uint16_t (*palette)[16];
-    SDL_Texture* tile_atlas;
-    std::size_t atlas_quadrant_dimension;
+    SDL_Texture *tile_atlas;
+    size_t atlas_quadrant_dimension;
     uint8_t paletteLines;
     uint8_t currentPal;
     uint8_t selectorWidth;
@@ -46,21 +47,21 @@ private:
     bool highPriorityDisplay;
     bool lowPriorityDisplay;
 public:
-    Graphics(const uint16_t xSize, const uint16_t tileOffset, const uint16_t tileAmount);
+    Graphics(uint16_t xSize, uint16_t tileOffset, uint16_t tileAmount);
     ~Graphics(void);
-    void ReadPalette(const char* const filename);
-    void ReadTiles(const char* const filename);
-    void DrawTileFromAtlas(const int tile_index, SDL_Texture* const screen, const int x, const int y, const int palette_line, bool x_flip, bool y_flip);
+    void ReadPalette(const char *filename);
+    void ReadTiles(const char *filename);
+    void DrawTileFromAtlas(int tile_index, SDL_Texture *screen, int x, int y, int palette_line, bool x_flip, bool y_flip);
     void ClearMap(void);
     void ClearSelector(void);
     void DrawSelector(void);
-    bool CheckSelValidPos(const int x, const int y);
-    void DrawTileSingle(const int x, const int y, const Tile* const tile);
-    void DrawTileBlank(const int x, const int y, const Tile* const tile);
-    void DrawTileFullColor(const int x, const int y, const unsigned char red, const unsigned char green, const unsigned char blue);
-    void DrawTileNone(const int x, const int y);
-    void DrawTileInvalid(const int x, const int y);
-    void SetCurrentPal(const uint8_t currentPal);
+    bool CheckSelValidPos(int x, int y);
+    void DrawTileSingle(int x, int y, const Tile *tile);
+    void DrawTileBlank(int x, int y, const Tile *tile);
+    void DrawTileFullColor(int x, int y, unsigned char red, unsigned char green, unsigned char blue);
+    void DrawTileNone(int x, int y);
+    void DrawTileInvalid(int x, int y);
+    void SetCurrentPal(uint8_t currentPal);
     uint8_t GetCurrentPal(void) {return currentPal;}
     uint8_t GetPaletteLines(void) {return paletteLines;}
     uint8_t GetSelectorWidth(void) {return selectorWidth;}
@@ -69,7 +70,7 @@ public:
     void ToggleHighPriority(void) {highPriorityDisplay = !highPriorityDisplay;}
     void ToggleLowPriority(void) {lowPriorityDisplay = !lowPriorityDisplay;}
     void DrawRect(int x, int y); //x, y = tile coordinates (not pixel)
-    void DrawFreeRect(int x, int y, const int xSize, const int ySize);
+    void DrawFreeRect(int x, int y, int xSize, int ySize);
     void IncScreenOffset(void) {++screenTileYOffset;}
     void DecScreenOffset(void) {if (screenTileYOffset>0) --screenTileYOffset;}
     int GetScreenOffset(void) {return screenTileYOffset;}
@@ -79,7 +80,7 @@ public:
     void IncSelOffset(void) {++selTileYOffset;}
     void DecSelOffset(void) {if (selTileYOffset>0) --selTileYOffset;}
     int GetSelOffset(void) {return selTileYOffset;}
-    void PosScreenToTile(int* const x, int* const y);
-    void PosScreenToTileRound(int* const x, int* const y);
-    void PosTileToScreen(int* const x, int* const y);
+    void PosScreenToTile(int *x, int *y);
+    void PosScreenToTileRound(int *x, int *y);
+    void PosTileToScreen(int *x, int *y);
 };

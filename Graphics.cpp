@@ -18,10 +18,12 @@
 	USA
 */
 
-#include <cmath>
-#include <cstddef>
+#include <math.h>
+#include <stddef.h>
+#include <stdint.h>
 #include <algorithm>
-#include <SDL2/SDL.h>
+
+#include "SDL.h"
 
 #include "Common.h"
 #include "Graphics.h"
@@ -32,7 +34,7 @@
 
 #define PALETTE_ENTRIES_PER_LINE 16
 
-Graphics::Graphics(const uint16_t xSize, const uint16_t tileOffset, const uint16_t tileAmount)
+Graphics::Graphics(uint16_t xSize, uint16_t tileOffset, uint16_t tileAmount)
 {
 	this->selXMin = std::min(8*64, 8*xSize) + 1;
 	this->xDisplaySize = std::min(64, 0+xSize);
@@ -48,12 +50,14 @@ Graphics::Graphics(const uint16_t xSize, const uint16_t tileOffset, const uint16
 	this->atlas_quadrant_dimension = 0;
 	this->paletteLines = 0;
 	
-	/* calculate selector width */
+	// calculate selector width
 	this->selectorWidth = 8;
 	while (8*tileAmount / selectorWidth > SCREEN_HEIGHT)
 	{
-		if (8 * (xSize+selectorWidth) < SCREEN_WIDTH) selectorWidth += 8;
-		else break;
+		if (8 * (xSize+selectorWidth) < SCREEN_WIDTH)
+			selectorWidth += 8;
+		else
+			break;
 	}
 }
 
@@ -70,14 +74,14 @@ Graphics::~Graphics(void)
 		SDL_DestroyTexture(tile_atlas);
 }
 
-void Graphics::ReadPalette(const char* const filename)
+void Graphics::ReadPalette(const char *filename)
 {
-	FILE* palfile = fopen(filename,"rb");
-	if (palfile==NULL)
+	FILE *palfile = fopen(filename,"rb");
+	if (palfile == nullptr)
 		MainScreen->ShowInternalError("Decompressed palette file not found");
 
 	fseek(palfile, 0, SEEK_END);
-	paletteLines = ftell(palfile)/(PALETTE_ENTRIES_PER_LINE*sizeof(uint16_t));
+	paletteLines = ftell(palfile) / (PALETTE_ENTRIES_PER_LINE * sizeof(uint16_t));
 	rewind(palfile);
 
 	if (paletteLines > 4)
@@ -91,12 +95,12 @@ void Graphics::ReadPalette(const char* const filename)
 		for (int entry=0; entry < PALETTE_ENTRIES_PER_LINE; ++entry)
 		{
 			// Convert BGR to RGB
-			const uint16_t palette_entry = (fgetc(palfile)<<8)|fgetc(palfile);
-			const uint16_t blue = (palette_entry&0x0F00) >> 8;
-			const uint16_t green = palette_entry&0x00F0;
-			const uint16_t red = (palette_entry&0x000F) << 8;
+			const uint16_t palette_entry = (fgetc(palfile) << 8) | fgetc(palfile);
+			const uint16_t blue = (palette_entry & 0x0F00) >> 8;
+			const uint16_t green = palette_entry & 0x00F0;
+			const uint16_t red = (palette_entry & 0x000F) << 8;
 			const uint16_t alpha = 0xF000;
-			palette[line][entry] = alpha|red|green|blue;
+			palette[line][entry] = alpha | red | green | blue;
 		}
 	}
 
@@ -104,25 +108,25 @@ void Graphics::ReadPalette(const char* const filename)
 	remove(filename);
 }
 
-void Graphics::ReadTiles(const char* const filename)
+void Graphics::ReadTiles(const char *filename)
 {
-	FILE* tilefile = fopen(filename,"rb");
-	if (tilefile==NULL)
+	FILE *tilefile = fopen(filename,"rb");
+	if (tilefile == nullptr)
 		MainScreen->ShowInternalError("Decompressed art file not found");
 
 	// Here, we turn the tiles into a tile atlas, divided into four quadrants.
 	// Each quadrant is for a different palette line.
-	this->atlas_quadrant_dimension = std::ceil(std::sqrt(tileAmount)) * 8;
+	this->atlas_quadrant_dimension = ceil(sqrt(tileAmount)) * 8;
 
-	SDL_Surface* surface = SDL_CreateRGBSurface(0, this->atlas_quadrant_dimension * 2, this->atlas_quadrant_dimension * 2, 16, 0x0F00, 0x00F0, 0x000F, 0xF000);
+	SDL_Surface *surface = SDL_CreateRGBSurface(0, this->atlas_quadrant_dimension * 2, this->atlas_quadrant_dimension * 2, 16, 0x0F00, 0x00F0, 0x000F, 0xF000);
 
-	if (surface == NULL)
+	if (surface == nullptr)
 		MainScreen->ShowInternalError("Cannot make SDL Surface from tiles\n\n", SDL_GetError());
 
 	for (int tile=0; tile < tileAmount; ++tile)
 	{
-		const std::size_t tile_x = (tile * 8) % this->atlas_quadrant_dimension;
-		const std::size_t tile_y = ((tile * 8) / this->atlas_quadrant_dimension) * (surface->pitch / 2 * 8);
+		const size_t tile_x = (tile * 8) % this->atlas_quadrant_dimension;
+		const size_t tile_y = ((tile * 8) / this->atlas_quadrant_dimension) * (surface->pitch / 2 * 8);
 
 		uint16_t *tile_pixels = &((uint16_t*)surface->pixels)[tile_y + tile_x];
 
@@ -132,29 +136,29 @@ void Graphics::ReadTiles(const char* const filename)
 		tile_pixels_row[2] = tile_pixels + (surface->pitch / 2) * this->atlas_quadrant_dimension; // Quadrant below
 		tile_pixels_row[3] = tile_pixels_row[2] + this->atlas_quadrant_dimension; // Quadrant below and to the right
 
-		for (std::size_t y = 0; y < 8; ++y)
+		for (size_t y = 0; y < 8; ++y)
 		{
-			for (std::size_t x = 0; x < 8; x += 2)
+			for (size_t x = 0; x < 8; x += 2)
 			{
 				const unsigned char byte = fgetc(tilefile);
 				const unsigned char nibble1 = (byte >> 4) & 0xF;
 				const unsigned char nibble2 = byte & 0xF;
 
-				for (std::size_t i = 0; i < paletteLines; ++i)
+				for (size_t i = 0; i < paletteLines; ++i)
 				{
 					tile_pixels_row[i][x] = palette[i][nibble1];
 					tile_pixels_row[i][x + 1] = palette[i][nibble2];
 				}
 			}
 
-			for (std::size_t i = 0; i < paletteLines; ++i)
+			for (size_t i = 0; i < paletteLines; ++i)
 				tile_pixels_row[i] += this->atlas_quadrant_dimension * 2;
 		}
 	}
 
 	this->tile_atlas = SDL_CreateTextureFromSurface(MainScreen->renderer, surface);
 
-	if (this->tile_atlas == NULL)
+	if (this->tile_atlas == nullptr)
 		MainScreen->ShowInternalError("Cannot make SDL Texture from tiles\n\n", SDL_GetError());
 
 	SDL_FreeSurface(surface);
@@ -163,7 +167,7 @@ void Graphics::ReadTiles(const char* const filename)
 	remove(filename);
 }
 
-void Graphics::DrawTileFromAtlas(const int tile_index, SDL_Texture* const screen, const int x, const int y, const int palette_line, bool x_flip, bool y_flip)
+void Graphics::DrawTileFromAtlas(int tile_index, SDL_Texture *screen, int x, int y, int palette_line, bool x_flip, bool y_flip)
 {
 	SDL_SetRenderTarget(MainScreen->renderer, screen);
 
@@ -227,12 +231,12 @@ void Graphics::ClearSelector(void)
 void Graphics::DrawSelector(void)
 {
 	ClearSelector();
-	for (int i=0; i < tileAmount; ++i)
-		DrawTileFromAtlas(i, MainScreen->texture, selXMin + 8*(i%selectorWidth), 8*(i/selectorWidth - selTileYOffset), currentPal, false, false);
+	for (int i = 0; i < tileAmount; ++i)
+		DrawTileFromAtlas(i, MainScreen->texture, selXMin + 8 * (i % selectorWidth), 8 * (i / selectorWidth - selTileYOffset), currentPal, false, false);
 }
 
 /* map coords */
-void Graphics::DrawTileSingle(int x, int y, const Tile* const tile)
+void Graphics::DrawTileSingle(int x, int y, const Tile *tile)
 {
 	y -= screenTileYOffset;
 	x -= screenTileXOffset;
@@ -247,7 +251,7 @@ void Graphics::DrawTileSingle(int x, int y, const Tile* const tile)
 			}
 			else if ((tile->tileID || !this->tileOffset) && tile->paletteLine < paletteLines)
 			{
-				DrawTileFromAtlas((tile->tileID) - tileOffset, MainScreen->texture, 8*x, 8*y, tile->paletteLine, tile->xFlip, tile->yFlip);
+				DrawTileFromAtlas((tile->tileID) - tileOffset, MainScreen->texture, x * 8, y * 8, tile->paletteLine, tile->xFlip, tile->yFlip);
 			}
 			else
 			{
@@ -261,28 +265,28 @@ void Graphics::DrawTileSingle(int x, int y, const Tile* const tile)
 	}
 }
 
-bool Graphics::CheckSelValidPos(const int x, const int y)
+bool Graphics::CheckSelValidPos(int x, int y)
 {
-	return (x>=selXMin && x<selXMin+8*selectorWidth && y>=0 && (x-selXMin)/8+selectorWidth*(y/8 + selTileYOffset)<GetTileAmount());
+	return (x >= selXMin && x < selXMin + (selectorWidth * 8) && y>=0 && (x - selXMin) / 8 + selectorWidth * (y / 8 + selTileYOffset) < GetTileAmount());
 }
 
-void Graphics::DrawTileNone(const int x, const int y)
+void Graphics::DrawTileNone(int x, int y)
 {
 	DrawTileFullColor(x, y, MainScreen->background_colour.r, MainScreen->background_colour.g, MainScreen->background_colour.b);
 }
 
-void Graphics::DrawTileBlank(const int x, const int y, const Tile* const tile)
+void Graphics::DrawTileBlank(int x, int y, const Tile *tile)
 {
 	DrawTileFullColor(x, y, (palette[tile->paletteLine][0] & 0x0F00)>>4, (palette[tile->paletteLine][0] & 0x00F0), (palette[tile->paletteLine][0] & 0x000F)<<4);
 }
 
-void Graphics::DrawTileFullColor(const int x, const int y, const unsigned char red, const unsigned char green, const unsigned char blue)
+void Graphics::DrawTileFullColor(int x, int y, unsigned char red, unsigned char green, unsigned char blue)
 {
 	SDL_SetRenderTarget(MainScreen->renderer, MainScreen->texture);
 
 	SDL_Rect RectTemp;
-	RectTemp.x = 8*x;
-	RectTemp.y = 8*y;
+	RectTemp.x = x * 8;
+	RectTemp.y = y * 8;
 	RectTemp.w = 8;
 	RectTemp.h = 8;
 	SDL_SetRenderDrawColor(MainScreen->renderer, red, green, blue, 0xFF);
@@ -295,8 +299,8 @@ void Graphics::DrawTileInvalid(int x, int y)
 
 	//PosTileToScreen(&x, &y);
 	SDL_SetRenderDrawColor(MainScreen->renderer, 0xE0, 0xB0, 0xD0, 0xFF);
-	SDL_RenderDrawLine(MainScreen->renderer, 8*x, 8*y, 8*x+7, 8*y+7);
-	SDL_RenderDrawLine(MainScreen->renderer, 8*x, 8*y+7, 8*x+7, 8*y);
+	SDL_RenderDrawLine(MainScreen->renderer, x * 8, y * 8, x * 8 + 7, y * 8 + 7);
+	SDL_RenderDrawLine(MainScreen->renderer, x * 8, y * 8 + 7, x * 8 + 7, y * 8);
 }
 
 void Graphics::SetCurrentPal(const uint8_t currentPal)
@@ -304,10 +308,10 @@ void Graphics::SetCurrentPal(const uint8_t currentPal)
 	this->currentPal = currentPal;
 
 #ifdef _WIN32
-	WinAPI::SetMenuBarOptionChecked(((currentPal == 0) ? true : false), MENUBAR_PALETTELINE1);
-	WinAPI::SetMenuBarOptionChecked(((currentPal == 1) ? true : false), MENUBAR_PALETTELINE2);
-	WinAPI::SetMenuBarOptionChecked(((currentPal == 2) ? true : false), MENUBAR_PALETTELINE3);
-	WinAPI::SetMenuBarOptionChecked(((currentPal == 3) ? true : false), MENUBAR_PALETTELINE4);
+	WinAPI::SetMenuBarOptionChecked(currentPal == 0, MENUBAR_PALETTELINE1);
+	WinAPI::SetMenuBarOptionChecked(currentPal == 1, MENUBAR_PALETTELINE2);
+	WinAPI::SetMenuBarOptionChecked(currentPal == 2, MENUBAR_PALETTELINE3);
+	WinAPI::SetMenuBarOptionChecked(currentPal == 3, MENUBAR_PALETTELINE4);
 #endif
 }
 
@@ -327,7 +331,7 @@ void Graphics::DrawRect(int x, int y)
 }
 
 /* map coords */
-void Graphics::DrawFreeRect(int x, int y, const int xSize, const int ySize)
+void Graphics::DrawFreeRect(int x, int y, int xSize, int ySize)
 {
 	SDL_SetRenderTarget(MainScreen->renderer, MainScreen->texture);
 
@@ -335,13 +339,13 @@ void Graphics::DrawFreeRect(int x, int y, const int xSize, const int ySize)
 	SDL_Rect rect;
 	rect.x = x;
 	rect.y = y;
-	rect.w = 8*xSize;
-	rect.h = 8*ySize;
+	rect.w = xSize * 8;
+	rect.h = ySize * 8;
 	SDL_SetRenderDrawColor(MainScreen->renderer, 0xE0, 0xB0, 0xD0, 0xFF);
 	SDL_RenderDrawRect(MainScreen->renderer, &rect);
 }
 
-void Graphics::PosScreenToTile(int* const x, int* const y)
+void Graphics::PosScreenToTile(int *x, int *y)
 {
 	*x /= 8;
 	*y /= 8;
@@ -349,7 +353,7 @@ void Graphics::PosScreenToTile(int* const x, int* const y)
 	*x += screenTileXOffset;
 }
 
-void Graphics::PosScreenToTileRound(int* const x, int* const y)
+void Graphics::PosScreenToTileRound(int *x, int *y)
 {
 	*x = ((*x)+4)/8;
 	*y = ((*y)+4)/8;
@@ -357,7 +361,7 @@ void Graphics::PosScreenToTileRound(int* const x, int* const y)
 	*x += screenTileXOffset;
 }
 
-void Graphics::PosTileToScreen(int* const x, int* const y)
+void Graphics::PosTileToScreen(int *x, int *y)
 {
 	*y -= screenTileYOffset;
 	*x -= screenTileXOffset;

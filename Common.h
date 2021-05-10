@@ -22,5 +22,5 @@
 #include "Project.h"
 #include "Screen.h"
 
-extern Screen* MainScreen;
-extern Project* CurProject;
+extern Screen *MainScreen;
+extern Project *CurProject;

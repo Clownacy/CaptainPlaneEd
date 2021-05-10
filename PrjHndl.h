@@ -33,8 +33,8 @@ public:
     ResourceArt art;
     ResourceMap map;
     ResourcePal pal;
-    ProjectData(const char* const prjtxt);
+    ProjectData(const char *prjtxt);
 
 private:
-    void AssignInfo(const infoType type, char* content);
+    void AssignInfo(infoType type, char *content);
 };
