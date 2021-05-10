@@ -57,7 +57,10 @@ Screen::Screen(void)
 	if (this->texture==NULL)
 		this->ShowInternalError("Unable to init screen SDL Texture\n\n", SDL_GetError());
 
-	this->background_colour = {.r = 0, .g = 0, .b = 0, .a = 0};
+	this->background_colour.r = 0;
+	this->background_colour.g = 0;
+	this->background_colour.b = 0;
+	this->background_colour.a = 0xFF;
 
 #ifdef _WIN32
 	// Windows-only crap to generate a menu bar
@@ -78,7 +81,7 @@ void Screen::ProcessDisplay(void)
 
 void Screen::Clear(void)
 {
-	SDL_SetRenderDrawColor(this->renderer, this->background_colour.r, this->background_colour.g, this->background_colour.b, 0xFF);
+	SDL_SetRenderDrawColor(this->renderer, this->background_colour.r, this->background_colour.g, this->background_colour.b, this->background_colour.a);
 	SDL_RenderFillRect(this->renderer, NULL);
 }
 

@@ -152,12 +152,6 @@ void SelRect::Kill() {
     }
 }
 
-/* Checks if rectangle needs to be redrawn, and does if necessary
- * parameters are tile coords of possibly overlapping tile */
-void SelRect::CheckRedraw(int x, int y) {
-    //add code to check whether rectangle has been overwritten
-}
-
 /* fills the selected rectangle with empty tiles */
 void SelRect::clear() {
     for (int y=0; y < ySize; ++y) {

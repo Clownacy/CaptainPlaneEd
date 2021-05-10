@@ -53,7 +53,6 @@ public:
     void SelDrawRect();
     void SelClearRect();
     void Unselect();
-    void CheckRedraw(int x, int y); //map coords
     void clear();
     void FlipX();
     void FlipY();
