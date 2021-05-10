@@ -38,10 +38,7 @@ public:
     void LoadMap(const char* const filename);
     void SaveMap(const char* const filename);
     void DrawMap(void);
-    void DrawMapSection(const int xStart, const int yStart, const int xSize, const int ySize);
     void DrawCurrentTile(void);
-    void RefreshTile(const uint8_t x, const uint8_t y, const bool curFlag);
-    void RefreshTileScreen(const int x, const int y, const bool curFlag);
     void DrawSelectedTile(const int x, const int y);
     void SelectTile(const int ID);
     void SelectedTileIncrID(void);

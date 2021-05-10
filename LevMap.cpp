@@ -69,12 +69,6 @@ void LevMap::DrawMap(void) {
             GfxStuff->DrawTileSingle(x, y, &MapData[y][x]);
 }
 
-void LevMap::DrawMapSection(const int xStart, const int yStart, const int xSize, const int ySize) {
-    for (int x=0; x < xSize; ++x)
-        for (int y=0; y < ySize; ++y)
-            GfxStuff->DrawTileSingle(xStart+x, yStart+y, &MapData[yStart+y][xStart+x]);
-}
-
 void LevMap::DrawCurrentTile(void) {
     GfxStuff->DrawTileSingle(CurX, CurY, &MapData[CurY][CurX]);
     GfxStuff->DrawRect(CurX, CurY);
@@ -83,7 +77,6 @@ void LevMap::DrawCurrentTile(void) {
 void LevMap::SelectTile(const uint8_t x, const uint8_t y) {
     if (CheckValidPos(x, y)) {
         SelectedTile = MapData[y][x];
-        RefreshTile(CurX, CurY, false);
         CurX = x; CurY = y;
     }
 }
@@ -109,16 +102,12 @@ void LevMap::SelectedTileDecrID(void) {
 void LevMap::SetTile(const uint8_t x, const uint8_t y) {
     if (CheckValidPos(x, y)) {
         MapData[y][x] = SelectedTile;
-        RefreshTile(CurX, CurY, false);
         CurX = x; CurY = y;
     }
-    DrawCurrentTile();
 }
 
 void LevMap::SetTileSelected(void) {
     MapData[CurY][CurX] = SelectedTile;
-    RefreshTile(CurX, CurY, false);
-    DrawCurrentTile();
 }
 
 void LevMap::SelectTileCur(void) {
@@ -127,7 +116,6 @@ void LevMap::SelectTileCur(void) {
 
 void LevMap::ClearCurrentTile(void) {
     MapData[CurY][CurX].ClearTile();
-    DrawCurrentTile();
 }
 
 void LevMap::SetPalCurrent(const uint8_t palette) {
@@ -135,7 +123,6 @@ void LevMap::SetPalCurrent(const uint8_t palette) {
         SelectedTile.SetPal(palette);
         MapData[CurY][CurX].SetPal(palette);
         GfxStuff->SetCurrentPal(palette);
-        DrawCurrentTile();
     }
 }
 
@@ -149,25 +136,6 @@ void LevMap::CheckSetTile(int x, int y) {
 void LevMap::CheckSelectTile(int x, int y) {
     GfxStuff->PosScreenToTile(&x, &y);
     SelectTile(x, y);
-}
-
-/* if curFlag is set and the tile is CurrentTile, it will be re-drawn with boundary
- * Map position as parameter */
-void LevMap::RefreshTile(const uint8_t x, const uint8_t y, const bool curFlag) {
-    if (CheckValidPos(x, y)) {
-        if (x == CurX && y == CurY && curFlag) DrawCurrentTile();
-        else GfxStuff->DrawTileSingle(x, y, &MapData[y][x]);
-    }
-}
-
-/* if curFlag is set and the tile is CurrentTile, it will be re-drawn with boundary
- * Mouse position as parameter */
-void LevMap::RefreshTileScreen(int x, int y, const bool curFlag) {
-    GfxStuff->PosScreenToTile(&x, &y);
-    if (CheckValidPos(x, y)) {
-        if (x == CurX && y == CurY && curFlag) DrawCurrentTile();
-        else GfxStuff->DrawTileSingle(x, y, &MapData[y][x]);
-    }
 }
 
 /* mouse coords */
@@ -197,38 +165,29 @@ void LevMap::SetCurrentTile(const int ID) {
         MapData[CurY][CurX].ClearTile();
         MapData[CurY][CurX].SetID(ID);
         MapData[CurY][CurX].SetPal(GfxStuff->GetCurrentPal());
-        DrawCurrentTile();
     }
 }
 
 void LevMap::CurShiftRight(void) {
-    RefreshTile(CurX, CurY, false);
     if (CurX < xSize - 1 || CurY < ySize - 1) {
         CurY += ++CurX / xSize;
         CurX = CurX % xSize;
     }
-    DrawCurrentTile();
 }
 
 void LevMap::CurShiftLeft(void) {
-    RefreshTile(CurX, CurY, false);    
     if (CurX > 0 || CurY > 0) {
         if (--CurX < 0) { 
             --CurY;
             CurX += xSize;
         }
     }
-    DrawCurrentTile();
 }
 
 void LevMap::CurShiftDown(void) {
-    RefreshTile(CurX, CurY, false);    
     if (CurY < ySize-1) ++CurY;
-    DrawCurrentTile();
 }
 
 void LevMap::CurShiftUp(void) {
-    RefreshTile(CurX, CurY, false);    
     if (CurY > 0) --CurY;
-    DrawCurrentTile();
 }

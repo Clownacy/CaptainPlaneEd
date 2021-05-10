@@ -118,7 +118,6 @@ void SelRect::SelFinalize(int x, int y) {
     AdaptBounds();
     if (xSize > 0 && ySize > 0) {
         TakeSection();
-        SelDrawRect();
     }
 }
 
@@ -131,7 +130,6 @@ void SelRect::SelDrawRect() {
 /* re-draws the section on the map that was previously covered by the selection
    rectangle to remove its graphics */
 void SelRect::SelClearRect() {
-    LevelMap->DrawMapSection(xStart, yStart, xSize, ySize);
 }
 
 /* unselects the currently selected area */
