@@ -12,7 +12,7 @@ extern "C" {
 #endif
 
 #include <stdbool.h>
-#include <stdbdef.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -22,9 +22,9 @@ int ReadData(void);
 void WriteData(const unsigned char var);
 int SeekData(const int pos, const signed char seek);
 
-unsigned char *output_data;
-unsigned short output_size;
-unsigned short output_pos;
+static unsigned char *output_data;
+static unsigned short output_size;
+static unsigned short output_pos;
 
 long KidDec(const char* const srcfile, const char* const dstfile, const long Pointer) {
     FILE* rom = fopen(srcfile, "rb");
