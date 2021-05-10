@@ -102,7 +102,6 @@ void LevMap::SelectedTileDecrID(void) {
 void LevMap::SetTile(const uint8_t x, const uint8_t y) {
     if (CheckValidPos(x, y)) {
         MapData[y][x] = SelectedTile;
-        CurX = x; CurY = y;
     }
 }
 
