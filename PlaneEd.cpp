@@ -38,6 +38,8 @@
 Screen* MainScreen;
 Project* CurProject = NULL;
 
+static int mouse_x, mouse_y;
+
 int main(int argc, char* argv[])
 {
     // Create our window
@@ -56,9 +58,6 @@ int main(int argc, char* argv[])
     {
 	fclose(prjfile);
         CurProject = new Project(argv[1]);
-
-        // Process initial display
-        CurProject->Redraw();
     }
 #else
     if (prjfile == NULL)
@@ -68,9 +67,6 @@ int main(int argc, char* argv[])
     }
     fclose(prjfile);
     CurProject = new Project(argv[1]);
-
-    // Process initial display
-    CurProject->Redraw();
 #endif
 
     bool CtrlPress = false;
@@ -118,12 +114,11 @@ int main(int argc, char* argv[])
             {
 		if (CurProject != NULL)
 		{
+		    mouse_x = event.motion.x;
+		    mouse_y = event.motion.y;
+
                     if (SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(1))
                         CurProject->LevelMap->CheckSetTile(event.motion.x, event.motion.y);
-                    else {
-                        CurProject->LevelMap->RefreshTileScreen(event.motion.x - event.motion.xrel, event.motion.y - event.motion.yrel, true);
-                        CurProject->LevelMap->DrawSelectedTile(event.motion.x, event.motion.y);
-                    }
 		}
             }
             if (event.type == SDL_KEYDOWN)
@@ -445,6 +440,11 @@ int main(int argc, char* argv[])
 		    WinAPI::HandleWindowsEvent(&event);
 	    }
 #endif
+
+	    CurProject->LevelMap->DrawMap();
+	    CurProject->SelectionRect->SelDrawRect();
+	    CurProject->LevelMap->DrawCurrentTile();
+	    CurProject->LevelMap->DrawSelectedTile(mouse_x, mouse_y);
 
             MainScreen->ProcessDisplay();
         }
