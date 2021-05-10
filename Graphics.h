@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include <cstddef>
 #include <cstdint>
 #include <SDL2/SDL.h>
 
@@ -30,8 +31,8 @@ class Graphics
 {
 private:
     uint16_t (*palette)[16];
-    SDL_Texture**** tiles;    //surface data: [tile][pal][flip]
-    uint16_t**** tileData;   //pixel data: [tile][pal][flip][64]
+    SDL_Texture* tile_atlas;
+    std::size_t atlas_quadrant_dimension;
     uint8_t paletteLines;
     uint8_t currentPal;
     uint8_t selectorWidth;
@@ -49,9 +50,7 @@ public:
     ~Graphics(void);
     void ReadPalette(const char* const filename);
     void ReadTiles(const char* const filename);
-    void CreateTiles(void);
-    SDL_Texture* InitSurface(uint16_t* const pixelsT, int const width, const int height, const int bbp);
-    void DrawSurface(SDL_Texture* const img, SDL_Texture* const screen, const int x, const int y);
+    void DrawTileFromAtlas(const int tile_index, SDL_Texture* const screen, const int x, const int y, const int palette_line, bool x_flip, bool y_flip);
     void ClearMap(void);
     void ClearSelector(void);
     void DrawSelector(void);

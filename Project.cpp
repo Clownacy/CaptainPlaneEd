@@ -45,7 +45,6 @@ Project::Project(char* const parameter_filepath)
 
 	this->GfxStuff->ReadPalette(FILE_PAL_TEMP);
 	this->GfxStuff->ReadTiles(FILE_ART_TEMP);
-	this->GfxStuff->CreateTiles();
 
 	this->LevelMap->LoadMap(FILE_MAP_TEMP);
 

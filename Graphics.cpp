@@ -18,6 +18,8 @@
 	USA
 */
 
+#include <cmath>
+#include <cstddef>
 #include <algorithm>
 #include <SDL2/SDL.h>
 
@@ -42,8 +44,8 @@ Graphics::Graphics(const uint16_t xSize, const uint16_t tileOffset, const uint16
 	this->screenTileYOffset = 0;
 	this->screenTileXOffset = 0;
 	this->selTileYOffset = 0;
-	this->tiles = nullptr;
-	this->tileData = nullptr;
+	this->tile_atlas = nullptr;
+	this->atlas_quadrant_dimension = 0;
 	this->paletteLines = 0;
 	
 	/* calculate selector width */
@@ -63,6 +65,9 @@ Graphics::~Graphics(void)
 	WinAPI::SetMenuBarOptionChecked(false, MENUBAR_PALETTELINE3);
 	WinAPI::SetMenuBarOptionChecked(false, MENUBAR_PALETTELINE4);
 #endif
+
+	if (tile_atlas != nullptr)
+		SDL_DestroyTexture(tile_atlas);
 }
 
 void Graphics::ReadPalette(const char* const filename)
@@ -105,84 +110,92 @@ void Graphics::ReadTiles(const char* const filename)
 	if (tilefile==NULL)
 		MainScreen->ShowInternalError("Decompressed art file not found");
 
-	uint8_t tilebuffer[(8*8)/2]; //space for one tile
-	tileData = new uint16_t***[tileAmount];
-	for (int tile=0; tile < tileAmount; ++tile)
-	{
-		fread(tilebuffer, sizeof(uint8_t), (8*8)/2, tilefile);
-		tileData[tile] = new uint16_t**[paletteLines];
-		for (int pal_line=0; pal_line < paletteLines; ++pal_line)
-	{
-			tileData[tile][pal_line] = new uint16_t*[4];
-			for (int flip=0; flip < 4; ++flip)
-			{
-					tileData[tile][pal_line][flip] = new uint16_t[8*8];
-			}
-			for (int i=0; i < (8*8)/2; ++i)
-			{
-				// Normal tile
-				tileData[tile][pal_line][0][2*i]   = palette[pal_line][(tilebuffer[i] & 0xF0)>>4];
-				tileData[tile][pal_line][0][2*i+1] = palette[pal_line][(tilebuffer[i] & 0x0F)];
-				// X-flipped tile
-				tileData[tile][pal_line][1][8*(i/4)+7-2*(i%4)]   = palette[pal_line][(tilebuffer[i] & 0xF0)>>4];
-				tileData[tile][pal_line][1][8*(i/4)+7-2*(i%4)-1] = palette[pal_line][(tilebuffer[i] & 0x0F)];
-				// Y-flipped tile
-				tileData[tile][pal_line][2][56-8*(i/4)+2*(i%4)]   = palette[pal_line][(tilebuffer[i] & 0xF0)>>4];
-				tileData[tile][pal_line][2][56-8*(i/4)+2*(i%4)+1] = palette[pal_line][(tilebuffer[i] & 0x0F)];
-				// X-flipped + Y-flipped tile
-				tileData[tile][pal_line][3][63-2*i]   = palette[pal_line][(tilebuffer[i] & 0xF0)>>4];
-				tileData[tile][pal_line][3][63-2*i-1] = palette[pal_line][(tilebuffer[i] & 0x0F)];
-			}
-		}
-	}
-	fclose(tilefile);
-	remove(filename);
-}
+	// Here, we turn the tiles into a tile atlas, divided into four quadrants.
+	// Each quadrant is for a different palette line.
+	this->atlas_quadrant_dimension = std::ceil(std::sqrt(tileAmount)) * 8;
 
-void Graphics::CreateTiles(void)
-{
-	tiles = new SDL_Texture***[tileAmount];
-	for (int t=0; t < tileAmount; ++t)
-	{
-		tiles[t] = new SDL_Texture**[paletteLines];
-		for (int p=0; p < paletteLines; ++p)
-		{
-			tiles[t][p] = new SDL_Texture*[4];
-			for (int f=0; f < 4; ++f)
-			{
-				tiles[t][p][f] = InitSurface(tileData[t][p][f], 8, 8, 16);
-			}
-		}
-	}
-}
-
-SDL_Texture* Graphics::InitSurface(uint16_t* const pixelsT, const int width, const int height, const int bbp)
-{
-	void* const pixels = pixelsT;
-	SDL_Surface* surface = SDL_CreateRGBSurfaceFrom (pixels, width, height, bbp, width*((bbp+7)/8), 0x0F00, 0x00F0, 0x000F, 0xF000);
+	SDL_Surface* surface = SDL_CreateRGBSurface(0, this->atlas_quadrant_dimension * 2, this->atlas_quadrant_dimension * 2, 16, 0x0F00, 0x00F0, 0x000F, 0xF000);
 
 	if (surface == NULL)
 		MainScreen->ShowInternalError("Cannot make SDL Surface from tiles\n\n", SDL_GetError());
 
-	SDL_Texture* texture = SDL_CreateTextureFromSurface(MainScreen->renderer, surface);
+	for (int tile=0; tile < tileAmount; ++tile)
+	{
+		const std::size_t tile_x = (tile * 8) % this->atlas_quadrant_dimension;
+		const std::size_t tile_y = ((tile * 8) / this->atlas_quadrant_dimension) * (surface->pitch / 2 * 8);
 
-	if (texture == NULL)
+		uint16_t *tile_pixels = &((uint16_t*)surface->pixels)[tile_y + tile_x];
+
+		uint16_t *tile_pixels_row[4];
+		tile_pixels_row[0] = tile_pixels;
+		tile_pixels_row[1] = tile_pixels + this->atlas_quadrant_dimension; // Quadrant to the right
+		tile_pixels_row[2] = tile_pixels + (surface->pitch / 2) * this->atlas_quadrant_dimension; // Quadrant below
+		tile_pixels_row[3] = tile_pixels_row[2] + this->atlas_quadrant_dimension; // Quadrant below and to the right
+
+		for (std::size_t y = 0; y < 8; ++y)
+		{
+			for (std::size_t x = 0; x < 8; x += 2)
+			{
+				const unsigned char byte = fgetc(tilefile);
+				const unsigned char nibble1 = (byte >> 4) & 0xF;
+				const unsigned char nibble2 = byte & 0xF;
+
+				for (std::size_t i = 0; i < paletteLines; ++i)
+				{
+					tile_pixels_row[i][x] = palette[i][nibble1];
+					tile_pixels_row[i][x + 1] = palette[i][nibble2];
+				}
+			}
+
+			for (std::size_t i = 0; i < paletteLines; ++i)
+				tile_pixels_row[i] += this->atlas_quadrant_dimension * 2;
+		}
+	}
+
+	this->tile_atlas = SDL_CreateTextureFromSurface(MainScreen->renderer, surface);
+
+	if (this->tile_atlas == NULL)
 		MainScreen->ShowInternalError("Cannot make SDL Texture from tiles\n\n", SDL_GetError());
 
 	SDL_FreeSurface(surface);
 
-	return texture;
+	fclose(tilefile);
+	remove(filename);
 }
 
-void Graphics::DrawSurface(SDL_Texture* const img, SDL_Texture* const screen, const int x, const int y)
+void Graphics::DrawTileFromAtlas(const int tile_index, SDL_Texture* const screen, const int x, const int y, const int palette_line, bool x_flip, bool y_flip)
 {
 	SDL_SetRenderTarget(MainScreen->renderer, screen);
 
-	SDL_Rect RectTemp;
-	RectTemp.x = x;
-	RectTemp.y = y;
-	SDL_QueryTexture(img, NULL, NULL, &RectTemp.w, &RectTemp.h);
-	SDL_RenderCopy(MainScreen->renderer, img, NULL, &RectTemp);
+	// Construct source rectangle
+	SDL_Rect src_rect;
+	src_rect.x = (tile_index * 8) % this->atlas_quadrant_dimension;
+	src_rect.y = ((tile_index * 8) / this->atlas_quadrant_dimension) * 8;
+	src_rect.w = 8;
+	src_rect.h = 8;
+
+	// Construct destination rectangle
+	SDL_Rect dst_rect;
+	dst_rect.x = x;
+	dst_rect.y = y;
+	dst_rect.w = 8;
+	dst_rect.h = 8;
+
+	// The atlas is divided into quadrants, each representing a different palette line
+	if (palette_line & 1)
+		src_rect.x += this->atlas_quadrant_dimension;
+	if (palette_line & 2)
+		src_rect.y += this->atlas_quadrant_dimension;
+
+	// Handle flipping
+	int flip = SDL_FLIP_NONE;
+	if (x_flip)
+		flip |= SDL_FLIP_HORIZONTAL;
+	if (y_flip)
+		flip |= SDL_FLIP_VERTICAL;
+
+	// Finally render
+	SDL_RenderCopyEx(MainScreen->renderer, this->tile_atlas, &src_rect, &dst_rect, 0.0, nullptr, (SDL_RendererFlip)flip);
 }
 
 void Graphics::ClearMap(void)
@@ -215,7 +228,7 @@ void Graphics::DrawSelector(void)
 {
 	ClearSelector();
 	for (int i=0; i < tileAmount; ++i)
-		DrawSurface(tiles[i][currentPal][0], MainScreen->texture, selXMin + 8*(i%selectorWidth), 8*(i/selectorWidth - selTileYOffset));
+		DrawTileFromAtlas(i, MainScreen->texture, selXMin + 8*(i%selectorWidth), 8*(i/selectorWidth - selTileYOffset), currentPal, false, false);
 }
 
 /* map coords */
@@ -234,7 +247,7 @@ void Graphics::DrawTileSingle(int x, int y, const Tile* const tile)
 			}
 			else if ((tile->tileID || !this->tileOffset) && tile->paletteLine < paletteLines)
 			{
-				DrawSurface(tiles[(tile->tileID) - tileOffset][tile->paletteLine][tile->xFlip | (tile->yFlip<<1)], MainScreen->texture, 8*x, 8*y);
+				DrawTileFromAtlas((tile->tileID) - tileOffset, MainScreen->texture, 8*x, 8*y, tile->paletteLine, tile->xFlip, tile->yFlip);
 			}
 			else
 			{
