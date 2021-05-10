@@ -18,9 +18,9 @@
     USA
 */
 
-#include <string.h>
-
 #include "TxtRead.h"
+
+#include <string.h>
 
 struct
 {

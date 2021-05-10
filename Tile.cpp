@@ -18,10 +18,10 @@
     USA
 */
 
+#include "Tile.h"
+
 #include <stdint.h>
 #include <stdio.h>
-
-#include "Tile.h"
 
 Tile::Tile(void)
 {

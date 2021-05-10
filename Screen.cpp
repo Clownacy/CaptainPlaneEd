@@ -18,6 +18,8 @@
 	USA
 */
 
+#include "Screen.h"
+
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
@@ -25,7 +27,6 @@
 
 #include "SDL.h"
 
-#include "Screen.h"
 #ifdef _WIN32
 #include "WinAPI.h"
 #include <windows.h>

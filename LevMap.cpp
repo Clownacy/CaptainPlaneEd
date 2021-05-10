@@ -18,11 +18,12 @@
 	USA
 */
 
+#include "LevMap.h"
+
 #include <stdint.h>
 
 #include "Common.h"
 #include "Graphics.h"
-#include "LevMap.h"
 
 LevMap::LevMap(uint8_t xSize, uint8_t ySize, Graphics *GfxStuff)
 {

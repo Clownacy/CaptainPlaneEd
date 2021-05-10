@@ -18,9 +18,10 @@
     USA
 */
 
+#include "Project.h"
+
 #include "Common.h"
 #include "LevMap.h"
-#include "Project.h"
 #include "PrjHndl.h"
 #include "Screen.h"
 #include "SelRect.h"

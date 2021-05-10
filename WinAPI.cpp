@@ -17,6 +17,8 @@
     USA
 */
 
+#include "WinAPI.h"
+
 #include <windows.h>
 
 #include "SDL.h"
@@ -24,7 +26,6 @@
 
 #include "Common.h"
 #include "PrjHndl.h"
-#include "WinAPI.h"
 
 namespace WinAPI
 {

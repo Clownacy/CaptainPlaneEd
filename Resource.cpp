@@ -18,13 +18,14 @@
 	USA
 */
 
+#include "Resource.h"
+
 #include <string.h>
 #include <fstream>
 
 #include "Common.h"
 #include "PrjHndl.h"
 #include "TxtRead.h"
-#include "Resource.h"
 
 #include "compression/KidDec.h"
 #include "compression/ReadPlain.h"

@@ -18,12 +18,13 @@
 	USA
 */
 
+#include "PrjHndl.h"
+
 #include <string.h>
 #include <fstream>
 #include <unistd.h>
 
 #include "Common.h"
-#include "PrjHndl.h"
 #include "TxtRead.h"
 #include "Resource.h"
 #ifdef _WIN32

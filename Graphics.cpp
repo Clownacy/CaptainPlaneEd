@@ -18,6 +18,8 @@
 	USA
 */
 
+#include "Graphics.h"
+
 #include <math.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -26,7 +28,6 @@
 #include "SDL.h"
 
 #include "Common.h"
-#include "Graphics.h"
 #include "Screen.h"
 #ifdef _WIN32
 #include "WinAPI.h"

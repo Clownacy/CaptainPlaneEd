@@ -18,9 +18,9 @@
 	USA
 */
 
-#include <string.h>
-
 #include "SelRect.h"
+
+#include <string.h>
 
 Graphics* SelRect::GfxStuff = nullptr;
 LevMap* SelRect::LevelMap = nullptr;
