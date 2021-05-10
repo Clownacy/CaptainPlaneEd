@@ -289,19 +289,14 @@ void Graphics::DrawTileFullColor(const int x, const int y, const unsigned char r
 	SDL_RenderFillRect(MainScreen->renderer, &RectTemp);
 }
 
-void Graphics::DrawTileInvalid(const int x, const int y)
+void Graphics::DrawTileInvalid(int x, int y)
 {
 	SDL_SetRenderTarget(MainScreen->renderer, MainScreen->texture);
 
-	// TODO - restore the cross effect
 	//PosTileToScreen(&x, &y);
-	SDL_Rect rect;
-	rect.x = x;
-	rect.y = y;
-	rect.w = 8;
-	rect.h = 8;
 	SDL_SetRenderDrawColor(MainScreen->renderer, 0xE0, 0xB0, 0xD0, 0xFF);
-	SDL_RenderDrawRect(MainScreen->renderer, &rect);
+	SDL_RenderDrawLine(MainScreen->renderer, 8*x, 8*y, 8*x+7, 8*y+7);
+	SDL_RenderDrawLine(MainScreen->renderer, 8*x, 8*y+7, 8*x+7, 8*y);
 }
 
 void Graphics::SetCurrentPal(const uint8_t currentPal)
