@@ -1,21 +1,21 @@
 /*
-    Copyright (C) 2009-2011 qiuu
-    Copyright (C) 2016 Clownacy
+	Copyright (C) 2009-2011 qiuu
+	Copyright (C) 2016 Clownacy
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+	This library is free software; you can redistribute it and/or
+	modify it under the terms of the GNU Lesser General Public
+	License as published by the Free Software Foundation; either
+	version 2.1 of the License, or (at your option) any later version.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+	This library is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+	Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
-    USA
+	You should have received a copy of the GNU Lesser General Public
+	License along with this library; if not, write to the Free Software
+	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+	USA
 */
 
 #include <cstdio>
@@ -76,8 +76,8 @@ void Screen::ProcessDisplay(void)
 {
 	if (this->upscaled_texture != nullptr)
 	{
-	    SDL_SetRenderTarget(this->renderer, this->upscaled_texture);
-	    SDL_RenderCopy(this->renderer, this->texture, nullptr, nullptr);
+		SDL_SetRenderTarget(this->renderer, this->upscaled_texture);
+		SDL_RenderCopy(this->renderer, this->texture, nullptr, nullptr);
 	}
 
 	SDL_SetRenderTarget(this->renderer, NULL);
@@ -106,19 +106,19 @@ void Screen::WindowResized(int width, int height)
 
 	if (new_upscale_factor != upscale_factor)
 	{
-	    upscale_factor = new_upscale_factor;
+		upscale_factor = new_upscale_factor;
 
-	    if (this->upscaled_texture != nullptr)
-	    {
-		SDL_DestroyTexture(this->upscaled_texture);
-		this->upscaled_texture = nullptr;
-	    }
+		if (this->upscaled_texture != nullptr)
+		{
+			SDL_DestroyTexture(this->upscaled_texture);
+			this->upscaled_texture = nullptr;
+		}
 
-	    if (upscale_factor != 1)
-	    {
-		SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
-		this->upscaled_texture = SDL_CreateTexture(this->renderer, SDL_PIXELFORMAT_RGB24, SDL_TEXTUREACCESS_TARGET, SCREEN_WIDTH * upscale_factor, SCREEN_HEIGHT * upscale_factor);
-	    }
+		if (upscale_factor != 1)
+		{
+			SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
+			this->upscaled_texture = SDL_CreateTexture(this->renderer, SDL_PIXELFORMAT_RGB24, SDL_TEXTUREACCESS_TARGET, SCREEN_WIDTH * upscale_factor, SCREEN_HEIGHT * upscale_factor);
+		}
 	}
 }
 
