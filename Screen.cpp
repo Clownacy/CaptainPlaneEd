@@ -69,7 +69,7 @@ Screen::Screen(void)
 void Screen::ProcessDisplay(void)
 {
 	SDL_SetRenderTarget(this->renderer, NULL);
-	SDL_SetRenderDrawColor(MainScreen->renderer, 0, 0, 0, 0xFF);
+	SDL_SetRenderDrawColor(this->renderer, 0, 0, 0, 0xFF);
 	SDL_RenderClear(this->renderer);
 	SDL_RenderCopy(this->renderer, this->texture, NULL, NULL);
 
