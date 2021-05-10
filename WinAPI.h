@@ -47,7 +47,7 @@ namespace WinAPI
 extern HMENU hSubMenu_File;
 extern HMENU hSubMenu_View;
 
-extern void SaveHWND(const SDL_Window *window);
+extern void SaveHWND(SDL_Window *window);
 extern void CreateMenuBar(void);
 extern void HandleWindowsEvent(const SDL_Event *event);
 extern bool OpenProjectFilePrompt(char **filepath);

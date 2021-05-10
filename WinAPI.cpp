@@ -37,7 +37,7 @@ static HWND hWnd;
 static HMENU hMenu;
 static COLORREF custom_colours[16];
 
-void SaveHWND(const SDL_Window *window)
+void SaveHWND(SDL_Window *window)
 {
 	SDL_SysWMinfo info;
 	SDL_VERSION(&info.version)
