@@ -4,7 +4,3 @@ Figure out where that line of colour on the right is coming from
 Smooth upscaling
 
 Optimise events
-
-Remove that useless paramter
-
-file should include their headers

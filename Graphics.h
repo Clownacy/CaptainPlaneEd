@@ -23,8 +23,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "SDL.h"
-
 #include "Screen.h"
 #include "Tile.h"
 
@@ -51,7 +49,7 @@ public:
     ~Graphics(void);
     void ReadPalette(const char *filename);
     void ReadTiles(const char *filename);
-    void DrawTileFromAtlas(int tile_index, SDL_Texture *screen, int x, int y, int palette_line, bool x_flip, bool y_flip);
+    void DrawTileFromAtlas(int tile_index, int x, int y, int palette_line, bool x_flip, bool y_flip);
     void ClearMap(void);
     void ClearSelector(void);
     void DrawSelector(void);

@@ -168,9 +168,9 @@ void Graphics::ReadTiles(const char *filename)
 	remove(filename);
 }
 
-void Graphics::DrawTileFromAtlas(int tile_index, SDL_Texture *screen, int x, int y, int palette_line, bool x_flip, bool y_flip)
+void Graphics::DrawTileFromAtlas(int tile_index, int x, int y, int palette_line, bool x_flip, bool y_flip)
 {
-	SDL_SetRenderTarget(MainScreen->renderer, screen);
+	SDL_SetRenderTarget(MainScreen->renderer, MainScreen->texture);
 
 	// Construct source rectangle
 	SDL_Rect src_rect;
@@ -233,7 +233,7 @@ void Graphics::DrawSelector(void)
 {
 	ClearSelector();
 	for (int i = 0; i < tileAmount; ++i)
-		DrawTileFromAtlas(i, MainScreen->texture, selXMin + 8 * (i % selectorWidth), 8 * (i / selectorWidth - selTileYOffset), currentPal, false, false);
+		DrawTileFromAtlas(i, selXMin + 8 * (i % selectorWidth), 8 * (i / selectorWidth - selTileYOffset), currentPal, false, false);
 }
 
 /* map coords */
@@ -252,7 +252,7 @@ void Graphics::DrawTileSingle(int x, int y, const Tile *tile)
 			}
 			else if ((tile->tileID || !this->tileOffset) && tile->paletteLine < paletteLines)
 			{
-				DrawTileFromAtlas((tile->tileID) - tileOffset, MainScreen->texture, x * 8, y * 8, tile->paletteLine, tile->xFlip, tile->yFlip);
+				DrawTileFromAtlas((tile->tileID) - tileOffset, x * 8, y * 8, tile->paletteLine, tile->xFlip, tile->yFlip);
 			}
 			else
 			{
