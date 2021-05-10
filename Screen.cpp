@@ -92,6 +92,8 @@ void Screen::ProcessDisplay(void)
 
 void Screen::Clear(void)
 {
+	SDL_SetRenderTarget(this->renderer, this->texture);
+
 	SDL_SetRenderDrawColor(this->renderer, this->background_colour.r, this->background_colour.g, this->background_colour.b, this->background_colour.a);
 	SDL_RenderFillRect(this->renderer, nullptr);
 }
