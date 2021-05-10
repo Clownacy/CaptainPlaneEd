@@ -1,6 +1,6 @@
 NAME	= CaptainPlaneEd
 GCC	= g++
-CXXFLAGS	= `sdl2-config --cflags` -O3 -s -std=c++14 -Wall -Wextra -fno-ident
+CXXFLAGS	= `sdl2-config --cflags` -O2 -s -std=c++14 -Wall -Wextra -pedantic -fno-ident
 ifeq ($(OS),Windows_NT)
   CXXFLAGS	+= -static
 endif
