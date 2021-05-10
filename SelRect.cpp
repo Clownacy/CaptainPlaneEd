@@ -146,8 +146,8 @@ void SelRect::Kill() {
                 delete MapData[y][x];
             }
         }
-        for (int y=0; y < ySize; ++y) delete MapData[y];
-        delete MapData;
+        for (int y=0; y < ySize; ++y) delete[] MapData[y];
+        delete[] MapData;
         MapData = NULL;
     }
 }
