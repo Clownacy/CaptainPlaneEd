@@ -94,6 +94,7 @@ void Screen::ProcessDisplay(void)
 	SDL_LockTexture(this->texture, NULL, &this->surface->pixels, &this->surface->pitch);
 
 	SDL_SetRenderTarget(this->renderer, NULL);				// Render to screen...
+	SDL_RenderClear(this->renderer);
 	SDL_RenderCopy(this->renderer, this->upscaled_texture, NULL, NULL);	// ...and upscale/downscale using 'linear'
 
 	SDL_RenderPresent(this->renderer);
