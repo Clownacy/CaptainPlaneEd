@@ -45,7 +45,7 @@ Screen::Screen(void)
 
 	atexit(SDL_Quit);
 
-	this->window = SDL_CreateWindow("Captain PlaneEd v1.1", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, ADJUSTED_SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+	this->window = SDL_CreateWindow("Captain PlaneEd v1.1.0.1", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, ADJUSTED_SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 	if (this->window == nullptr)
 		this->ShowInternalError("Unable to init SDL Window\n\n", SDL_GetError());
 
