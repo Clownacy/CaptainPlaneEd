@@ -60,7 +60,11 @@ Screen::Screen(void)
 	if (this->texture == nullptr)
 		this->ShowInternalError("Unable to init screen SDL Texture\n\n", SDL_GetError());
 
-	this->upscaled_texture = nullptr;
+	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
+	this->upscaled_texture = SDL_CreateTexture(this->renderer, SDL_PIXELFORMAT_RGB24, SDL_TEXTUREACCESS_TARGET, SCREEN_WIDTH, SCREEN_HEIGHT);
+	if (this->upscaled_texture == nullptr)
+		this->ShowInternalError("Unable to init upscaled screen SDL Texture\n\n", SDL_GetError());
+
 
 	this->background_colour.r = 0;
 	this->background_colour.g = 0;
@@ -76,11 +80,8 @@ Screen::Screen(void)
 
 void Screen::ProcessDisplay(void)
 {
-	if (this->upscaled_texture != nullptr)
-	{
-		SDL_SetRenderTarget(this->renderer, this->upscaled_texture);
-		SDL_RenderCopy(this->renderer, this->texture, nullptr, nullptr);
-	}
+	SDL_SetRenderTarget(this->renderer, this->upscaled_texture);
+	SDL_RenderCopy(this->renderer, this->texture, nullptr, nullptr);
 
 	SDL_SetRenderTarget(this->renderer, nullptr);
 	SDL_SetRenderDrawColor(this->renderer, 0, 0, 0, 0xFF);
@@ -112,17 +113,10 @@ void Screen::WindowResized(int width, int height)
 	{
 		upscale_factor = new_upscale_factor;
 
-		if (this->upscaled_texture != nullptr)
-		{
-			SDL_DestroyTexture(this->upscaled_texture);
-			this->upscaled_texture = nullptr;
-		}
+		SDL_DestroyTexture(this->upscaled_texture);
 
-		if (upscale_factor != 1)
-		{
-			SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
-			this->upscaled_texture = SDL_CreateTexture(this->renderer, SDL_PIXELFORMAT_RGB24, SDL_TEXTUREACCESS_TARGET, SCREEN_WIDTH * upscale_factor, SCREEN_HEIGHT * upscale_factor);
-		}
+		SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
+		this->upscaled_texture = SDL_CreateTexture(this->renderer, SDL_PIXELFORMAT_RGB24, SDL_TEXTUREACCESS_TARGET, SCREEN_WIDTH * upscale_factor, SCREEN_HEIGHT * upscale_factor);
 	}
 }
 
