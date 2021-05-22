@@ -96,12 +96,17 @@ int main(int argc, char **argv)
 					if (CurProject != nullptr)
 					{
 						CurProject->SelectionRect->Unselect();
+
 						//Checks if within selector bounds and selects tile
 						CurProject->LevelMap->CheckClickTile(event.button.x, event.button.y);
+
 						if (event.button.button == SDL_BUTTON_LEFT)
+						{
 							//Checks if valid map position and sets tile
 							CurProject->LevelMap->CheckSetTile(event.button.x, event.button.y);
-						else if (event.button.button == SDL_BUTTON_RIGHT) {
+						}
+						else if (event.button.button == SDL_BUTTON_RIGHT)
+						{
 							//Checks if valid map position and selects tile
 							CurProject->LevelMap->CheckSelectTile(event.button.x, event.button.y);
 							CurProject->SelectionRect->SelInit(event.button.x, event.button.y);
