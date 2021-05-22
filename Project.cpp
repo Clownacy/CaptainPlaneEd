@@ -86,3 +86,10 @@ void Project::Save(void)
 	this->PrjData->map.Save(FILE_MAP_TEMP, this->PrjData->map.saveName);
 	MainScreen->ShowInformation("Save complete");
 }
+
+void Project::Redraw(void)
+{
+	this->LevelMap->DrawMap();
+	this->GfxStuff->DrawSelector();
+	this->SelectionRect->SelDrawRect();
+}

@@ -37,4 +37,5 @@ public:
 	Project(const char *parameter_filepath);
 	~Project(void);
 	void Save(void);
+	void Redraw(void);
 };

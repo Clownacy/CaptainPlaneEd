@@ -303,10 +303,10 @@ int main(int argc, char **argv)
 								CurProject->Save();
 							break;
 
-						/*case SDLK_F10: //redraw whole screen
+						case SDLK_F10: //redraw whole screen
 							if (CurProject != nullptr)
 								CurProject->Redraw();
-							break;*/
+							break;
 
 						case SDLK_BACKSPACE:
 							if (CurProject != nullptr)
