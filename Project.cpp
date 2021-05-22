@@ -92,4 +92,5 @@ void Project::Redraw(void)
 	this->LevelMap->DrawMap();
 	this->GfxStuff->DrawSelector();
 	this->SelectionRect->SelDrawRect();
+	this->LevelMap->DrawCurrentTile();
 }
