@@ -463,15 +463,12 @@ int main(int argc, char **argv)
 			}
 
 			// Redraw everything
-			if (CurProject != nullptr)
-			{
-				CurProject->LevelMap->DrawMap();
-				CurProject->GfxStuff->DrawSelector();
-				CurProject->SelectionRect->SelDrawRect();
+			CurProject->LevelMap->DrawMap();
+			CurProject->GfxStuff->DrawSelector();
+			CurProject->SelectionRect->SelDrawRect();
 
-				CurProject->LevelMap->DrawCurrentTile();
-				CurProject->LevelMap->DrawSelectedTile(mouse_x, mouse_y);
-			}
+			CurProject->LevelMap->DrawCurrentTile();
+			CurProject->LevelMap->DrawSelectedTile(mouse_x, mouse_y);
 
 			MainScreen->ProcessDisplay();
 		}
