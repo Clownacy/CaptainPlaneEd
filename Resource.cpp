@@ -36,7 +36,7 @@
 #include "compression/FW_KENSC/saxman.h"
 #include "compression/FW_KENSC/rocket.h"
 
-static const char* const FILE_MAP_DEFAULT = "MapDefault.bin";
+#define FILE_MAP_DEFAULT "MapDefault.bin"
 
 Resource::Resource(void)
 {
@@ -229,7 +229,7 @@ void ResourceMap::Load(const char *filename)
 		}
 		else
 		{
-			MainScreen->ShowInformation("This tool cannot overwrite a ROM; plane map will be saved to ", FILE_MAP_DEFAULT);
+			MainScreen->ShowInformation("This tool cannot overwrite a ROM; plane map will be saved to " FILE_MAP_DEFAULT);
 			strcpy(this->saveName, FILE_MAP_DEFAULT); //write to default file
 		}
 	}
