@@ -234,6 +234,8 @@ void Graphics::DrawSelector(void)
 	ClearSelector();
 	for (int i = 0; i < tileAmount; ++i)
 		DrawTileFromAtlas(i, selXMin + 8 * (i % selectorWidth), 8 * (i / selectorWidth - selTileYOffset), currentPal, false, false);
+	//SDL_Flip(screen);
+	MainScreen->ProcessDisplay();
 }
 
 /* map coords */
