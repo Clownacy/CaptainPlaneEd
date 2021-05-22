@@ -71,6 +71,8 @@ Screen::Screen(void)
 	this->background_colour.b = 0;
 	this->background_colour.a = 0xFF;
 
+	this->display_changed = false;
+
 #ifdef _WIN32
 	// Windows-only crap to generate a menu bar
 	WinAPI::SaveHWND(this->window);
@@ -78,21 +80,33 @@ Screen::Screen(void)
 #endif
 }
 
+void Screen::MarkDisplayChanged(void)
+{
+	this->display_changed = true;
+}
+
 void Screen::ProcessDisplay(void)
 {
-	SDL_SetRenderTarget(this->renderer, this->upscaled_texture);
-	SDL_RenderCopy(this->renderer, this->texture, nullptr, nullptr);
+	if (this->display_changed)
+	{
+		this->display_changed = false;
 
-	SDL_SetRenderTarget(this->renderer, nullptr);
-	SDL_SetRenderDrawColor(this->renderer, 0, 0, 0, 0xFF);
-	SDL_RenderClear(this->renderer);
-	SDL_RenderCopy(this->renderer, this->upscaled_texture != nullptr ? this->upscaled_texture : this->texture, nullptr, nullptr);
+		SDL_SetRenderTarget(this->renderer, this->upscaled_texture);
+		SDL_RenderCopy(this->renderer, this->texture, nullptr, nullptr);
 
-	SDL_RenderPresent(this->renderer);
+		SDL_SetRenderTarget(this->renderer, nullptr);
+		SDL_SetRenderDrawColor(this->renderer, 0, 0, 0, 0xFF);
+		SDL_RenderClear(this->renderer);
+		SDL_RenderCopy(this->renderer, this->upscaled_texture != nullptr ? this->upscaled_texture : this->texture, nullptr, nullptr);
+
+		SDL_RenderPresent(this->renderer);
+	}
 }
 
 void Screen::Clear(void)
 {
+	this->MarkDisplayChanged();
+
 	SDL_SetRenderTarget(this->renderer, this->texture);
 
 	SDL_SetRenderDrawColor(this->renderer, this->background_colour.r, this->background_colour.g, this->background_colour.b, this->background_colour.a);
@@ -101,6 +115,8 @@ void Screen::Clear(void)
 
 void Screen::WindowResized(int width, int height)
 {
+	this->MarkDisplayChanged();
+
 	static unsigned int upscale_factor;
 
 #ifdef _WIN32

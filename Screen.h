@@ -32,6 +32,7 @@ public:
 	SDL_Color background_colour;
 
 	Screen(void);
+	void MarkDisplayChanged(void);
 	void ProcessDisplay(void);
 	void Clear(void);
 	void WindowResized(int width, int height);
@@ -51,4 +52,5 @@ private:
 	SDL_Renderer *renderer;
 	SDL_Texture *upscaled_texture;
 	SDL_Texture *texture;
+	bool display_changed;
 };

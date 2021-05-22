@@ -170,6 +170,8 @@ void Graphics::ReadTiles(const char *filename)
 
 void Graphics::DrawTileFromAtlas(int tile_index, int x, int y, int palette_line, bool x_flip, bool y_flip)
 {
+	MainScreen->MarkDisplayChanged();
+
 	SDL_SetRenderTarget(MainScreen->renderer, MainScreen->texture);
 
 	// Construct source rectangle
@@ -205,6 +207,8 @@ void Graphics::DrawTileFromAtlas(int tile_index, int x, int y, int palette_line,
 
 void Graphics::ClearMap(void)
 {
+	MainScreen->MarkDisplayChanged();
+
 	SDL_SetRenderTarget(MainScreen->renderer, MainScreen->texture);
 
 	SDL_Rect RectTemp;
@@ -218,6 +222,8 @@ void Graphics::ClearMap(void)
 
 void Graphics::ClearSelector(void)
 {
+	MainScreen->MarkDisplayChanged();
+
 	SDL_SetRenderTarget(MainScreen->renderer, MainScreen->texture);
 
 	SDL_Rect RectTemp;
@@ -285,6 +291,8 @@ void Graphics::DrawTileBlank(int x, int y, const Tile *tile)
 
 void Graphics::DrawTileFullColor(int x, int y, unsigned char red, unsigned char green, unsigned char blue)
 {
+	MainScreen->MarkDisplayChanged();
+
 	SDL_SetRenderTarget(MainScreen->renderer, MainScreen->texture);
 
 	SDL_Rect RectTemp;
@@ -298,6 +306,8 @@ void Graphics::DrawTileFullColor(int x, int y, unsigned char red, unsigned char 
 
 void Graphics::DrawTileInvalid(int x, int y)
 {
+	MainScreen->MarkDisplayChanged();
+
 	SDL_SetRenderTarget(MainScreen->renderer, MainScreen->texture);
 
 	//PosTileToScreen(&x, &y);
@@ -321,6 +331,8 @@ void Graphics::SetCurrentPal(const uint8_t currentPal)
 /* map coords */
 void Graphics::DrawRect(int x, int y)
 {
+	MainScreen->MarkDisplayChanged();
+
 	SDL_SetRenderTarget(MainScreen->renderer, MainScreen->texture);
 
 	PosTileToScreen(&x, &y);
@@ -336,6 +348,8 @@ void Graphics::DrawRect(int x, int y)
 /* map coords */
 void Graphics::DrawFreeRect(int x, int y, int xSize, int ySize)
 {
+	MainScreen->MarkDisplayChanged();
+
 	SDL_SetRenderTarget(MainScreen->renderer, MainScreen->texture);
 
 	PosTileToScreen(&x, &y);
