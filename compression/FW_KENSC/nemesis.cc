@@ -30,6 +30,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <limits>
 
 #include "nemesis.h"
 #include "bigendian_io.h"
@@ -205,7 +206,8 @@ public:
 using NodeVector = vector<shared_ptr<node> >;
 
 struct Compare_size {
-	bool operator()(SizeFreqNibble const &lhs, SizeFreqNibble const &rhs) noexcept {
+	bool operator()(SizeFreqNibble const &lhs, SizeFreqNibble const &rhs) const
+        noexcept {
 		if (lhs.codelen < rhs.codelen) {
 			return true;
 		} else if (lhs.codelen > rhs.codelen) {
