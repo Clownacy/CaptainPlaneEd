@@ -226,7 +226,6 @@ void LevMap::CheckClickTile(int x, int y)
 }
 
 /* map coords */
-<<<<<<< HEAD
 bool LevMap::CheckValidPos(int x, int y)
 {
 	if (y<ySize && x<xSize && x>=0 && y>=0)
