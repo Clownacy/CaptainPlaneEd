@@ -85,6 +85,7 @@ void HandleWindowsEvent(const SDL_Event *event)
 
 					//Process initial display
 					MainScreen->Clear();
+					CurProject->Redraw();
 				}
 				delete[] filename;
 				break;
@@ -120,27 +121,33 @@ void HandleWindowsEvent(const SDL_Event *event)
 					MainScreen->background_colour.g = GetGValue(user_colour.rgbResult);
 					MainScreen->background_colour.b = GetBValue(user_colour.rgbResult);
 					MainScreen->Clear();
+					if (CurProject != NULL)
+						CurProject->Redraw();
 				}
 				break;
 			}
 			case MENUBAR_PALETTELINE1:
 			{
 				CurProject->LevelMap->SetPalCurrent(0);
+				CurProject->GfxStuff->DrawSelector();
 				break;
 			}
 			case MENUBAR_PALETTELINE2:
 			{
 				CurProject->LevelMap->SetPalCurrent(1);
+				CurProject->GfxStuff->DrawSelector();
 				break;
 			}
 			case MENUBAR_PALETTELINE3:
 			{
 				CurProject->LevelMap->SetPalCurrent(2);
+				CurProject->GfxStuff->DrawSelector();
 				break;
 			}
 			case MENUBAR_PALETTELINE4:
 			{
 				CurProject->LevelMap->SetPalCurrent(3);
+				CurProject->GfxStuff->DrawSelector();
 				break;
 			}
 		}
