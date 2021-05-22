@@ -40,7 +40,10 @@ public:
     void LoadMap(const char *filename);
     void SaveMap(const char *filename);
     void DrawMap(void);
+    void DrawMapSection(const int xStart, const int yStart, const int xSize, const int ySize);
     void DrawCurrentTile(void);
+    void RefreshTile(uint8_t x, uint8_t y, bool curFlag);
+    void RefreshTileScreen(int x, int y, bool curFlag);
     void DrawSelectedTile(int x, int y);
     void SelectTile(int ID);
     void SelectedTileIncrID(void);

@@ -150,7 +150,10 @@ void SelRect::SelFinalize(int x, int y)
 	AdaptBounds();
 
 	if (xSize > 0 && ySize > 0)
+	{
 		TakeSection();
+		SelDrawRect();
+	}
 }
 
 /* draws the rectangle on screen */
@@ -164,7 +167,7 @@ void SelRect::SelDrawRect(void)
    rectangle to remove its graphics */
 void SelRect::SelClearRect(void)
 {
-	// TODO - I guess get rid of this
+	LevelMap->DrawMapSection(xStart, yStart, xSize, ySize);
 }
 
 /* unselects the currently selected area */
