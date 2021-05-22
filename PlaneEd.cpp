@@ -140,7 +140,7 @@ int main(int argc, char **argv)
 							}
 							else
 							{
-								static int previous_mouse_x, previous_mouse_y;
+								static Sint32 previous_mouse_x, previous_mouse_y;
 
 								CurProject->LevelMap->RefreshTileScreen(previous_mouse_x, previous_mouse_y, true);
 								CurProject->LevelMap->DrawSelectedTile(event.motion.x, event.motion.y);
