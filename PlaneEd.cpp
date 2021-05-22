@@ -527,7 +527,6 @@ int main(int argc, char **argv)
 
 			// Redraw everything
 			CurProject->LevelMap->DrawMap();
-			CurProject->GfxStuff->DrawSelector();
 			CurProject->SelectionRect->SelDrawRect();
 
 			CurProject->LevelMap->DrawCurrentTile();
