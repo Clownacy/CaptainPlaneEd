@@ -1,15 +1,15 @@
 # Variables
-DEBUG = 0
-WINDOWS = 0
+DEBUG := 0
+WINDOWS := 0
 
 ifeq ($(OS),Windows_NT)
-  WINDOWS = 1
+  WINDOWS := 1
 endif
 
 # Constants
-NAME = CaptainPlaneEd
+NAME := CaptainPlaneEd
 
-CXXFLAGS = `pkg-config --cflags sdl2` -std=c++14 -Wall -Wextra -pedantic
+CXXFLAGS := `pkg-config --cflags sdl2` -std=c++14 -Wall -Wextra -pedantic
 
 ifeq ($(DEBUG),1)
   CXXFLAGS += -Og -ggdb3 -fsanitize=address
@@ -22,17 +22,17 @@ ifeq ($(WINDOWS),1)
 endif
 
 ifeq ($(WINDOWS),1)
-  LIBS = `pkg-config --static --libs sdl2`
+  LIBS := `pkg-config --static --libs sdl2`
 else
-  LIBS = `pkg-config --libs sdl2`
+  LIBS := `pkg-config --libs sdl2`
 endif
 
-OBJDIR = ./build
+OBJDIR := ./build
 
 # Source files
 
 # CaptainPlaneEd
-OBJECTS = $(OBJDIR)/PlaneEd.cpp.o $(OBJDIR)/TxtRead.cpp.o $(OBJDIR)/PrjHndl.cpp.o $(OBJDIR)/Tile.cpp.o $(OBJDIR)/Graphics.cpp.o $(OBJDIR)/LevMap.cpp.o $(OBJDIR)/SelRect.cpp.o $(OBJDIR)/Resource.cpp.o $(OBJDIR)/Screen.cpp.o $(OBJDIR)/Project.cpp.o
+OBJECTS := $(OBJDIR)/PlaneEd.cpp.o $(OBJDIR)/TxtRead.cpp.o $(OBJDIR)/PrjHndl.cpp.o $(OBJDIR)/Tile.cpp.o $(OBJDIR)/Graphics.cpp.o $(OBJDIR)/LevMap.cpp.o $(OBJDIR)/SelRect.cpp.o $(OBJDIR)/Resource.cpp.o $(OBJDIR)/Screen.cpp.o $(OBJDIR)/Project.cpp.o
 
 # Windows stuff
 ifeq ($(WINDOWS),1)
