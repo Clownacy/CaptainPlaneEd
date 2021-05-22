@@ -39,8 +39,6 @@
 Screen *MainScreen;
 Project *CurProject = nullptr;
 
-static int mouse_x, mouse_y;
-
 int main(int argc, char **argv)
 {
 	// Create our window
@@ -59,6 +57,9 @@ int main(int argc, char **argv)
 	{
 		fclose(prjfile);
 		CurProject = new Project(argv[1]);
+
+		// Process initial display
+		CurProject->Redraw();
 	}
 #else
 	if (prjfile == nullptr)
@@ -68,6 +69,9 @@ int main(int argc, char **argv)
 	}
 	fclose(prjfile);
 	CurProject = new Project(argv[1]);
+
+	// Process initial display
+	CurProject->Redraw();
 #endif
 
 	bool CtrlPress = false;
@@ -121,11 +125,15 @@ int main(int argc, char **argv)
 				case SDL_MOUSEMOTION:
 					if (CurProject != nullptr)
 					{
-						mouse_x = event.motion.x;
-						mouse_y = event.motion.y;
-
 						if (SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(1))
+						{
 							CurProject->LevelMap->CheckSetTile(event.motion.x, event.motion.y);
+						}
+						else
+						{
+							CurProject->LevelMap->RefreshTileScreen(event.motion.x - event.motion.xrel, event.motion.y - event.motion.yrel, true);
+							CurProject->LevelMap->DrawSelectedTile(event.motion.x, event.motion.y);
+						}
 					}
 
 					break;
@@ -524,13 +532,6 @@ int main(int argc, char **argv)
 					break;
 			#endif
 			}
-
-			// Redraw everything
-			CurProject->LevelMap->DrawMap();
-			CurProject->SelectionRect->SelDrawRect();
-
-			CurProject->LevelMap->DrawCurrentTile();
-			CurProject->LevelMap->DrawSelectedTile(mouse_x, mouse_y);
 
 			MainScreen->ProcessDisplay();
 		}
