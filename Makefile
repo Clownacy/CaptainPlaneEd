@@ -9,7 +9,7 @@ endif
 # Constants
 NAME := CaptainPlaneEd
 
-CXXFLAGS := `pkg-config --cflags sdl2` -std=c++14 -Wall -Wextra -pedantic
+CXXFLAGS := $(shell pkg-config --cflags sdl2) -std=c++14 -Wall -Wextra -pedantic
 
 ifeq ($(DEBUG),1)
   CXXFLAGS += -Og -ggdb3 -fsanitize=address
@@ -22,9 +22,9 @@ ifeq ($(WINDOWS),1)
 endif
 
 ifeq ($(WINDOWS),1)
-  LIBS := `pkg-config --static --libs sdl2`
+  LIBS := $(shell pkg-config --static --libs sdl2)
 else
-  LIBS := `pkg-config --libs sdl2`
+  LIBS := $(shell pkg-config --libs sdl2)
 endif
 
 OBJDIR := ./build
