@@ -131,8 +131,13 @@ int main(int argc, char **argv)
 						}
 						else
 						{
-							CurProject->LevelMap->RefreshTileScreen(event.motion.x - event.motion.xrel, event.motion.y - event.motion.yrel, true);
+							static int previous_mouse_x, previous_mouse_y;
+
+							CurProject->LevelMap->RefreshTileScreen(previous_mouse_x, previous_mouse_y, true);
 							CurProject->LevelMap->DrawSelectedTile(event.motion.x, event.motion.y);
+
+							previous_mouse_x = event.motion.x;
+							previous_mouse_y = event.motion.y;
 						}
 					}
 
