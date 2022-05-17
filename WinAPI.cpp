@@ -49,14 +49,14 @@ void CreateMenuBar(void)
 {
 	hMenu = CreateMenu();
 	hSubMenu_File = CreatePopupMenu();
-	AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu_File, "&File");
+	AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT_PTR)hSubMenu_File, "&File");
 	AppendMenu(hSubMenu_File, MF_STRING, MENUBAR_OPENPROJECT, "&Open");
 	AppendMenu(hSubMenu_File, MF_STRING | MF_GRAYED, MENUBAR_SAVE, "&Save");
 	AppendMenu(hSubMenu_File, MF_STRING | MF_GRAYED, MENUBAR_CLOSE, "&Close");
 	AppendMenu(hSubMenu_File, MF_SEPARATOR, 0, nullptr);
 	AppendMenu(hSubMenu_File, MF_STRING, MENUBAR_EXIT, "&Exit");
 	hSubMenu_View = CreatePopupMenu();
-	AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu_View, "&View");
+	AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT_PTR)hSubMenu_View, "&View");
 	AppendMenu(hSubMenu_View, MF_STRING, MENUBAR_BACKGROUNDCOLOUR, "&Background colour...");
 	AppendMenu(hSubMenu_View, MF_SEPARATOR, 0, nullptr);
 	AppendMenu(hSubMenu_View, MF_STRING | MF_GRAYED | MF_UNCHECKED, MENUBAR_PALETTELINE1, "Palette line &1");
