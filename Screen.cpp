@@ -40,12 +40,14 @@
 
 Screen::Screen(void)
 {
+	SDL_SetHint(SDL_HINT_WINDOWS_DPI_SCALING, "1");
+
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 		this->ShowInternalError("Unable to init SDL video\n\n", SDL_GetError());
 
 	atexit(SDL_Quit);
 
-	this->window = SDL_CreateWindow("Captain PlaneEd v1.1.0.1", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, ADJUSTED_SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+	this->window = SDL_CreateWindow("Captain PlaneEd v1.1.0.1", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, ADJUSTED_SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
 	if (this->window == nullptr)
 		this->ShowInternalError("Unable to init SDL Window\n\n", SDL_GetError());
 
