@@ -1,4 +1,2 @@
-/CaptainPlaneEd.exe
-/CaptainPlaneEd
-/SDL2.dll
+# Typical CMake build directory.
 /build
