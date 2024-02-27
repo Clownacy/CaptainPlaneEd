@@ -20,6 +20,7 @@
 
 #include "PrjHndl.h"
 
+#include <cassert>
 #include <string.h>
 #include <fstream>
 #include <unistd.h>
@@ -60,6 +61,10 @@ ProjectData::ProjectData(const char *prjtxt)
 void ProjectData::AssignInfo(infoType type, const char *content) {
 	switch (type)
 	{
+		case infoType::INFO_TYPE_AMOUNT:
+		case infoType::INVALID:
+			assert(false);
+			break;
 		case infoType::PALETTE_FILE:
 			strcpy(pal.name, content);
 			break;

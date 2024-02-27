@@ -20,6 +20,7 @@
 
 #include "Resource.h"
 
+#include <cassert>
 #include <string.h>
 #include <fstream>
 
@@ -58,6 +59,10 @@ long Resource::DecompressToFile(const char *dstfile)
 	int decompressed_length = 0;
 	switch (this->compression)
 	{
+		case comprType::COMPR_TYPE_AMOUNT:
+		case comprType::INVALID:
+			assert(false);
+			break;
 		case comprType::NONE:
 			decompressed_length = ReadPlain(this->name, dstfile, this->offset, this->length);
 			break;
@@ -83,6 +88,12 @@ long Resource::DecompressToFile(const char *dstfile)
 
 			switch (this->compression)
 			{
+				case comprType::NONE:
+				case comprType::KID_CHAMELEON:
+				case comprType::COMPR_TYPE_AMOUNT:
+				case comprType::INVALID:
+					assert(false);
+					break;
 				case comprType::ENIGMA:
 					enigma::decode(srcfile_stream, dstfile_stream);
 					break;
@@ -117,6 +128,10 @@ void Resource::CompressFile(const char *srcfile, const char *dstfile)
 {
 	switch (this->compression)
 	{
+		case comprType::COMPR_TYPE_AMOUNT:
+		case comprType::INVALID:
+			assert(false);
+			break;
 		case comprType::NONE:
 			remove(dstfile);
 			rename(srcfile, dstfile);
@@ -139,6 +154,12 @@ void Resource::CompressFile(const char *srcfile, const char *dstfile)
 
 			switch (this->compression)
 			{
+				case comprType::NONE:
+				case comprType::KID_CHAMELEON:
+				case comprType::COMPR_TYPE_AMOUNT:
+				case comprType::INVALID:
+					assert(false);
+					break;
 				case comprType::ENIGMA:
 					enigma::encode(srcfile_stream, dstfile_stream);
 					break;
