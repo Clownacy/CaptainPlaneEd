@@ -49,7 +49,7 @@ Screen::Screen(void)
 	if (this->window == nullptr)
 		this->ShowInternalError("Unable to init SDL Window\n\n", SDL_GetError());
 
-	this->renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_ACCELERATED);
+	this->renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_TARGETTEXTURE);
 	if (this->renderer == nullptr)
 		this->ShowInternalError("Unable to init SDL Renderer\n\n", SDL_GetError());
 
