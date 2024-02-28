@@ -20,11 +20,14 @@
 
 #pragma once
 
+#include <cstdarg>
+
 #include "SDL.h"
 
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480	//minimum size to allow for 64x64 maps (TODO - what about 128x64?)
 
+#include "libraries/file-utilities/file-utilities.h"
 #include "libraries/imgui/imgui.h"
 
 class Screen
@@ -44,12 +47,12 @@ public:
 	void ShowWarning(const char *message);
 #if __cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1900)
 	[[noreturn]] void ShowError(const char *message);
-	[[noreturn]] void ShowInternalError(const char *message);
+	[[noreturn]] void ShowInternalError(const char *format, std::va_list args);
 #else
 	void ShowError(const char *message);
-	void ShowInternalError(const char *message);
+	void ShowInternalError(const char *format, std::va_list args);
 #endif
-	void ShowInternalError(const char *message_part1, const char *message_part2);
+	void ShowInternalError(const char *format, ...);
 	void ProcessEvent(const SDL_Event &event);
 private:
 	SDL_Window *window;
@@ -63,6 +66,7 @@ private:
 	Sint32 previous_mouse_x, previous_mouse_y;
 	float dpi_scale;
 	ImGuiStyle style_backup;
+	FileUtilities file_utilities;
 
 	float GetDPIScale(void) const;
 	void ReloadFonts(void);

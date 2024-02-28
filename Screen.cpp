@@ -46,32 +46,32 @@
 #define ADJUSTED_SCREEN_HEIGHT SCREEN_HEIGHT
 #endif
 
-Screen::Screen(void)
+Screen::Screen(void) : file_utilities([this](const char* const format, std::va_list args){ShowInternalError(format, args);})
 {
 	SDL_SetHint(SDL_HINT_WINDOWS_DPI_SCALING, "1");
 
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
-		this->ShowInternalError("Unable to init SDL video\n\n", SDL_GetError());
+		this->ShowInternalError("Unable to init SDL video\n\n%s", SDL_GetError());
 
 	atexit(SDL_Quit); // TODO: Do this in the destructor?
 
 	this->window = SDL_CreateWindow("Captain PlaneEd v1.1.0.1", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, ADJUSTED_SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
 	if (this->window == nullptr)
-		this->ShowInternalError("Unable to init SDL Window\n\n", SDL_GetError());
+		this->ShowInternalError("Unable to init SDL Window\n\n%s", SDL_GetError());
 
 	this->renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_TARGETTEXTURE);
 	if (this->renderer == nullptr)
-		this->ShowInternalError("Unable to init SDL Renderer\n\n", SDL_GetError());
+		this->ShowInternalError("Unable to init SDL Renderer\n\n%s", SDL_GetError());
 
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
 	this->texture = SDL_CreateTexture(this->renderer, SDL_PIXELFORMAT_RGB24, SDL_TEXTUREACCESS_TARGET, SCREEN_WIDTH, SCREEN_HEIGHT);
 	if (this->texture == nullptr)
-		this->ShowInternalError("Unable to init screen SDL Texture\n\n", SDL_GetError());
+		this->ShowInternalError("Unable to init screen SDL Texture\n\n%s", SDL_GetError());
 
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
 	this->upscaled_texture = SDL_CreateTexture(this->renderer, SDL_PIXELFORMAT_RGB24, SDL_TEXTUREACCESS_TARGET, SCREEN_WIDTH, SCREEN_HEIGHT);
 	if (this->upscaled_texture == nullptr)
-		this->ShowInternalError("Unable to init upscaled screen SDL Texture\n\n", SDL_GetError());
+		this->ShowInternalError("Unable to init upscaled screen SDL Texture\n\n%s", SDL_GetError());
 
 
 	this->background_colour.r = 0;
@@ -174,17 +174,18 @@ void Screen::ProcessDisplay(void)
 			{
 				if (ImGui::MenuItem("Open"))
 				{
-					char* filename;
-					if (WinAPI::OpenProjectFilePrompt(&filename) == true)
-					{
+					file_utilities.CreateOpenFileDialog(window, "Open project file", [this](const char *path){
+						if (!file_utilities.FileExists(path))
+							return false;
+
 						delete CurProject;
-						CurProject = new Project(filename);
+						CurProject = new Project(path);
 
 						//Process initial display
 						Clear();
 						CurProject->Redraw();
-					}
-					delete[] filename;
+						return true;
+					});
 				}
 
 				if (ImGui::MenuItem("Save", nullptr, false, CurProject != nullptr))
@@ -364,6 +365,8 @@ void Screen::ProcessDisplay(void)
 
 	ImGui::End();
 
+	file_utilities.DisplayFileDialog();
+
 	// Draw the frame.
 	SDL_SetRenderDrawColor(this->renderer, 0, 0, 0, 0xFF);
 	SDL_RenderClear(this->renderer);
@@ -431,19 +434,23 @@ void Screen::ShowError(const char *message)
 	exit(1);
 }
 
-void Screen::ShowInternalError(const char *message)
+void Screen::ShowInternalError(const char *format, std::va_list args)
 {
-	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Internal Error", message, this->window);
+	char *message_buffer;
+	if (SDL_vasprintf(&message_buffer, format, args) != -1)
+	{
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Internal Error", message_buffer, this->window);
+		SDL_free(message_buffer);
+	}
 	exit(1);
 }
 
-void Screen::ShowInternalError(const char *message_part1, const char *message_part2)
+void Screen::ShowInternalError(const char *format, ...)
 {
-	// TODO: Use SDL_asprintf.
-	char *whole_message = new char[strlen(message_part1)+strlen(message_part2)+1];
-	sprintf(whole_message, "%s%s", message_part1, message_part2);
-	this->ShowInternalError(whole_message);
-	delete[] whole_message;
+	va_list args;
+	va_start(args, format);
+	ShowInternalError(format, args);
+	va_end(args);
 }
 
 void Screen::ProcessEvent(const SDL_Event &event)
