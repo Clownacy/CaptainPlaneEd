@@ -77,6 +77,7 @@ Screen::Screen(void) : file_utilities([this](const char* const format, std::va_l
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 	io.ConfigWindowsMoveFromTitleBarOnly = true; // This prevents drag-drawing from moving the window.
+	io.IniFilename = nullptr; // Disable that annoying INI file.
 
 	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();
