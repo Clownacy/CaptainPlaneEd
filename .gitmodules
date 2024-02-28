@@ -4,3 +4,6 @@
 [submodule "libraries/file-utilities/clowncommon"]
 	path = libraries/file-utilities/clowncommon
 	url = https://github.com/Clownacy/clowncommon
+[submodule "libraries/SDL"]
+	path = libraries/SDL
+	url = https://github.com/libsdl-org/SDL

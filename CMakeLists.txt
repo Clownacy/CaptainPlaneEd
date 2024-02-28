@@ -67,5 +67,15 @@ add_executable(CaptainPlaneEd
 
 target_include_directories(CaptainPlaneEd PRIVATE "libraries/imgui")
 
-find_package(SDL2 REQUIRED)
-target_link_libraries(CaptainPlaneEd PRIVATE SDL2::SDL2main SDL2::SDL2)
+find_package(SDL2)
+
+if(NOT SDL2_FOUND)
+	add_subdirectory("libraries/SDL" EXCLUDE_FROM_ALL)
+	if(SDL_STATIC)
+		target_link_libraries(CaptainPlaneEd PRIVATE SDL2::SDL2main SDL2::SDL2-static)
+	else()
+		target_link_libraries(CaptainPlaneEd PRIVATE SDL2::SDL2main SDL2::SDL2)
+	endif()
+else()
+	target_link_libraries(CaptainPlaneEd PRIVATE SDL2::SDL2main SDL2::SDL2)
+endif()
