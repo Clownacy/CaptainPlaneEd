@@ -35,9 +35,6 @@
 #include "Project.h"
 #include "PrjHndl.h"
 #include "Resource.h"
-#ifdef _WIN32
-#include "WinAPI.h"
-#endif
 
 Screen *MainScreen;
 Project *CurProject = nullptr;
@@ -53,9 +50,7 @@ int main(int argc, char **argv)
 	// onto the executable to be automatically loaded when it starts.
 	// First, we have to make sure the file's actually there.
 	FILE *prjfile = (argc > 1) ? fopen(argv[1], "r") : nullptr;
-#ifdef _WIN32
-	// Windows build allows a blank window to open, where the user can open a
-	// project file using the menu bar
+
 	if (prjfile != nullptr)
 	{
 		fclose(prjfile);
@@ -64,18 +59,6 @@ int main(int argc, char **argv)
 		// Process initial display
 		CurProject->Redraw();
 	}
-#else
-	if (prjfile == nullptr)
-	{
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "You must supply the project file as a parameter", nullptr);
-		exit(1);
-	}
-	fclose(prjfile);
-	CurProject = new Project(argv[1]);
-
-	// Process initial display
-	CurProject->Redraw();
-#endif
 
 	bool CtrlPress = false;
 
@@ -496,12 +479,6 @@ int main(int argc, char **argv)
 							CurProject->Redraw();
 
 						break;
-
-				#ifdef _WIN32
-					case SDL_SYSWMEVENT:
-						WinAPI::HandleWindowsEvent(&event);
-						break;
-				#endif
 				}
 			}
 

@@ -29,9 +29,6 @@
 
 #include "Common.h"
 #include "Screen.h"
-#ifdef _WIN32
-#include "WinAPI.h"
-#endif
 
 #define PALETTE_ENTRIES_PER_LINE 16
 
@@ -64,13 +61,6 @@ Graphics::Graphics(uint16_t xSize, uint16_t tileOffset, uint16_t tileAmount)
 
 Graphics::~Graphics(void)
 {
-#ifdef _WIN32
-	WinAPI::SetMenuBarOptionChecked(false, MENUBAR_PALETTELINE1);
-	WinAPI::SetMenuBarOptionChecked(false, MENUBAR_PALETTELINE2);
-	WinAPI::SetMenuBarOptionChecked(false, MENUBAR_PALETTELINE3);
-	WinAPI::SetMenuBarOptionChecked(false, MENUBAR_PALETTELINE4);
-#endif
-
 	if (tile_atlas != nullptr)
 		SDL_DestroyTexture(tile_atlas);
 }
@@ -319,13 +309,6 @@ void Graphics::DrawTileInvalid(int x, int y)
 void Graphics::SetCurrentPal(const uint8_t currentPal)
 {
 	this->currentPal = currentPal;
-
-#ifdef _WIN32
-	WinAPI::SetMenuBarOptionChecked(currentPal == 0, MENUBAR_PALETTELINE1);
-	WinAPI::SetMenuBarOptionChecked(currentPal == 1, MENUBAR_PALETTELINE2);
-	WinAPI::SetMenuBarOptionChecked(currentPal == 2, MENUBAR_PALETTELINE3);
-	WinAPI::SetMenuBarOptionChecked(currentPal == 3, MENUBAR_PALETTELINE4);
-#endif
 }
 
 /* map coords */

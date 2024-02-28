@@ -30,21 +30,10 @@
 #include "libraries/imgui/backends/imgui_impl_sdl2.h"
 #include "libraries/imgui/backends/imgui_impl_sdlrenderer2.h"
 
-#ifdef _WIN32
-#include "WinAPI.h"
-#include <windows.h>
-#endif
-
 #include "Common.h"
 #include "PrjHndl.h"
 
 #include "noto-sans-regular.h"
-
-#ifdef _WIN32
-#define ADJUSTED_SCREEN_HEIGHT (SCREEN_HEIGHT + GetSystemMetrics(SM_CYMENU))
-#else
-#define ADJUSTED_SCREEN_HEIGHT SCREEN_HEIGHT
-#endif
 
 Screen::Screen(void) : file_utilities([this](const char* const format, std::va_list args){ShowInternalError(format, args);})
 {
@@ -55,7 +44,7 @@ Screen::Screen(void) : file_utilities([this](const char* const format, std::va_l
 
 	atexit(SDL_Quit); // TODO: Do this in the destructor?
 
-	this->window = SDL_CreateWindow("Captain PlaneEd v1.1.0.1", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, ADJUSTED_SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
+	this->window = SDL_CreateWindow("Captain PlaneEd v1.1.0.1", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
 	if (this->window == nullptr)
 		this->ShowInternalError("Unable to init SDL Window\n\n%s", SDL_GetError());
 
@@ -80,12 +69,6 @@ Screen::Screen(void) : file_utilities([this](const char* const format, std::va_l
 	this->background_colour.a = 0xFF;
 
 	this->display_changed = false;
-
-#ifdef _WIN32
-	// Windows-only crap to generate a menu bar
-	WinAPI::SaveHWND(this->window);
-	WinAPI::CreateMenuBar();
-#endif
 
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
@@ -134,7 +117,7 @@ void Screen::ProcessDisplay(void)
 	// Handle dynamic DPI support
 	const auto new_dpi = GetDPIScale();
 
-	if (dpi_scale != new_dpi) // 96 DPI appears to be the "normal" DPI
+	if (dpi_scale != new_dpi)
 	{
 		dpi_scale = new_dpi;
 
@@ -391,10 +374,6 @@ void Screen::WindowResized(int width, int height)
 	this->MarkDisplayChanged();
 
 	static unsigned int upscale_factor;
-
-#ifdef _WIN32
-	height -= GetSystemMetrics(SM_CYMENU);
-#endif
 
 	unsigned int new_upscale_factor = std::max(1, std::min((width + SCREEN_WIDTH / 2) / SCREEN_WIDTH, (height + SCREEN_HEIGHT / 2) / SCREEN_HEIGHT));
 

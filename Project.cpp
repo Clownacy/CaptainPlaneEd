@@ -51,15 +51,6 @@ Project::Project(const char *parameter_filepath)
 
 	this->SelectionRect = new SelRect(this->GfxStuff, this->LevelMap);
 	this->CopyRect = new SelRect(this->GfxStuff, this->LevelMap);
-
-#ifdef _WIN32
-	WinAPI::SetMenuBarOptionGreyed(true, MENUBAR_SAVE);
-	WinAPI::SetMenuBarOptionGreyed(true, MENUBAR_CLOSE);
-	WinAPI::SetMenuBarOptionGreyed(true, MENUBAR_PALETTELINE1);
-	WinAPI::SetMenuBarOptionGreyed(true, MENUBAR_PALETTELINE2);
-	WinAPI::SetMenuBarOptionGreyed(true, MENUBAR_PALETTELINE3);
-	WinAPI::SetMenuBarOptionGreyed(true, MENUBAR_PALETTELINE4);
-#endif
 }
 
 Project::~Project(void)
@@ -69,15 +60,6 @@ Project::~Project(void)
 	delete this->LevelMap;
 	delete this->SelectionRect;
 	delete this->CopyRect;
-
-#ifdef _WIN32
-	WinAPI::SetMenuBarOptionGreyed(false, MENUBAR_SAVE);
-	WinAPI::SetMenuBarOptionGreyed(false, MENUBAR_CLOSE);
-	WinAPI::SetMenuBarOptionGreyed(false, MENUBAR_PALETTELINE1);
-	WinAPI::SetMenuBarOptionGreyed(false, MENUBAR_PALETTELINE2);
-	WinAPI::SetMenuBarOptionGreyed(false, MENUBAR_PALETTELINE3);
-	WinAPI::SetMenuBarOptionGreyed(false, MENUBAR_PALETTELINE4);
-#endif
 }
 
 void Project::Save(void)

@@ -5,6 +5,7 @@
 #include <vector>
 
 #ifdef _WIN32
+#define UNICODE
 #include <windows.h>
 #include "SDL_syswm.h"
 #elif defined(FILE_PICKER_POSIX)
@@ -55,6 +56,7 @@ void FileUtilities::CreateFileDialog(SDL_Window* const window, const char* const
 		ZeroMemory(&ofn, sizeof(ofn));
 		ofn.lStructSize = sizeof(ofn);
 		ofn.hwndOwner = SDL_GetWindowWMInfo(window, &info) ? info.info.win.window : nullptr;
+		ofn.lpstrFilter = TEXT("PlaneEd project file (*.txt)\0*.txt\0All files (*.*)\0*.*\0\0");
 		ofn.lpstrFile = &path_buffer[0];
 		ofn.nMaxFile = path_buffer.size();
 		ofn.lpstrTitle = title_utf16; // It's okay for this to be nullptr.

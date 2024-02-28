@@ -65,13 +65,6 @@ add_executable(CaptainPlaneEd
 	"libraries/imgui/backends/imgui_impl_sdlrenderer2.h"
 )
 
-if(WIN32)
-	target_sources(CaptainPlaneEd PRIVATE
-		"WinAPI.cpp"
-		"WinAPI.h"
-	)
-endif()
-
 target_include_directories(CaptainPlaneEd PRIVATE "libraries/imgui")
 
 find_package(SDL2 REQUIRED)
