@@ -25,9 +25,6 @@
 #include "PrjHndl.h"
 #include "Screen.h"
 #include "SelRect.h"
-#ifdef _WIN32
-#include "WinAPI.h"
-#endif
 
 static const char* const FILE_MAP_TEMP = "tempmap.bin";
 static const char* const FILE_ART_TEMP = "tempart.bin";

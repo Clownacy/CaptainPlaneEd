@@ -28,9 +28,6 @@
 #include "Common.h"
 #include "TxtRead.h"
 #include "Resource.h"
-#ifdef _WIN32
-#include "WinAPI.h"
-#endif
 
 ProjectData::ProjectData(const char *prjtxt)
 {
