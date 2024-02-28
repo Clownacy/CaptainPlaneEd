@@ -23,6 +23,9 @@
 
 #include "SDL.h"
 
+#include "libraries/imgui/backends/imgui_impl_sdl2.h"
+#include "libraries/imgui/backends/imgui_impl_sdlrenderer2.h"
+
 #include "Common.h"
 #include "Tile.h"
 #include "LevMap.h"
@@ -90,66 +93,12 @@ int main(int argc, char **argv)
 			// Process all pending events
 			while (SDL_PollEvent(&event))
 			{
+				MainScreen->ProcessEvent(event);
+
 				switch (event.type)
 				{
 					case SDL_QUIT:
 						quit = true;
-						break;
-
-					case SDL_MOUSEBUTTONDOWN:
-						if (CurProject != nullptr)
-						{
-							CurProject->SelectionRect->Unselect();
-
-							//Checks if within selector bounds and selects tile
-							CurProject->LevelMap->CheckClickTile(event.button.x, event.button.y);
-
-							if (event.button.button == SDL_BUTTON_LEFT)
-							{
-								//Checks if valid map position and sets tile
-								CurProject->LevelMap->CheckSetTile(event.button.x, event.button.y);
-							}
-							else if (event.button.button == SDL_BUTTON_RIGHT)
-							{
-								//Checks if valid map position and selects tile
-								CurProject->LevelMap->CheckSelectTile(event.button.x, event.button.y);
-								CurProject->SelectionRect->SelInit(event.button.x, event.button.y);
-							}
-						}
-						break;
-
-					case SDL_MOUSEBUTTONUP:
-						if (event.button.button == SDL_BUTTON_RIGHT)
-						{
-							if (CurProject != nullptr)
-							{
-								//Checks if valid map position and selects tile
-								CurProject->LevelMap->CheckSelectTile(event.button.x, event.button.y);
-								CurProject->SelectionRect->SelFinalize(event.button.x, event.button.y);
-							}
-						}
-
-						break;
-
-					case SDL_MOUSEMOTION:
-						if (CurProject != nullptr)
-						{
-							if (SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(1))
-							{
-								CurProject->LevelMap->CheckSetTile(event.motion.x, event.motion.y);
-							}
-							else
-							{
-								static Sint32 previous_mouse_x, previous_mouse_y;
-
-								CurProject->LevelMap->RefreshTileScreen(previous_mouse_x, previous_mouse_y, true);
-								CurProject->LevelMap->DrawSelectedTile(event.motion.x, event.motion.y);
-
-								previous_mouse_x = event.motion.x;
-								previous_mouse_y = event.motion.y;
-							}
-						}
-
 						break;
 
 					case SDL_KEYDOWN:

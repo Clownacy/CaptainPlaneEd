@@ -32,6 +32,7 @@ public:
 	SDL_Color background_colour;
 
 	Screen(void);
+	~Screen(void);
 	void MarkDisplayChanged(void);
 	void ProcessDisplay(void);
 	void Clear(void);
@@ -47,10 +48,15 @@ public:
 	void ShowInternalError(const char *message);
 #endif
 	void ShowInternalError(const char *message_part1, const char *message_part2);
+	void ProcessEvent(const SDL_Event &event);
 private:
 	SDL_Window *window;
 	SDL_Renderer *renderer;
 	SDL_Texture *upscaled_texture;
 	SDL_Texture *texture;
 	bool display_changed;
+	float screen_scale = 1.0f;
+	float screen_x, screen_y;
+	bool left_mouse_button_down, right_mouse_button_down;
+	Sint32 previous_mouse_x, previous_mouse_y;
 };

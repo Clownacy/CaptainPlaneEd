@@ -45,6 +45,20 @@ add_executable(CaptainPlaneEd
 	"compression/FW_KENSC/rocket.h"
 	"compression/FW_KENSC/saxman.cc"
 	"compression/FW_KENSC/saxman.h"
+	"libraries/imgui/imconfig.h"
+	"libraries/imgui/imgui.cpp"
+	"libraries/imgui/imgui.h"
+	"libraries/imgui/imgui_demo.cpp"
+	"libraries/imgui/imgui_draw.cpp"
+	"libraries/imgui/imgui_internal.h"
+	"libraries/imgui/imgui_tables.cpp"
+	"libraries/imgui/imgui_widgets.cpp"
+	"libraries/imgui/imstb_rectpack.h"
+	"libraries/imgui/imstb_textedit.h"
+	"libraries/imgui/backends/imgui_impl_sdl2.cpp"
+	"libraries/imgui/backends/imgui_impl_sdl2.h"
+	"libraries/imgui/backends/imgui_impl_sdlrenderer2.cpp"
+	"libraries/imgui/backends/imgui_impl_sdlrenderer2.h"
 )
 
 if(WIN32)
@@ -53,6 +67,8 @@ if(WIN32)
 		"WinAPI.h"
 	)
 endif()
+
+target_include_directories(CaptainPlaneEd PRIVATE "libraries/imgui")
 
 find_package(SDL2 REQUIRED)
 target_link_libraries(CaptainPlaneEd PRIVATE SDL2::SDL2main SDL2::SDL2)
