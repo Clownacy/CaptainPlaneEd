@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0...3.28.3)
 
 project(CaptainPlaneEd LANGUAGES C CXX)
 
-add_executable(CaptainPlaneEd
+add_executable(CaptainPlaneEd WIN32
 	"Common.h"
 	"Graphics.cpp"
 	"Graphics.h"
