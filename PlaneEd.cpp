@@ -489,6 +489,14 @@ int main(int argc, char **argv)
 						}
 						break;
 
+					case SDL_RENDER_TARGETS_RESET:
+						MainScreen->Clear();
+
+						if (CurProject != NULL)
+							CurProject->Redraw();
+
+						break;
+
 				#ifdef _WIN32
 					case SDL_SYSWMEVENT:
 						WinAPI::HandleWindowsEvent(&event);

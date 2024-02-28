@@ -25,6 +25,8 @@
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480	//minimum size to allow for 64x64 maps (TODO - what about 128x64?)
 
+#include "libraries/imgui/imgui.h"
+
 class Screen
 {
 	friend class Graphics;
@@ -59,4 +61,9 @@ private:
 	float screen_x, screen_y;
 	bool left_mouse_button_down, right_mouse_button_down;
 	Sint32 previous_mouse_x, previous_mouse_y;
+	float dpi_scale;
+	ImGuiStyle style_backup;
+
+	float GetDPIScale(void) const;
+	void ReloadFonts(void);
 };

@@ -38,6 +38,8 @@
 #include "Common.h"
 #include "PrjHndl.h"
 
+#include "noto-sans-regular.h"
+
 #ifdef _WIN32
 #define ADJUSTED_SCREEN_HEIGHT (SCREEN_HEIGHT + GetSystemMetrics(SM_CYMENU))
 #else
@@ -91,7 +93,7 @@ Screen::Screen(void)
 	ImGuiIO& io = ImGui::GetIO();
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-	io.ConfigWindowsMoveFromTitleBarOnly = true; // This prevent drag-drawing from moving the window.
+	io.ConfigWindowsMoveFromTitleBarOnly = true; // This prevents drag-drawing from moving the window.
 
 	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();
@@ -100,6 +102,12 @@ Screen::Screen(void)
 	// Setup Platform/Renderer backends
 	ImGui_ImplSDL2_InitForSDLRenderer(this->window, this->renderer);
 	ImGui_ImplSDLRenderer2_Init(this->renderer);
+
+	ImGuiStyle& style = ImGui::GetStyle();
+	dpi_scale = GetDPIScale();
+	style_backup = style;
+	style.ScaleAllSizes(dpi_scale);
+	ReloadFonts();
 }
 
 Screen::~Screen(void)
@@ -121,6 +129,19 @@ void Screen::ProcessDisplay(void)
 		// Upscale the framebuffer.
 		SDL_SetRenderTarget(this->renderer, this->upscaled_texture);
 		SDL_RenderCopy(this->renderer, this->texture, nullptr, nullptr);
+	}
+
+	// Handle dynamic DPI support
+	const auto new_dpi = GetDPIScale();
+
+	if (dpi_scale != new_dpi) // 96 DPI appears to be the "normal" DPI
+	{
+		dpi_scale = new_dpi;
+
+		ImGuiStyle& style = ImGui::GetStyle();
+		style = style_backup;
+		style.ScaleAllSizes(dpi_scale);
+		ReloadFonts();
 	}
 
 	// Switch to the real framebuffer now, so Dear ImGui doesn't freak-out.
@@ -429,4 +450,38 @@ void Screen::ProcessEvent(const SDL_Event &event)
 {
 	SDL_SetRenderTarget(renderer, nullptr);
 	ImGui_ImplSDL2_ProcessEvent(&event);
+}
+
+// TODO: Cache this or whatever.
+float Screen::GetDPIScale(void) const
+{
+	const auto texture = SDL_GetRenderTarget(this->renderer);
+	SDL_SetRenderTarget(this->renderer, nullptr);
+
+	int window_width, renderer_width;
+	SDL_GetWindowSize(window, &window_width, nullptr);
+	SDL_GetRendererOutputSize(renderer, &renderer_width, nullptr);
+
+	SDL_SetRenderTarget(this->renderer, texture);
+
+	const float dpi_scale = static_cast<float>(renderer_width) / std::max(1, window_width); // Prevent a division by 0.
+
+	// Prevent any insanity if we somehow get bad values.
+	return std::max(1.0f, dpi_scale);
+}
+
+static constexpr float UNSCALED_FONT_SIZE = 16.0f;
+
+void Screen::ReloadFonts(void)
+{
+	ImGuiIO &io = ImGui::GetIO();
+
+	io.Fonts->Clear();
+	ImGui_ImplSDLRenderer2_DestroyFontsTexture();
+
+	const unsigned int font_size = UNSCALED_FONT_SIZE * dpi_scale;
+
+	ImFontConfig font_cfg = ImFontConfig();
+	SDL_snprintf(font_cfg.Name, IM_ARRAYSIZE(font_cfg.Name), "Noto Sans Regular, %upx", font_size);
+	io.Fonts->AddFontFromMemoryCompressedTTF(noto_sans_regular_compressed_data, noto_sans_regular_compressed_size, static_cast<float>(font_size), &font_cfg);
 }
