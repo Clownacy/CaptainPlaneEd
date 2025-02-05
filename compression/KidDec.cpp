@@ -7,51 +7,47 @@
  * for the use with PlaneEd.
  */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "KidDec.h"
 
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <fstream>
+#include <vector>
 
-int swap_endian(const unsigned int in, const char size);
-int Decompress(const int address_data, const unsigned short size, FILE* rom);
+int Decompress(const int address_data, const unsigned short size, std::istream &rom);
 int ReadData(void);
 void WriteData(const unsigned char var);
 int SeekData(const int pos, const signed char seek);
 
-static unsigned char *output_data;
-static unsigned short output_size;
+int ReadShort(std::istream &stream)
+{
+	const auto upper = stream.get();
+	const auto lower = stream.get();
+
+	return upper << 8 | lower;
+}
+
+static std::vector<unsigned char> output_data;
 static unsigned short output_pos;
 
-long KidDec(const char* const srcfile, const char* const dstfile, const long Pointer) {
-    FILE* rom = fopen(srcfile, "rb");
-    if (rom == NULL)
+long KidDec(const std::filesystem::path &srcfile, std::ostream &dstfile, const long Pointer) {
+    std::ifstream rom(srcfile, rom.binary);
+    if (!rom.is_open())
 	return -2;
-
-    FILE* dst = fopen(dstfile, "w+b");
 
     int offset = Pointer;
 
-	output_data = (unsigned char*) malloc(1);
-    output_size = 0;
-	output_pos = 0;
+    output_data.clear();
+    output_pos = 0;
 
-	int size = Decompress(offset, 0x8000, rom);
-	
-	fclose(rom);
+    int size = Decompress(offset, 0x8000, rom);
 
     /* write data to file */
-    rewind(dst);
-    fwrite(output_data, size, 1, dst);
+    dstfile.write(reinterpret_cast<const char*>(output_data.data()), size);
+    output_data.clear();
     
-    fclose(dst);
     return size;
 }
 
-int Decompress(const int address_data, const unsigned short size, FILE* rom)
+int Decompress(const int address_data, const unsigned short size, std::istream &rom)
 {
 	//int compressed_data_start;
 	//int compressed_data_size;
@@ -69,20 +65,18 @@ int Decompress(const int address_data, const unsigned short size, FILE* rom)
 	unsigned short count;	// counter
 	bool terminate;
 	
-	fseek(rom, address_data, SEEK_SET);
+	rom.seekg(address_data);
 	//compressed_data_start = ftell(rom);
-	fread(&address_input_data, 2, 1, rom);
-	address_input_data = swap_endian(address_input_data, 2) + address_data + 2;
+	address_input_data = ReadShort(rom) + address_data + 2;
 	address_stop = address_input_data;
-	address_key_data = ftell(rom);	// only needed if debugging
+	address_key_data = rom.tellg();	// only needed if debugging
 	
 	unit=0;
 	bitpos=0;
 	terminate = false;
 	for (int n=0; !terminate && unit < size && address_key_data < address_stop; n++){
-		fread(&key, 2, 1, rom);
-		key = swap_endian(key, 2);
-		fseek(rom, -2, SEEK_CUR);
+		key = ReadShort(rom);
+		rom.seekg(-2, rom.cur);
 		unsigned short keybit = (((key << bitpos) & 0x8000) >> 15);	// get bit
 		bitpos++;
 		switch(keybit){
@@ -91,15 +85,15 @@ int Decompress(const int address_data, const unsigned short size, FILE* rom)
 				printf("%05X %05X %X  direct          u-%04X-%04X\n", address_key_data, address_input_data, bitpos, unit, (unsigned)ftell(dump));// system("PAUSE");
 				#endif
 				unit++;	// increase block count
-				address_key_data = ftell(rom);
-				fseek(rom, address_input_data, SEEK_SET);
+				address_key_data = rom.tellg();
+				rom.seekg(address_input_data);
 				//output_size++;
 				//output_data = realloc(output_data, output_size);
-				fread(&in1, 1, 1, rom);
+				in1 = rom.get();
 				WriteData(in1);
 				//fwrite(&in1, 1, 1, dump);
-				address_input_data = ftell(rom);
-				fseek(rom, address_key_data, SEEK_SET);
+				address_input_data = rom.tellg();
+				rom.seekg(address_key_data);
 				break;
 			case 0:		// reference copy
 				keybit = (((key << bitpos) & 0x8000) >> 15);
@@ -109,9 +103,9 @@ int Decompress(const int address_data, const unsigned short size, FILE* rom)
 						n += 2;
 						keybit = (((key << bitpos) & 0x8000) >> 15);
 						bitpos++;
-						address_key_data = ftell(rom);
-						fseek(rom, address_input_data, SEEK_SET);
-						fread(&in1, 1, 1, rom);	// get source
+						address_key_data = rom.tellg();
+						rom.seekg(address_input_data);
+						in1 = rom.get();	// get source
 						#ifdef DEBUG
 						printf("%05X %05X %X  ref-short       u-%04X-%04X  s-%04X  c-%04X\n", address_key_data, address_input_data, bitpos, unit, (unsigned)ftell(dump), in1, keybit+2);// system("PAUSE");
 						#endif
@@ -136,11 +130,10 @@ int Decompress(const int address_data, const unsigned short size, FILE* rom)
 						}
 						//else
 						//	fwrite(&in3, 1, count, dump);
-						output_size += (keybit+2);
-						output_data = (unsigned char*)realloc(output_data, output_size);
+						output_data.resize(output_data.size() + (keybit+2));
 						unit += (keybit+2);		// increase block count
 						address_input_data++;
-						fseek(rom, address_key_data, SEEK_SET);
+						rom.seekg(address_key_data);
 						break;
 					case 1:		// long-range reference
 						n += 6;
@@ -150,10 +143,10 @@ int Decompress(const int address_data, const unsigned short size, FILE* rom)
 						bitpos += 2;
 						switch(count){
 							case 3:		// large copy
-								address_key_data = ftell(rom);
-								fseek(rom, address_input_data, SEEK_SET);
-								fread(&in1, 1, 1, rom);		// source
-								fread(&in2, 1, 1, rom);		// number of bytes to copy
+								address_key_data = rom.tellg();
+								rom.seekg(address_input_data);
+								in1 = rom.get();		// source
+								in2 = rom.get();		// number of bytes to copy
 								count=in2;
 								in3=0;
 								#ifdef DEBUG
@@ -162,7 +155,7 @@ int Decompress(const int address_data, const unsigned short size, FILE* rom)
 								if (count < 6) {
                                     if (count == 0) terminate = true;
 								    address_input_data += 2;
-								    fseek(rom, address_key_data, SEEK_SET);
+								    rom.seekg(address_key_data);
                                     break;
                                 }
 								if (in1+(keybit<<8) != 0){
@@ -184,16 +177,15 @@ int Decompress(const int address_data, const unsigned short size, FILE* rom)
 									for (; count > 1; count--)
 										WriteData(in3);
 								}
-								output_size += (in2);
-								output_data = (unsigned char*)realloc(output_data, output_size);
+								output_data.resize(output_data.size() + (in2));
 								unit += (in2);		// increase block count
 								address_input_data += 2;
-								fseek(rom, address_key_data, SEEK_SET);
+								rom.seekg(address_key_data);
 								break;
 							default:	// small copy
-								address_key_data = ftell(rom);
-								fseek(rom, address_input_data, SEEK_SET);
-								fread(&in1, 1, 1, rom);	// source
+								address_key_data = rom.tellg();
+								rom.seekg(address_input_data);
+								in1 = rom.get();	// source
 								count += 3;			// setting up counter for writing blocks
 								in2 = count;		// keeping a backup for later use
 								in3=0;
@@ -218,18 +210,17 @@ int Decompress(const int address_data, const unsigned short size, FILE* rom)
 									for (; count > 1; count--)
 										WriteData(in3);
 								}
-								output_size += in2;
-								output_data = (unsigned char*)realloc(output_data, output_size);
+								output_data.resize(output_data.size() + in2);
 								unit += in2;		// increase block count
 								address_input_data++;
-								fseek(rom, address_key_data, SEEK_SET);
+								rom.seekg(address_key_data);
 								break;
 						};
 				};
 		};
 		if (bitpos > 7){
 			bitpos &= 7;
-			fseek(rom, 1, SEEK_CUR);
+			rom.seekg(1, rom.cur);
 		}
 		in1 = 0;
 		in2 = 0;
@@ -261,23 +252,8 @@ int Decompress(const int address_data, const unsigned short size, FILE* rom)
 	return unit;
 }
 
-int swap_endian(const unsigned int in, const char size){
-	unsigned int out = 0;
-	
-	switch(size){
-		case 2:
-			out = ((in >> 8) & 0xFF) + ((in << 8) & 0xFFFF);
-			break;
-		case 4:
-			out = (in >> 24) + ((in >> 8) & 0xFF00) + ((in << 8) & 0xFF0000) + (in << 24);
-			break;
-	}
-	
-	return out;
-}
-
 int ReadData(void){
-	if (output_pos >= output_size)
+	if (output_pos >= output_data.size())
 		return 0;
 	
 	output_pos++;
@@ -285,9 +261,8 @@ int ReadData(void){
 }
 
 void WriteData(const unsigned char var){
-	if (output_pos >= output_size){
-		output_size++;
-		output_data = (unsigned char*)realloc(output_data, output_size);
+	if (output_pos >= output_data.size()){
+		output_data.resize(output_data.size() + 1);
 	}
 	output_data[output_pos] = var;
 	output_pos++;
@@ -302,7 +277,7 @@ int SeekData(const int pos, const signed char seek){
 			output_pos = pos;
 			break;
 		case SEEK_END:
-			output_pos = output_size - pos;
+			output_pos = output_data.size() - pos;
 			break;
 		default:
 			return 1;
@@ -310,7 +285,3 @@ int SeekData(const int pos, const signed char seek){
 	
 	return 0;
 }
-
-#ifdef __cplusplus
-}
-#endif

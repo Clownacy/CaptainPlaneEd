@@ -18,67 +18,46 @@
     USA
 */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "ReadPlain.h"
+
+#include <filesystem>
+#include <fstream>
 
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-long ReadPlain(const char* const srcfile, const char* const dstfile, const long Pointer, int length)
+long ReadPlain(const std::filesystem::path &srcfile, std::ostream &dstfile, const long Pointer, int length)
 {
-    FILE* src = fopen(srcfile, "rb");
-    if (src == NULL)
+    std::ifstream src(srcfile, src.binary);
+    if (!src.is_open())
         return -2;
-
-    FILE* dst = fopen(dstfile, "wb");
 
     if (length == 0) {
         if (Pointer == 0) {
-            fseek(src, 0, SEEK_END);
-            length = ftell(src);
-            rewind(src);
+            length = std::filesystem::file_size(srcfile);
         } else {
-            fclose(src);
-            fclose(dst);
             return -1;
         }
     }
 
-    fseek(src, Pointer, SEEK_SET);
-    rewind(dst);
+    src.seekg(Pointer);
+    dstfile << src.rdbuf();
 
-    char* buffer = (char*) malloc(length);
-    fread(buffer, length, 1, src);
-    fwrite(buffer, length, 1, dst);
-    free(buffer);
-
-    fclose(src);
-    fclose(dst);
     return length;
 }
 
-bool CheckCreateBlankFile(const char* const srcfile, const char* const dstfile, const long Pointer, const int length)
+bool CheckCreateBlankFile(const std::filesystem::path &srcfile, std::ostream &dstfile, const long Pointer, const int length)
 {
-    FILE* src = fopen(srcfile, "rb");
-    if (src != NULL)
+    if (std::filesystem::exists(srcfile))
     {
 	//file does exist, don't overwrite
-	fclose(src);
 	return false;
     }
 
-    FILE* dst = fopen(dstfile, "wb");
-
     //create blank file
     for (int i=0; i< Pointer + length; ++i)
-        fputc(0, dst);
-    fclose(dst);
+        dstfile.put(0);
     return true;
 }
-
-#ifdef __cplusplus
-}
-#endif

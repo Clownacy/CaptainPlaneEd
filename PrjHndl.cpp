@@ -43,14 +43,10 @@ ProjectData::ProjectData(const std::filesystem::path &prjtxt)
 		if (info_type != infoType::INVALID)
 			AssignInfo(info_type, trimString(line + strcspn(line, ":") + 1), prjtxt.parent_path());
 	}
-}
 
-ProjectData::ProjectData(const std::filesystem::path &prjtxt, const std::filesystem::path &art_path, const std::filesystem::path &map_path, const std::filesystem::path &pal_path)
-	: ProjectData(prjtxt)
-{
-	art.Load(art_path);
-	map.Load(map_path);
-	pal.Load(pal_path);
+	art.Load();
+	map.Load();
+	pal.Load();
 }
 
 void ProjectData::AssignInfo(infoType type, const char *content, const std::filesystem::path &directory) {

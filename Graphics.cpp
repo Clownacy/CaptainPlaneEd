@@ -58,13 +58,9 @@ Graphics::Graphics(uint16_t xSize, uint16_t tileOffset, uint16_t tileAmount)
 	}
 }
 
-void Graphics::ReadPalette(const std::filesystem::path &filename)
+void Graphics::ReadPalette(std::istream &palfile, const long buffer_size)
 {
-	std::ifstream palfile(filename, palfile.binary);
-	if (!palfile.is_open())
-		MainScreen.ShowInternalError("Decompressed palette file not found");
-
-	paletteLines = std::filesystem::file_size(filename) / (PALETTE_ENTRIES_PER_LINE * sizeof(uint16_t));
+	paletteLines = buffer_size / (PALETTE_ENTRIES_PER_LINE * sizeof(uint16_t));
 
 	if (paletteLines > 4)
 		paletteLines = 4;
@@ -87,17 +83,10 @@ void Graphics::ReadPalette(const std::filesystem::path &filename)
 			palette[line][entry] = alpha | red | green | blue;
 		}
 	}
-
-	palfile.close();
-	std::filesystem::remove(filename);
 }
 
-void Graphics::ReadTiles(const std::filesystem::path &filename)
+void Graphics::ReadTiles(std::istream &tilefile)
 {
-	std::ifstream tilefile(filename, tilefile.binary);
-	if (!tilefile.is_open())
-		MainScreen.ShowInternalError("Decompressed art file not found");
-
 	// Here, we turn the tiles into a tile atlas, divided into four quadrants.
 	// Each quadrant is for a different palette line.
 	this->atlas_quadrant_dimension = ceil(sqrt(tileAmount)) * 8;
@@ -146,9 +135,6 @@ void Graphics::ReadTiles(const std::filesystem::path &filename)
 		MainScreen.ShowInternalError("Cannot make SDL Texture from tiles\n\n", SDL_GetError());
 
 	SDL_FreeSurface(surface);
-
-	tilefile.close();
-	std::filesystem::remove(filename);
 }
 
 void Graphics::DrawTileFromAtlas(int tile_index, int x, int y, int palette_line, bool x_flip, bool y_flip)

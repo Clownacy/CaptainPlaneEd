@@ -44,24 +44,18 @@ LevMap::LevMap(uint8_t xSize, uint8_t ySize, Graphics &GfxStuff)
 	this->SelectedTile = MapData[CurY][CurX];
 }
 
-void LevMap::LoadMap(const std::filesystem::path &filename)
+void LevMap::LoadMap(std::istream &stream)
 {
-	std::ifstream mapfile(filename, mapfile.binary);
-	if (!mapfile.is_open())
-		MainScreen.ShowInternalError("Decompressed map file not found");
-
 	for (int y = 0; y < ySize; ++y)
 		for (int x = 0; x < xSize; ++x)
-			this->MapData[y][x].ReadTile(mapfile);
-	mapfile.close();
-	std::filesystem::remove(filename);
+			this->MapData[y][x].ReadTile(stream);
 }
 
-void LevMap::SaveMap(std::ostream &mapfile)
+void LevMap::SaveMap(std::ostream &stream)
 {
 	for (int y = 0; y < ySize; ++y)
 		for (int x = 0; x < xSize; ++x)
-			MapData[y][x].WriteTile(mapfile);
+			MapData[y][x].WriteTile(stream);
 }
 
 void LevMap::DrawMap(void)

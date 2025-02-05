@@ -20,7 +20,6 @@
 
 #pragma once
 
-#include <filesystem>
 #include <iostream>
 #include <vector>
 #include <stdint.h>
@@ -40,7 +39,7 @@ private:
     friend class SelRect;
 public:
     LevMap(uint8_t xSize, uint8_t ySize, Graphics &GfxStuff);
-    void LoadMap(const std::filesystem::path &mapfile);
+    void LoadMap(std::istream &stream);
     void SaveMap(std::ostream &stream);
     void DrawMap(void);
     void DrawMapSection(const int xStart, const int yStart, const int xSize, const int ySize);

@@ -28,21 +28,22 @@
 #include "Screen.h"
 #include "SelRect.h"
 
-static const std::filesystem::path FILE_MAP_TEMP = "tempmap.bin";
-static const std::filesystem::path FILE_ART_TEMP = "tempart.bin";
-static const std::filesystem::path FILE_PAL_TEMP = "temppal.bin";
-
 Project::Project(const std::filesystem::path &parameter_filepath)
-	: PrjData(parameter_filepath, FILE_ART_TEMP, FILE_MAP_TEMP, FILE_PAL_TEMP)
+	: PrjData(parameter_filepath)
 	, GfxStuff(this->PrjData.map.xSize, this->PrjData.tileOffset, this->PrjData.art.tileAmount)
 	, LevelMap(this->PrjData.map.xSize, this->PrjData.map.ySize, this->GfxStuff)
 	, SelectionRect(this->GfxStuff, this->LevelMap)
 	, CopyRect(SelRect(this->GfxStuff, this->LevelMap))
 {
-	this->GfxStuff.ReadPalette(FILE_PAL_TEMP);
-	this->GfxStuff.ReadTiles(FILE_ART_TEMP);
+	this->GfxStuff.ReadPalette(PrjData.pal.buffer, PrjData.pal.buffer_size);
+	this->GfxStuff.ReadTiles(PrjData.art.buffer);
 
-	this->LevelMap.LoadMap(FILE_MAP_TEMP);
+	this->LevelMap.LoadMap(PrjData.map.buffer);
+
+	// We no longer need the file buffers, so free them using this trick.
+	std::stringstream().swap(PrjData.pal.buffer);
+	std::stringstream().swap(PrjData.art.buffer);
+	std::stringstream().swap(PrjData.map.buffer);
 }
 
 void Project::Save(void)
@@ -50,7 +51,6 @@ void Project::Save(void)
 	std::stringstream mapfile(mapfile.binary);
 	this->LevelMap.SaveMap(mapfile);
 	this->PrjData.map.Save(mapfile);
-	std::filesystem::remove(FILE_MAP_TEMP);
 	MainScreen.ShowInformation("Save complete");
 }
 

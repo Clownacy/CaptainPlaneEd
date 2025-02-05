@@ -44,7 +44,7 @@ void Resource::Save(std::istream &stream)
 	Compress(stream);
 }
 
-long Resource::DecompressToFile(const std::filesystem::path &dstfile)
+long Resource::DecompressToFile()
 {
 	int decompressed_length = 0;
 	switch (this->compression)
@@ -54,10 +54,11 @@ long Resource::DecompressToFile(const std::filesystem::path &dstfile)
 			assert(false);
 			break;
 		case comprType::NONE:
-			decompressed_length = ReadPlain(this->name.string().c_str(), dstfile.string().c_str(), this->offset, this->length);
+			decompressed_length = ReadPlain(this->name, buffer, this->offset, this->length);
 			break;
 		case comprType::KID_CHAMELEON:
-			decompressed_length = KidDec(this->name.string().c_str(), dstfile.string().c_str(), this->offset);
+			// TODO: This.
+			//decompressed_length = KidDec(this->name, dstfile, this->offset);
 			break;
 		case comprType::ENIGMA:
 		case comprType::KOSINSKI:
@@ -74,8 +75,6 @@ long Resource::DecompressToFile(const std::filesystem::path &dstfile)
 			}
 			srcfile_stream.seekg(this->offset);
 
-			std::fstream dstfile_stream(dstfile, std::ios::in | std::ios::out | std::ios::binary | std::ios::trunc);
-
 			switch (this->compression)
 			{
 				case comprType::NONE:
@@ -85,29 +84,29 @@ long Resource::DecompressToFile(const std::filesystem::path &dstfile)
 					assert(false);
 					break;
 				case comprType::ENIGMA:
-					enigma::decode(srcfile_stream, dstfile_stream);
+					enigma::decode(srcfile_stream, buffer);
 					break;
 				case comprType::KOSINSKI:
-					kosinski::decode(srcfile_stream, dstfile_stream);
+					kosinski::decode(srcfile_stream, buffer);
 					break;
 				case comprType::MODULED_KOSINSKI:
-					kosinski::moduled_decode(srcfile_stream, dstfile_stream);
+					kosinski::moduled_decode(srcfile_stream, buffer);
 					break;
 				case comprType::NEMESIS:
-					nemesis::decode(srcfile_stream, dstfile_stream);
+					nemesis::decode(srcfile_stream, buffer);
 					break;
 				case comprType::COMPER:
-					comper::decode(srcfile_stream, dstfile_stream);
+					comper::decode(srcfile_stream, buffer);
 					break;
 				case comprType::SAXMAN:
-					saxman::decode(srcfile_stream, dstfile_stream);
+					saxman::decode(srcfile_stream, buffer);
 					break;
 				case comprType::ROCKET:
-					rocket::decode(srcfile_stream, dstfile_stream);
+					rocket::decode(srcfile_stream, buffer);
 					break;
 			}
 
-			decompressed_length = dstfile_stream.tellp();
+			decompressed_length = buffer.tellp();
 			break;
 	}
 
@@ -173,12 +172,12 @@ void Resource::Compress(std::istream &srcfile_stream)
 	}
 }
 
-void ResourceArt::Load(const std::filesystem::path &filename)
+void ResourceArt::Load(void)
 {
 	if (this->compression == comprType::INVALID)
 		MainScreen.ShowError("Invalid art compression format: should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Moduled Kosinski'\n'Nemesis'\n'Kid Chameleon'\n'Comper'\n'Saxman'");
 
-	long decompressed_length = DecompressToFile(filename);
+	long decompressed_length = DecompressToFile();
 
 	if (decompressed_length == -2)
 		MainScreen.ShowError("Could not find art file. Are you sure the path is correct?");
@@ -188,18 +187,18 @@ void ResourceArt::Load(const std::filesystem::path &filename)
 	this->tileAmount = decompressed_length/0x20;
 }
 
-void ResourceMap::Load(const std::filesystem::path &filename)
+void ResourceMap::Load(void)
 {
 	if (this->compression == comprType::INVALID || this->compression == comprType::KID_CHAMELEON)
 		MainScreen.ShowError("Invalid map compression format: should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Moduled Kosinski'\n'Nemesis'\n'Comper'\n'Saxman'");
 
-	long decompressed_length = DecompressToFile(filename);
+	long decompressed_length = DecompressToFile();
 
 	if (decompressed_length == -2)
 	{
 		//file non-existant, blank template created
 		decompressed_length =  2 * this->xSize * this->ySize;
-		CheckCreateBlankFile(this->name.string().c_str(), filename.string().c_str(), this->offset, decompressed_length);
+		CheckCreateBlankFile(this->name, buffer, this->offset, decompressed_length);
 		MainScreen.ShowInformation("No map file found; created blank template");
 	}
 	else if (decompressed_length < 0)
@@ -236,12 +235,12 @@ ResourcePal::ResourcePal(void)
 	this->compression = comprType::NONE;
 }
 
-void ResourcePal::Load(const std::filesystem::path &filename)
+void ResourcePal::Load(void)
 {
 	if (this->compression == comprType::INVALID)
 		MainScreen.ShowError("Invalid palette compression format; should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Moduled Kosinski'\n'Nemesis'\n'Kid Chameleon'\n'Comper'\n'Saxman'");
 
-	long decompressed_length = DecompressToFile(filename);
+	long decompressed_length = DecompressToFile();
 
 	if (decompressed_length == -2)
 		MainScreen.ShowError("Could not find palette file. Are you sure the path is correct?");
@@ -249,16 +248,14 @@ void ResourcePal::Load(const std::filesystem::path &filename)
 		MainScreen.ShowError("Could not decompress palette file. Are you sure the compression is correct?");
 
 	// Create blank palette file
-	std::stringstream palfilenew(std::ios::binary);
+	std::stringstream palfilenew;
 	for (int i=0; i < 0x80; ++i)
 		palfilenew.put(0x0E);
 	palfilenew.seekp(this->destination_offset);
 
 	// Insert the loaded palette
-	std::fstream palfileold(filename, std::ios::in | std::ios::out | std::ios::binary);
-	char byte;
-	while (palfileold.get(byte))
-		palfilenew.put(byte);
+	palfilenew << buffer.rdbuf();
 
-	palfileold << palfilenew.rdbuf();
+	palfilenew.swap(buffer);
+	this->buffer_size = buffer.tellp();
 }

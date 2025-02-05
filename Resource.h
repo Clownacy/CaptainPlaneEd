@@ -22,6 +22,7 @@
 
 #include <filesystem>
 #include <istream>
+#include <sstream>
 
 #include "TxtRead.h"
 
@@ -33,12 +34,12 @@ public:
 	int length = 0;
 	comprType compression = comprType::INVALID;
 	int kosinski_module_size = 0x1000;
+	std::stringstream buffer;
 
-	virtual void Load(const std::filesystem::path &filename) = 0;
 	void Save(std::istream &stream);
 
 protected:
-	long DecompressToFile(const std::filesystem::path &dstfile);
+	long DecompressToFile(void);
 	void Compress(std::istream &stream);
 };
 
@@ -47,7 +48,7 @@ class ResourceArt : public Resource
 public:
 	int tileAmount = 0;
 
-	void Load(const std::filesystem::path &filename);
+	void Load(void);
 };
 
 class ResourceMap : public Resource
@@ -57,14 +58,15 @@ public:
 	int ySize = 0;
 	std::filesystem::path saveName;
 
-	void Load(const std::filesystem::path &filename);
+	void Load(void);
 };
 
 class ResourcePal : public Resource
 {
 public:
 	int destination_offset = 0;
+	long buffer_size = 0;
 
 	ResourcePal(void);
-	void Load(const std::filesystem::path &filename);
+	void Load(void);
 };

@@ -1,14 +1,7 @@
 #pragma once
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include <filesystem>
+#include <ostream>
 
-#include <stdio.h>
-
-long ReadPlain(const char* const srcfile, const char* const dstfile, const long Pointer, int length);
-bool CheckCreateBlankFile(const char* const srcfile, const char* const dstfile, const long Pointer, const int length);
-
-#ifdef __cplusplus
-}
-#endif
+long ReadPlain(const std::filesystem::path &srcfile, std::ostream &dstfile, const long Pointer, int length);
+bool CheckCreateBlankFile(const std::filesystem::path &srcfile, std::ostream &dstfile, const long Pointer, const int length);

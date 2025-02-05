@@ -21,7 +21,7 @@
 #pragma once
 
 #include <array>
-#include <filesystem>
+#include <istream>
 #include <vector>
 #include <stddef.h>
 #include <stdint.h>
@@ -51,8 +51,8 @@ private:
     bool lowPriorityDisplay;
 public:
     Graphics(uint16_t xSize, uint16_t tileOffset, uint16_t tileAmount);
-    void ReadPalette(const std::filesystem::path &filename);
-    void ReadTiles(const std::filesystem::path &filename);
+    void ReadPalette(std::istream &stream, long buffer_size);
+    void ReadTiles(std::istream &stream);
     void DrawTileFromAtlas(int tile_index, int x, int y, int palette_line, bool x_flip, bool y_flip);
     void ClearMap(void);
     void ClearSelector(void);
