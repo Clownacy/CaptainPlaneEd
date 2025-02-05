@@ -146,7 +146,7 @@ void Resource::CompressFile(const char *srcfile, const char *dstfile)
 		case comprType::COMPER:
 		case comprType::SAXMAN:
 		case comprType::ROCKET:
-			std::ifstream srcfile_stream(this->name, std::ios::in | std::ios::binary);
+			std::ifstream srcfile_stream(srcfile, std::ios::in | std::ios::binary);
 			if (!srcfile_stream.is_open())
 				break;
 
