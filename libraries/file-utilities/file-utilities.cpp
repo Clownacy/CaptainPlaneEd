@@ -416,9 +416,9 @@ bool FileUtilities::LoadFileToBuffer(std::vector<unsigned char> &file_buffer, co
 	return LoadFileToBuffer(file_buffer, file);
 }
 
-bool FileUtilities::LoadFileToBuffer(std::vector<unsigned char> &file_buffer, const SDL::RWops &file)
+bool FileUtilities::LoadFileToBuffer(std::vector<unsigned char> &file_buffer, SDL::RWops &file)
 {
-	const Sint64 size_s64 = SDL_RWsize(file.get());
+	const Sint64 size_s64 = SDL_RWsize(file);
 
 	if (size_s64 < 0)
 	{
@@ -431,7 +431,7 @@ bool FileUtilities::LoadFileToBuffer(std::vector<unsigned char> &file_buffer, co
 		try
 		{
 			file_buffer.resize(size);
-			SDL_RWread(file.get(), file_buffer.data(), 1, size);
+			SDL_RWread(file, file_buffer.data(), 1, size);
 			return true;
 		}
 		catch (const std::bad_alloc&)
@@ -456,10 +456,10 @@ void FileUtilities::LoadFile(SDL_Window* const window, const char* const title, 
 		const auto call_callback = [](const std::string &/*filename*/, const std::string &/*mime_type*/, std::string_view buffer, void* const user_data)
 		{
 			const std::unique_ptr<LoadFileCallback> callback(static_cast<LoadFileCallback*>(user_data));
-			SDL::RWops file = SDL::RWops(SDL_RWFromConstMem(buffer.data(), buffer.size()));
+			SDL::RWops file = SDL_RWFromConstMem(buffer.data(), buffer.size());
 
 			if (file != nullptr)
-				(*callback.get())(nullptr, file);
+				(*callback)(nullptr, file);
 		};
 
 		emscripten_browser_file::upload("", call_callback, callback_detatched);
@@ -497,12 +497,12 @@ void FileUtilities::SaveFile(SDL_Window* const window, const char* const title, 
 	{
 		const auto save_file = [path](const void* const data, const std::size_t data_size)
 		{
-			const SDL::RWops file = SDL::RWFromFile(path, "wb");
+			SDL::RWops file = SDL::RWFromFile(path, "wb");
 
 			if (file == nullptr)
 				return false;
 
-			return SDL_RWwrite(file.get(), data, 1, data_size) == data_size;
+			return SDL_RWwrite(file, data, 1, data_size) == data_size;
 		};
 
 		return callback(save_file);

@@ -11,7 +11,17 @@ struct NAME##Deleter \
 	void operator()(TYPE* const pointer) { DELETER(pointer); } \
 }; \
  \
-using NAME = std::unique_ptr<TYPE, NAME##Deleter>
+class NAME : public std::unique_ptr<TYPE, NAME##Deleter> \
+{ \
+private: \
+	using Base = std::unique_ptr<TYPE, NAME##Deleter>; \
+ \
+public: \
+	using Base::unique_ptr; \
+	NAME(TYPE* const pointer) : Base(pointer) {} \
+	operator const TYPE*() const { return get(); } \
+	operator TYPE*() { return get(); } \
+}
 
 namespace SDL {
 

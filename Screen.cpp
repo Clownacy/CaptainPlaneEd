@@ -438,7 +438,7 @@ void Screen::ProcessEvent(const SDL_Event &event)
 }
 
 // TODO: Cache this or whatever.
-float Screen::GetDPIScale(void) const
+float Screen::GetDPIScale(void)
 {
 	const auto texture = SDL_GetRenderTarget(this->renderer);
 	SDL_SetRenderTarget(this->renderer, nullptr);

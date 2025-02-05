@@ -35,7 +35,7 @@ private:
     static constexpr unsigned int PALETTE_ENTRIES_PER_LINE = 16;
 
     std::vector<std::array<uint16_t, PALETTE_ENTRIES_PER_LINE>> palette;
-    SDL_Texture *tile_atlas;
+    SDL::Texture tile_atlas;
     size_t atlas_quadrant_dimension;
     uint8_t paletteLines;
     uint8_t currentPal;
@@ -51,7 +51,6 @@ private:
     bool lowPriorityDisplay;
 public:
     Graphics(uint16_t xSize, uint16_t tileOffset, uint16_t tileAmount);
-    ~Graphics(void);
     void ReadPalette(const std::filesystem::path &filename);
     void ReadTiles(const std::filesystem::path &filename);
     void DrawTileFromAtlas(int tile_index, int x, int y, int palette_line, bool x_flip, bool y_flip);

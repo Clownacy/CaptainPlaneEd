@@ -67,7 +67,7 @@ public:
 
 	bool FileExists(const std::filesystem::path &filename);
 	bool LoadFileToBuffer(std::vector<unsigned char> &file_buffer, const std::filesystem::path &filename);
-	bool LoadFileToBuffer(std::vector<unsigned char> &file_buffer, const SDL::RWops &file);
+	bool LoadFileToBuffer(std::vector<unsigned char> &file_buffer, SDL::RWops &file);
 
 	void LoadFile(SDL_Window *window, const char *title, const LoadFileCallback &callback);
 	void SaveFile(SDL_Window *window, const char *title, const SaveFileCallback &callback);

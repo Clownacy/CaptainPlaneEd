@@ -55,10 +55,10 @@ public:
 	void ShowInternalError(const char *format, ...);
 	void ProcessEvent(const SDL_Event &event);
 private:
-	SDL_Window *window;
-	SDL_Renderer *renderer;
-	SDL_Texture *upscaled_texture;
-	SDL_Texture *texture;
+	SDL::Window window;
+	SDL::Renderer renderer;
+	SDL::Texture upscaled_texture;
+	SDL::Texture texture;
 	bool display_changed;
 	float screen_scale = 1.0f;
 	float screen_x, screen_y;
@@ -68,6 +68,6 @@ private:
 	ImGuiStyle style_backup;
 	FileUtilities file_utilities;
 
-	float GetDPIScale(void) const;
+	float GetDPIScale(void);
 	void ReloadFonts(void);
 };

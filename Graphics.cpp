@@ -58,12 +58,6 @@ Graphics::Graphics(uint16_t xSize, uint16_t tileOffset, uint16_t tileAmount)
 	}
 }
 
-Graphics::~Graphics(void)
-{
-	if (tile_atlas != nullptr)
-		SDL_DestroyTexture(tile_atlas);
-}
-
 void Graphics::ReadPalette(const std::filesystem::path &filename)
 {
 	std::ifstream palfile(filename, palfile.binary);
