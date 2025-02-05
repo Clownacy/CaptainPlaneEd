@@ -26,29 +26,29 @@
 #include "Common.h"
 #include "Graphics.h"
 
-LevMap::LevMap(uint8_t xSize, uint8_t ySize, Graphics *GfxStuff)
+LevMap::LevMap(uint8_t xSize, uint8_t ySize, Graphics &GfxStuff)
+	: GfxStuff(GfxStuff)
 {
 	if (xSize == 0 || ySize == 0)
-		MainScreen->ShowError("Invalid map size: must be at least 1x1");
+		MainScreen.ShowError("Invalid map size: must be at least 1x1");
 	
 	this->xSize=xSize;
 	this->ySize=ySize;
 	
-	MapData = new Tile*[ySize];
+	MapData.resize(ySize);
 	for (int i=0; i < ySize; ++i)
-		MapData[i] = new Tile[xSize];
+		MapData[i].resize(xSize);
 
 	CurY = 0; 
 	CurX = 0;
 	this->SelectedTile = MapData[CurY][CurX];
-	this->GfxStuff = GfxStuff;
 }
 
 void LevMap::LoadMap(const std::filesystem::path &filename)
 {
 	std::ifstream mapfile(filename, mapfile.binary);
 	if (!mapfile.is_open())
-		MainScreen->ShowInternalError("Decompressed map file not found");
+		MainScreen.ShowInternalError("Decompressed map file not found");
 
 	for (int y = 0; y < ySize; ++y)
 		for (int x = 0; x < xSize; ++x)
@@ -61,7 +61,7 @@ void LevMap::SaveMap(const std::filesystem::path &filename)
 {
 	std::ofstream mapfile(filename, mapfile.binary);
 	if (!mapfile.is_open())
-		MainScreen->ShowInternalError("Unable to create map file for saving");
+		MainScreen.ShowInternalError("Unable to create map file for saving");
 
 	for (int y = 0; y < ySize; ++y)
 		for (int x = 0; x < xSize; ++x)
@@ -70,23 +70,23 @@ void LevMap::SaveMap(const std::filesystem::path &filename)
 
 void LevMap::DrawMap(void)
 {
-	GfxStuff->ClearMap();
+	GfxStuff.ClearMap();
 	for (int x = 0; x < xSize; ++x)
 		for (int y = 0; y < ySize; ++y)
-			GfxStuff->DrawTileSingle(x, y, &MapData[y][x]);
+			GfxStuff.DrawTileSingle(x, y, &MapData[y][x]);
 }
 
 void LevMap::DrawMapSection(int xStart, int yStart, int xSize, int ySize)
 {
 	for (int x = 0; x < xSize; ++x)
 		for (int y = 0; y < ySize; ++y)
-			GfxStuff->DrawTileSingle(xStart + x, yStart + y, &MapData[yStart + y][xStart + x]);
+			GfxStuff.DrawTileSingle(xStart + x, yStart + y, &MapData[yStart + y][xStart + x]);
 }
 
 void LevMap::DrawCurrentTile(void)
 {
-	GfxStuff->DrawTileSingle(CurX, CurY, &MapData[CurY][CurX]);
-	GfxStuff->DrawRect(CurX, CurY);
+	GfxStuff.DrawTileSingle(CurX, CurY, &MapData[CurY][CurX]);
+	GfxStuff.DrawRect(CurX, CurY);
 }
 
 void LevMap::SelectTile(uint8_t x, uint8_t y)
@@ -103,20 +103,20 @@ void LevMap::SelectTile(int ID)
 {
 	SelectedTile.ClearTile();
 	SelectedTile.SetID(ID);
-	SelectedTile.SetPal(GfxStuff->GetCurrentPal());
+	SelectedTile.SetPal(GfxStuff.GetCurrentPal());
 }
 
 void LevMap::SelectedTileIncrID(void)
 {
-	if (SelectedTile.tileID == 0 && GfxStuff->GetTileOffset() != 0)
-		SelectedTile.tileID = GfxStuff->GetTileOffset();
-	else if (SelectedTile.tileID + 1 < GfxStuff->GetTileAmount() + GfxStuff->GetTileOffset())
+	if (SelectedTile.tileID == 0 && GfxStuff.GetTileOffset() != 0)
+		SelectedTile.tileID = GfxStuff.GetTileOffset();
+	else if (SelectedTile.tileID + 1 < GfxStuff.GetTileAmount() + GfxStuff.GetTileOffset())
 		++SelectedTile.tileID;
 }
 
 void LevMap::SelectedTileDecrID(void)
 {
-	if (SelectedTile.tileID > GfxStuff->GetTileOffset())
+	if (SelectedTile.tileID > GfxStuff.GetTileOffset())
 		--SelectedTile.tileID;
 	else
 		SelectedTile.tileID = 0;
@@ -154,11 +154,11 @@ void LevMap::ClearCurrentTile(void)
 
 void LevMap::SetPalCurrent(const uint8_t palette)
 {
-	if (palette < GfxStuff->GetPaletteLines())
+	if (palette < GfxStuff.GetPaletteLines())
 	{
 		SelectedTile.SetPal(palette);
 		MapData[CurY][CurX].SetPal(palette);
-		GfxStuff->SetCurrentPal(palette);
+		GfxStuff.SetCurrentPal(palette);
 		DrawCurrentTile();
 	}
 }
@@ -166,14 +166,14 @@ void LevMap::SetPalCurrent(const uint8_t palette)
 /* mouse coords */
 void LevMap::CheckSetTile(int x, int y)
 {
-	GfxStuff->PosScreenToTile(&x, &y);
+	GfxStuff.PosScreenToTile(&x, &y);
 	SetTile(x, y);
 }
 
 /* mouse coords */
 void LevMap::CheckSelectTile(int x, int y)
 {
-	GfxStuff->PosScreenToTile(&x, &y);
+	GfxStuff.PosScreenToTile(&x, &y);
 	SelectTile(x, y);
 }
 
@@ -186,7 +186,7 @@ void LevMap::RefreshTile(uint8_t x, uint8_t y, bool curFlag)
 		if (x == CurX && y == CurY && curFlag)
 			DrawCurrentTile();
 		else
-			GfxStuff->DrawTileSingle(x, y, &MapData[y][x]);
+			GfxStuff.DrawTileSingle(x, y, &MapData[y][x]);
 	}
 }
 
@@ -194,34 +194,34 @@ void LevMap::RefreshTile(uint8_t x, uint8_t y, bool curFlag)
  * Mouse position as parameter */
 void LevMap::RefreshTileScreen(int x, int y, bool curFlag)
 {
-	GfxStuff->PosScreenToTile(&x, &y);
+	GfxStuff.PosScreenToTile(&x, &y);
 
 	if (CheckValidPos(x, y))
 	{
 		if (x == CurX && y == CurY && curFlag)
 			DrawCurrentTile();
 		else
-			GfxStuff->DrawTileSingle(x, y, &MapData[y][x]);
+			GfxStuff.DrawTileSingle(x, y, &MapData[y][x]);
 	}
 }
 
 /* mouse coords */
 void LevMap::DrawSelectedTile(int x, int y)
 {
-	GfxStuff->PosScreenToTile(&x, &y);
+	GfxStuff.PosScreenToTile(&x, &y);
 	if (CheckValidPos(x, y))
-		GfxStuff->DrawTileSingle(x, y, &SelectedTile);
+		GfxStuff.DrawTileSingle(x, y, &SelectedTile);
 }
 
 void LevMap::CheckClickTile(int x, int y)
 {
 	//within bounds of tile selector?
-	if (GfxStuff->CheckSelValidPos(x, y))
+	if (GfxStuff.CheckSelValidPos(x, y))
 	{
 		x /= 8;
 		y /= 8;
 		x -= xSize+1;
-		SelectTile(x+GfxStuff->GetSelectorWidth()*(y + GfxStuff->GetSelOffset()) + GfxStuff->GetTileOffset()+ 1);
+		SelectTile(x+GfxStuff.GetSelectorWidth()*(y + GfxStuff.GetSelOffset()) + GfxStuff.GetTileOffset()+ 1);
 	}
 }
 
@@ -236,11 +236,11 @@ bool LevMap::CheckValidPos(int x, int y)
 
 void LevMap::SetCurrentTile(int ID)
 {
-	if (ID < GfxStuff->GetTileAmount() && ID >= 0)
+	if (ID < GfxStuff.GetTileAmount() && ID >= 0)
 	{
 		MapData[CurY][CurX].ClearTile();
 		MapData[CurY][CurX].SetID(ID);
-		MapData[CurY][CurX].SetPal(GfxStuff->GetCurrentPal());
+		MapData[CurY][CurX].SetPal(GfxStuff.GetCurrentPal());
 		DrawCurrentTile();
 	}
 }

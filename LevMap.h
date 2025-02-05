@@ -21,6 +21,7 @@
 #pragma once
 
 #include <filesystem>
+#include <vector>
 #include <stdint.h>
 
 #include "Graphics.h"
@@ -28,16 +29,16 @@
 class LevMap
 {
 private:
-    Graphics *GfxStuff;
+    Graphics &GfxStuff;
     uint8_t xSize;
     uint8_t ySize;
-    Tile **MapData;
+    std::vector<std::vector<Tile>> MapData;
     short CurX, CurY;
     Tile SelectedTile;   //data that will overwrite a tile upon click
     
     friend class SelRect;
 public:
-    LevMap(uint8_t xSize, uint8_t ySize, Graphics *GfxStuff);
+    LevMap(uint8_t xSize, uint8_t ySize, Graphics &GfxStuff);
     void LoadMap(const std::filesystem::path &filename);
     void SaveMap(const std::filesystem::path &filename);
     void DrawMap(void);

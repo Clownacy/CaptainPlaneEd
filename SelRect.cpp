@@ -22,56 +22,21 @@
 
 #include <string.h>
 
-Graphics* SelRect::GfxStuff = nullptr;
-LevMap* SelRect::LevelMap = nullptr;
-
 /* constructor */
-SelRect::SelRect(Graphics *GfxStuff, LevMap *LevelMap)
+SelRect::SelRect(Graphics &GfxStuff, LevMap &LevelMap)
+	: GfxStuff(GfxStuff)
+	, LevelMap(LevelMap)
 {
-	this->GfxStuff = GfxStuff;
-	this->LevelMap = LevelMap;
 	this->xStart = 0;
 	this->yStart = 0;
 	this->xSize = 0;
 	this->ySize = 0;
-	MapData = nullptr;
-}
-
-/* copy constructor */
-SelRect::SelRect(const SelRect *sr)
-{
-	xStart = sr->xStart;
-	yStart = sr->yStart;
-	xSize = sr->xSize;
-	ySize = sr->ySize;
-	if (sr->MapData != nullptr)
-	{
-		MapData = new Tile**[ySize];
-		for (int y = 0; y < ySize; ++y) MapData[y] = new Tile*[xSize];
-		for (int y = 0; y < ySize; ++y)
-		{
-			for (int x = 0; x < xSize; ++x)
-			{
-				MapData[y][x] = new Tile(sr->MapData[y][x]);
-			}
-		}
-	}
-	else
-	{
-		MapData = nullptr;
-	}
-}
-
-/* destructor */
-SelRect::~SelRect(void)
-{
-	Kill();
 }
 
 /* returns true if the selected rectangle contains some data, false otherwise */
 bool SelRect::isActive(void)
 {
-	if (MapData == nullptr)
+	if (MapData.empty())
 		return false;
 	else
 		return true;
@@ -83,15 +48,15 @@ void SelRect::AssignSection(void)
 	if (isActive())
 		for (int y = 0; y < ySize; ++y)
 			for (int x = 0; x < xSize; ++x)
-				if ((x+xStart < LevelMap->xSize) && (y + yStart < LevelMap->ySize))
-					LevelMap->MapData[y + yStart][x + xStart] = *MapData[y][x];
+				if ((x+xStart < LevelMap.xSize) && (y + yStart < LevelMap.ySize))
+					LevelMap.MapData[y + yStart][x + xStart] = MapData[y][x];
 }
 
 /* write selected content to current position map */
 void SelRect::PasteSection(void)
 {
-	xStart = LevelMap->CurX;
-	yStart = LevelMap->CurY;
+	xStart = LevelMap.CurX;
+	yStart = LevelMap.CurY;
 	AssignSection();
 }
 
@@ -99,14 +64,14 @@ void SelRect::PasteSection(void)
 void SelRect::TakeSection(void)
 {
 	Kill();
-	MapData = new Tile**[ySize];
-	for (int y = 0; y < ySize; ++y) MapData[y] = new Tile*[xSize];
+	MapData.resize(ySize);
+	for (int y = 0; y < ySize; ++y) MapData[y].resize(xSize);
 	for (int y = 0; y < ySize; ++y)
 	{
 		for (int x = 0; x < xSize; ++x)
 		{
-			if ((x+xStart < LevelMap->xSize) && (y+yStart < LevelMap->ySize))
-				MapData[y][x] = new Tile(LevelMap->MapData[y+yStart][x+xStart]);
+			if ((x+xStart < LevelMap.xSize) && (y+yStart < LevelMap.ySize))
+				MapData[y][x] = LevelMap.MapData[y+yStart][x+xStart];
 		}
 	}
 }
@@ -115,9 +80,9 @@ void SelRect::TakeSection(void)
    parameters: the cursor position */
 void SelRect::SelInit(int x, int y)
 {
-	if (MapData != nullptr)
+	if (!MapData.empty())
 		SelClearRect();
-	GfxStuff->PosScreenToTileRound(&x, &y);
+	GfxStuff.PosScreenToTileRound(&x, &y);
 	xStart = x;
 	yStart = y;
 	AdaptStartBounds();
@@ -129,7 +94,7 @@ void SelRect::SelFinalize(int x, int y)
 {
 	Kill();
 
-	GfxStuff->PosScreenToTileRound(&x, &y);
+	GfxStuff.PosScreenToTileRound(&x, &y);
 
 	if (x < xStart)
 	{
@@ -160,14 +125,14 @@ void SelRect::SelFinalize(int x, int y)
 void SelRect::SelDrawRect(void)
 {
 	if (isActive())
-		GfxStuff->DrawFreeRect(xStart, yStart, xSize, ySize);
+		GfxStuff.DrawFreeRect(xStart, yStart, xSize, ySize);
 }
 
 /* re-draws the section on the map that was previously covered by the selection
    rectangle to remove its graphics */
 void SelRect::SelClearRect(void)
 {
-	LevelMap->DrawMapSection(xStart, yStart, xSize, ySize);
+	LevelMap.DrawMapSection(xStart, yStart, xSize, ySize);
 }
 
 /* unselects the currently selected area */
@@ -180,18 +145,7 @@ void SelRect::Unselect(void)
 /* clears the memory occupied by the mapdata within the object */
 void SelRect::Kill(void)
 {
-	if (MapData != nullptr)
-	{
-		for (int y = 0; y < ySize; ++y)
-			for (int x = 0; x < xSize; ++x)
-				delete MapData[y][x];
-
-		for (int y = 0; y < ySize; ++y)
-			delete[] MapData[y];
-
-		delete[] MapData;
-		MapData = nullptr;
-	}
+	MapData.clear();
 }
 
 /* fills the selected rectangle with empty tiles */
@@ -201,28 +155,27 @@ void SelRect::clear(void)
 	{
 		for (int x = 0; x < xSize; ++x)
 		{
-			delete MapData[y][x];
-			MapData[y][x] = new Tile;
+			MapData[y][x] = Tile();
 		}
 	}
 }
 
 void SelRect::AdaptBounds(void)
 {
-	if (xStart + xSize > LevelMap->xSize)
-		xSize = LevelMap->xSize - xStart;
+	if (xStart + xSize > LevelMap.xSize)
+		xSize = LevelMap.xSize - xStart;
 
-	if (yStart + ySize > LevelMap->ySize)
-		ySize = LevelMap->ySize - yStart;
+	if (yStart + ySize > LevelMap.ySize)
+		ySize = LevelMap.ySize - yStart;
 }
 
 void SelRect::AdaptStartBounds(void)
 {
-	if (xStart > LevelMap->xSize)
-		xStart = LevelMap->xSize - 1;
+	if (xStart > LevelMap.xSize)
+		xStart = LevelMap.xSize - 1;
 
-	if (yStart > LevelMap->ySize)
-		yStart = LevelMap->ySize - 1;
+	if (yStart > LevelMap.ySize)
+		yStart = LevelMap.ySize - 1;
 
 	if (xStart < 0)
 		xStart = 0;
@@ -240,10 +193,10 @@ void SelRect::FlipX(void)
 		{
 			for (int x=0; x < xSize; ++x)
 			{
-				if ((x + xStart < LevelMap->xSize) && (y + yStart < LevelMap->ySize))
+				if ((x + xStart < LevelMap.xSize) && (y + yStart < LevelMap.ySize))
 				{
-					LevelMap->MapData[y + yStart][x + xStart] = *MapData[y][xSize - x - 1];
-					LevelMap->MapData[y + yStart][x + xStart].FlipX();
+					LevelMap.MapData[y + yStart][x + xStart] = MapData[y][xSize - x - 1];
+					LevelMap.MapData[y + yStart][x + xStart].FlipX();
 				}
 			}
 		}
@@ -261,10 +214,10 @@ void SelRect::FlipY(void)
 		{
 			for (int x = 0; x < xSize; ++x)
 			{
-				if ((x + xStart < LevelMap->xSize) && (y + yStart < LevelMap->ySize))
+				if ((x + xStart < LevelMap.xSize) && (y + yStart < LevelMap.ySize))
 				{
-					LevelMap->MapData[y + yStart][x + xStart] = *MapData[ySize - y - 1][x];
-					LevelMap->MapData[y + yStart][x + xStart].FlipY();
+					LevelMap.MapData[y + yStart][x + xStart] = MapData[ySize - y - 1][x];
+					LevelMap.MapData[y + yStart][x + xStart].FlipY();
 				}
 			}
 		}
@@ -279,8 +232,8 @@ void SelRect::SwapPriority(void)
 	{
 		for (int y = 0; y < ySize; ++y)
 			for (int x = 0; x < xSize; ++x)
-				if ((x + xStart < LevelMap->xSize) && (y + yStart < LevelMap->ySize))
-					MapData[y][x]->SwapPriority();
+				if ((x + xStart < LevelMap.xSize) && (y + yStart < LevelMap.ySize))
+					MapData[y][x].SwapPriority();
 
 		AssignSection();
 	}
@@ -294,12 +247,12 @@ void SelRect::IncrID(void)
 		{
 			for (int x = 0; x < xSize; ++x)
 			{
-				if ((x + xStart < LevelMap->xSize) && (y + yStart < LevelMap->ySize))
+				if ((x + xStart < LevelMap.xSize) && (y + yStart < LevelMap.ySize))
 				{
-					if (MapData[y][x]->tileID == 0 && GfxStuff->GetTileOffset() != 0)
-						MapData[y][x]->tileID = GfxStuff->GetTileOffset();
-					else if (MapData[y][x]->tileID + 1 < GfxStuff->GetTileAmount() + GfxStuff->GetTileOffset())
-						++MapData[y][x]->tileID;
+					if (MapData[y][x].tileID == 0 && GfxStuff.GetTileOffset() != 0)
+						MapData[y][x].tileID = GfxStuff.GetTileOffset();
+					else if (MapData[y][x].tileID + 1 < GfxStuff.GetTileAmount() + GfxStuff.GetTileOffset())
+						++MapData[y][x].tileID;
 				}
 			}
 		}
@@ -316,12 +269,12 @@ void SelRect::DecrID(void)
 		{
 			for (int x=0; x < xSize; ++x)
 			{
-				if ((x+xStart < LevelMap->xSize) && (y+yStart < LevelMap->ySize)) 
+				if ((x+xStart < LevelMap.xSize) && (y+yStart < LevelMap.ySize)) 
 				{
-					if (MapData[y][x]->tileID > GfxStuff->GetTileOffset())
-						--MapData[y][x]->tileID;
+					if (MapData[y][x].tileID > GfxStuff.GetTileOffset())
+						--MapData[y][x].tileID;
 					else
-						MapData[y][x]->tileID = 0;
+						MapData[y][x].tileID = 0;
 				}
 			}
 		}

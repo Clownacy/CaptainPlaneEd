@@ -36,15 +36,12 @@
 #include "PrjHndl.h"
 #include "Resource.h"
 
-Screen *MainScreen;
-Project *CurProject = nullptr;
+Screen MainScreen;
+std::optional<Project> CurProject;
 
 int main(int argc, char **argv)
 {
-	// Create our window
-	MainScreen = new Screen;
-
-	MainScreen->Clear();
+	MainScreen.Clear();
 
 	// For backwards-compatibility, we want project files that are drag-and-dropped
 	// onto the executable to be automatically loaded when it starts.
@@ -54,7 +51,7 @@ int main(int argc, char **argv)
 	if (prjfile != nullptr)
 	{
 		fclose(prjfile);
-		CurProject = new Project(argv[1]);
+		CurProject.emplace(argv[1]);
 
 		// Process initial display
 		CurProject->Redraw();
@@ -76,7 +73,7 @@ int main(int argc, char **argv)
 			// Process all pending events
 			while (SDL_PollEvent(&event))
 			{
-				MainScreen->ProcessEvent(event);
+				MainScreen.ProcessEvent(event);
 
 				switch (event.type)
 				{
@@ -95,97 +92,97 @@ int main(int argc, char **argv)
 
 							case '/':
 							case '-':
-								if (CurProject != nullptr)
+								if (CurProject.has_value())
 								{
-									if (!CurProject->SelectionRect->isActive())
+									if (!CurProject->SelectionRect.isActive())
 									{
-										CurProject->LevelMap->CurSwapPriority();
+										CurProject->LevelMap.CurSwapPriority();
 									}
 									else
 									{
-										CurProject->SelectionRect->SwapPriority();
-										CurProject->LevelMap->DrawMap();
-										CurProject->SelectionRect->SelDrawRect();
+										CurProject->SelectionRect.SwapPriority();
+										CurProject->LevelMap.DrawMap();
+										CurProject->SelectionRect.SelDrawRect();
 									}
 								}
 								break;
 
 							case ',':
-								if (CurProject != nullptr)
+								if (CurProject.has_value())
 								{
-									if (!CurProject->SelectionRect->isActive())
+									if (!CurProject->SelectionRect.isActive())
 									{
-										CurProject->LevelMap->CurFlipX();
+										CurProject->LevelMap.CurFlipX();
 									}
 									else
 									{
-										CurProject->SelectionRect->FlipX();
-										CurProject->LevelMap->DrawMap();
-										CurProject->SelectionRect->SelDrawRect();
+										CurProject->SelectionRect.FlipX();
+										CurProject->LevelMap.DrawMap();
+										CurProject->SelectionRect.SelDrawRect();
 									}
 								}
 								break;
 
 							case '.':
-								if (CurProject != nullptr)
+								if (CurProject.has_value())
 								{
-									if (!CurProject->SelectionRect->isActive())
+									if (!CurProject->SelectionRect.isActive())
 									{
-										CurProject->LevelMap->CurFlipY();
+										CurProject->LevelMap.CurFlipY();
 									}
 									else
 									{
-										CurProject->SelectionRect->FlipY();
-										CurProject->LevelMap->DrawMap();
-										CurProject->SelectionRect->SelDrawRect();
+										CurProject->SelectionRect.FlipY();
+										CurProject->LevelMap.DrawMap();
+										CurProject->SelectionRect.SelDrawRect();
 									}
 								}
 								break;
 
 							case SDLK_RIGHT:
-								if (CurProject != nullptr)
+								if (CurProject.has_value())
 								{
-									CurProject->LevelMap->CurShiftRight();
-									CurProject->SelectionRect->Unselect();
+									CurProject->LevelMap.CurShiftRight();
+									CurProject->SelectionRect.Unselect();
 								}
 								break;
 
 							case SDLK_LEFT:
-								if (CurProject != nullptr)
+								if (CurProject.has_value())
 								{
-									CurProject->LevelMap->CurShiftLeft();
-									CurProject->SelectionRect->Unselect();
+									CurProject->LevelMap.CurShiftLeft();
+									CurProject->SelectionRect.Unselect();
 								}
 								break;
 
 							case SDLK_DOWN:
-								if (CurProject != nullptr)
+								if (CurProject.has_value())
 								{
-									CurProject->LevelMap->CurShiftDown();
-									CurProject->SelectionRect->Unselect();
+									CurProject->LevelMap.CurShiftDown();
+									CurProject->SelectionRect.Unselect();
 								}
 								break;
 
 							case SDLK_UP:
-								if (CurProject != nullptr)
+								if (CurProject.has_value())
 								{
-									CurProject->LevelMap->CurShiftUp();
-									CurProject->SelectionRect->Unselect();
+									CurProject->LevelMap.CurShiftUp();
+									CurProject->SelectionRect.Unselect();
 								}
 								break;
 
 							case SDLK_DELETE:
-								if (CurProject != nullptr)
+								if (CurProject.has_value())
 								{
-									if (!CurProject->SelectionRect->isActive())
+									if (!CurProject->SelectionRect.isActive())
 									{
-										CurProject->LevelMap->ClearCurrentTile();
+										CurProject->LevelMap.ClearCurrentTile();
 									}
 									else
 									{
-										CurProject->SelectionRect->clear();
-										CurProject->SelectionRect->AssignSection();
-										CurProject->LevelMap->DrawMap();
+										CurProject->SelectionRect.clear();
+										CurProject->SelectionRect.AssignSection();
+										CurProject->LevelMap.DrawMap();
 									}
 								}
 								break;
@@ -195,150 +192,150 @@ int main(int argc, char **argv)
 								break;
 
 							case SDLK_RETURN:
-								if (CurProject != nullptr)
+								if (CurProject.has_value())
 								{
-									CurProject->LevelMap->SetTileSelected();
-									CurProject->SelectionRect->Unselect();
+									CurProject->LevelMap.SetTileSelected();
+									CurProject->SelectionRect.Unselect();
 								}
 								break;
 
 							case '=':
 							case '´':
-								if (CurProject != nullptr)
+								if (CurProject.has_value())
 								{
-									CurProject->LevelMap->SelectTileCur();
-									CurProject->SelectionRect->Unselect();
+									CurProject->LevelMap.SelectTileCur();
+									CurProject->SelectionRect.Unselect();
 								}
 								break;
 
 							case SDLK_PAGEDOWN:
-								if (CurProject != nullptr)
+								if (CurProject.has_value())
 								{
-									if (!CurProject->SelectionRect->isActive())
+									if (!CurProject->SelectionRect.isActive())
 									{
-										CurProject->LevelMap->SelectedTileIncrID();
+										CurProject->LevelMap.SelectedTileIncrID();
 									}
 									else
 									{
-										CurProject->SelectionRect->IncrID();
-										CurProject->SelectionRect->AssignSection();
-										CurProject->LevelMap->DrawMap();
+										CurProject->SelectionRect.IncrID();
+										CurProject->SelectionRect.AssignSection();
+										CurProject->LevelMap.DrawMap();
 									}
 								}
 								break;
 
 							case SDLK_PAGEUP:
-								if (CurProject != nullptr)
+								if (CurProject.has_value())
 								{
-									if (!CurProject->SelectionRect->isActive())
+									if (!CurProject->SelectionRect.isActive())
 									{
-										CurProject->LevelMap->SelectedTileDecrID();
+										CurProject->LevelMap.SelectedTileDecrID();
 									}
 									else
 									{
-										CurProject->SelectionRect->DecrID();
-										CurProject->SelectionRect->AssignSection();
-										CurProject->LevelMap->DrawMap();
+										CurProject->SelectionRect.DecrID();
+										CurProject->SelectionRect.AssignSection();
+										CurProject->LevelMap.DrawMap();
 									}
 								}
 								break;
 
 							case SDLK_F1:
-								if (CurProject != nullptr)
+								if (CurProject.has_value())
 								{
-									CurProject->LevelMap->SetPalCurrent(0);
-									CurProject->GfxStuff->DrawSelector();
+									CurProject->LevelMap.SetPalCurrent(0);
+									CurProject->GfxStuff.DrawSelector();
 								}
 								break;
 
 							case SDLK_F2:
-								if (CurProject != nullptr)
+								if (CurProject.has_value())
 								{
-									CurProject->LevelMap->SetPalCurrent(1);
-									CurProject->GfxStuff->DrawSelector();
+									CurProject->LevelMap.SetPalCurrent(1);
+									CurProject->GfxStuff.DrawSelector();
 								}
 								break;
 
 							case SDLK_F3:
-								if (CurProject != nullptr)
+								if (CurProject.has_value())
 								{
-									CurProject->LevelMap->SetPalCurrent(2);
-									CurProject->GfxStuff->DrawSelector();
+									CurProject->LevelMap.SetPalCurrent(2);
+									CurProject->GfxStuff.DrawSelector();
 								}
 								break;
 
 							case SDLK_F4:
-								if (CurProject != nullptr)
+								if (CurProject.has_value())
 								{
-									CurProject->LevelMap->SetPalCurrent(3);
-									CurProject->GfxStuff->DrawSelector();
+									CurProject->LevelMap.SetPalCurrent(3);
+									CurProject->GfxStuff.DrawSelector();
 								}
 								break;
 
 							case SDLK_F5:
-								if (CurProject != nullptr)
+								if (CurProject.has_value())
 								{
-									CurProject->GfxStuff->ToggleHighPriority();
-									CurProject->LevelMap->DrawMap();
-									CurProject->SelectionRect->SelDrawRect();
+									CurProject->GfxStuff.ToggleHighPriority();
+									CurProject->LevelMap.DrawMap();
+									CurProject->SelectionRect.SelDrawRect();
 								}
 								break;
 
 							case SDLK_F6:
-								if (CurProject != nullptr)
+								if (CurProject.has_value())
 								{
-									CurProject->GfxStuff->ToggleLowPriority();
-									CurProject->LevelMap->DrawMap();
-									CurProject->SelectionRect->SelDrawRect();
+									CurProject->GfxStuff.ToggleLowPriority();
+									CurProject->LevelMap.DrawMap();
+									CurProject->SelectionRect.SelDrawRect();
 								}
 								break;
 
 							case SDLK_F9:
-								if (CurProject != nullptr)
+								if (CurProject.has_value())
 									CurProject->Save();
 								break;
 
 							case SDLK_F10: //redraw whole screen
-								if (CurProject != nullptr)
+								if (CurProject.has_value())
 									CurProject->Redraw();
 								break;
 
 							case SDLK_BACKSPACE:
-								if (CurProject != nullptr)
+								if (CurProject.has_value())
 								{
-									CurProject->LevelMap->CurShiftLeft();
-									CurProject->LevelMap->ClearCurrentTile();
-									CurProject->SelectionRect->Unselect();
+									CurProject->LevelMap.CurShiftLeft();
+									CurProject->LevelMap.ClearCurrentTile();
+									CurProject->SelectionRect.Unselect();
 								}
 								break;
 
 							case '[':
 							case 'ü':
-								if (CurProject != nullptr)
+								if (CurProject.has_value())
 								{
-									CurProject->GfxStuff->DecScreenOffset();
-									CurProject->LevelMap->DrawMap();
-									CurProject->SelectionRect->SelDrawRect();
+									CurProject->GfxStuff.DecScreenOffset();
+									CurProject->LevelMap.DrawMap();
+									CurProject->SelectionRect.SelDrawRect();
 								}
 								break;
 
 							case '\'':
 							case 'ä':
-								if (CurProject != nullptr)
+								if (CurProject.has_value())
 								{
-									CurProject->GfxStuff->IncScreenOffset();
-									CurProject->LevelMap->DrawMap();
-									CurProject->SelectionRect->SelDrawRect();
+									CurProject->GfxStuff.IncScreenOffset();
+									CurProject->LevelMap.DrawMap();
+									CurProject->SelectionRect.SelDrawRect();
 								}
 								break;
 
 							case ';':
 							case 'ö':
-								if (CurProject != nullptr)
+								if (CurProject.has_value())
 								{
-									CurProject->GfxStuff->DecScreenXOffset();
-									CurProject->LevelMap->DrawMap();
-									CurProject->SelectionRect->SelDrawRect();
+									CurProject->GfxStuff.DecScreenXOffset();
+									CurProject->LevelMap.DrawMap();
+									CurProject->SelectionRect.SelDrawRect();
 								}
 								break;
 
@@ -346,35 +343,35 @@ int main(int argc, char **argv)
 							case '#':
 							case '+':
 							case ']':
-								if (CurProject != nullptr)
+								if (CurProject.has_value())
 								{
-									CurProject->GfxStuff->IncScreenXOffset();
-									CurProject->LevelMap->DrawMap();
-									CurProject->SelectionRect->SelDrawRect();
+									CurProject->GfxStuff.IncScreenXOffset();
+									CurProject->LevelMap.DrawMap();
+									CurProject->SelectionRect.SelDrawRect();
 								}
 								break;
 
 							case SDLK_END:
-								if (CurProject != nullptr)
+								if (CurProject.has_value())
 								{
-									CurProject->GfxStuff->IncSelOffset();
-									CurProject->GfxStuff->DrawSelector();
+									CurProject->GfxStuff.IncSelOffset();
+									CurProject->GfxStuff.DrawSelector();
 								}
 								break;
 
 							case SDLK_HOME:
-								if (CurProject != nullptr)
+								if (CurProject.has_value())
 								{
-									CurProject->GfxStuff->DecSelOffset();
-									CurProject->GfxStuff->DrawSelector();
+									CurProject->GfxStuff.DecSelOffset();
+									CurProject->GfxStuff.DrawSelector();
 								}
 								break;
 
 							case SDLK_SPACE:
-								if (CurProject != nullptr)
+								if (CurProject.has_value())
 								{
-									CurProject->LevelMap->ClearCurrentTile();
-									CurProject->LevelMap->CurShiftRight();
+									CurProject->LevelMap.ClearCurrentTile();
+									CurProject->LevelMap.CurShiftRight();
 								}
 								break;
 
@@ -386,64 +383,62 @@ int main(int argc, char **argv)
 										switch (event.key.keysym.sym)
 										{
 											case 'c':
-												if (CurProject != nullptr)
+												if (CurProject.has_value())
 												{
-													if (CurProject->SelectionRect->isActive())
+													if (CurProject->SelectionRect.isActive())
 													{
-														delete CurProject->CopyRect;
-														CurProject->CopyRect = new SelRect(CurProject->SelectionRect);
+														CurProject->CopyRect.emplace(CurProject->SelectionRect);
 													}
 												}
 												break;
 
 											case 'x':
-												if (CurProject != nullptr)
+												if (CurProject.has_value())
 												{
-													if (CurProject->SelectionRect->isActive())
+													if (CurProject->SelectionRect.isActive())
 													{
-														delete CurProject->CopyRect;
-														CurProject->CopyRect = new SelRect(CurProject->SelectionRect);
-														CurProject->SelectionRect->clear();
-														CurProject->SelectionRect->AssignSection();
-														CurProject->LevelMap->DrawMap();
+														CurProject->CopyRect.emplace(CurProject->SelectionRect);
+														CurProject->SelectionRect.clear();
+														CurProject->SelectionRect.AssignSection();
+														CurProject->LevelMap.DrawMap();
 													}
 												}
 												break;
 
 											case 'v':
-												if (CurProject != nullptr)
+												if (CurProject.has_value())
 												{
 													CurProject->CopyRect->PasteSection();
-													CurProject->LevelMap->DrawMap();
+													CurProject->LevelMap.DrawMap();
 												}
 												break;
 
 											case 'a':
-												if (CurProject != nullptr)
+												if (CurProject.has_value())
 												{
-													CurProject->SelectionRect->SelInit(0, 0);
-													CurProject->SelectionRect->SelFinalize(CurProject->PrjData->map.xSize*8, CurProject->PrjData->map.ySize*8);
+													CurProject->SelectionRect.SelInit(0, 0);
+													CurProject->SelectionRect.SelFinalize(CurProject->PrjData.map.xSize*8, CurProject->PrjData.map.ySize*8);
 												}
 												break;
 										}
 									}
 									else
 									{
-										if (CurProject != nullptr)
+										if (CurProject.has_value())
 										{
-											CurProject->LevelMap->SetCurrentTile(event.key.keysym.sym - 'a' + CurProject->GfxStuff->GetTileOffset() + CurProject->PrjData->letterOffset);
-											CurProject->LevelMap->CurShiftRight();
-											CurProject->SelectionRect->Unselect();
+											CurProject->LevelMap.SetCurrentTile(event.key.keysym.sym - 'a' + CurProject->GfxStuff.GetTileOffset() + CurProject->PrjData.letterOffset);
+											CurProject->LevelMap.CurShiftRight();
+											CurProject->SelectionRect.Unselect();
 										}
 									}
 								}
 								else if (event.key.keysym.sym >= '0' && event.key.keysym.sym <= '9')
 								{
-									if (CurProject != nullptr)
+									if (CurProject.has_value())
 									{
-										CurProject->LevelMap->SetCurrentTile(event.key.keysym.sym - '0' + CurProject->GfxStuff->GetTileOffset() + CurProject->PrjData->numberOffset);
-										CurProject->LevelMap->CurShiftRight();
-										CurProject->SelectionRect->Unselect();
+										CurProject->LevelMap.SetCurrentTile(event.key.keysym.sym - '0' + CurProject->GfxStuff.GetTileOffset() + CurProject->PrjData.numberOffset);
+										CurProject->LevelMap.CurShiftRight();
+										CurProject->SelectionRect.Unselect();
 									}
 								}
 
@@ -467,15 +462,15 @@ int main(int argc, char **argv)
 						{
 							case SDL_WINDOWEVENT_RESIZED:
 							case SDL_WINDOWEVENT_SIZE_CHANGED:
-								MainScreen->WindowResized(event.window.data1, event.window.data2);
+								MainScreen.WindowResized(event.window.data1, event.window.data2);
 								break;
 						}
 						break;
 
 					case SDL_RENDER_TARGETS_RESET:
-						MainScreen->Clear();
+						MainScreen.Clear();
 
-						if (CurProject != NULL)
+						if (CurProject.has_value())
 							CurProject->Redraw();
 
 						break;
@@ -484,7 +479,7 @@ int main(int argc, char **argv)
 
 			// Now that we're finished processing all pending events,
 			// we finally have some spare time to update the window
-			MainScreen->ProcessDisplay();
+			MainScreen.ProcessDisplay();
 
 			// Now that we're done, loop back and idle until another event occurs
 		}

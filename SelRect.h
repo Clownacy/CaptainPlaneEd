@@ -20,25 +20,25 @@
 
 #pragma once
 
+#include <vector>
+
 #include "Graphics.h"
 #include "LevMap.h"
 
 class SelRect
 {
 private:
-    static Graphics *GfxStuff;
-    static LevMap *LevelMap;
+    Graphics &GfxStuff;
+    LevMap &LevelMap;
     int xStart;
     int yStart;
     int xSize;
     int ySize;
-    Tile ***MapData; //nullptr if selection still being created
+    std::vector<std::vector<Tile>> MapData;
     
     friend class LevMap;
 public:
-    SelRect(Graphics *GfxStuff, LevMap *LevelMap);
-    SelRect(const SelRect *sr);
-    ~SelRect();
+    SelRect(Graphics &GfxStuff, LevMap &LevelMap);
     bool isActive();
 /*    uint8_t SetXStart(int xs) {xStart = xs;}
     uint8_t SetYStart(int ys) {yStart = ys}

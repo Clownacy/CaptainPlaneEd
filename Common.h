@@ -19,8 +19,10 @@
 
 #pragma once
 
+#include <optional>
+
 #include "Project.h"
 #include "Screen.h"
 
-extern Screen *MainScreen;
-extern Project *CurProject;
+extern Screen MainScreen;
+extern std::optional<Project> CurProject;

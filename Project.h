@@ -21,6 +21,7 @@
 #pragma once
 
 #include <filesystem>
+#include <optional>
 
 #include "LevMap.h"
 #include "PrjHndl.h"
@@ -30,14 +31,13 @@
 class Project
 {
 public:
-	ProjectData *PrjData;
-	Graphics *GfxStuff;
-	LevMap *LevelMap;
-	SelRect *SelectionRect;
-	SelRect *CopyRect;
+	ProjectData PrjData;
+	Graphics GfxStuff;
+	LevMap LevelMap;
+	SelRect SelectionRect;
+	std::optional<SelRect> CopyRect;
 
 	Project(const std::filesystem::path &parameter_filepath);
-	~Project(void);
 	void Save(void);
 	void Redraw(void);
 };

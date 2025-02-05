@@ -31,8 +31,6 @@
 #include "Common.h"
 #include "Screen.h"
 
-#define PALETTE_ENTRIES_PER_LINE 16
-
 Graphics::Graphics(uint16_t xSize, uint16_t tileOffset, uint16_t tileAmount)
 {
 	this->selXMin = std::min(8*64, 8*xSize) + 1;
@@ -70,16 +68,16 @@ void Graphics::ReadPalette(const std::filesystem::path &filename)
 {
 	std::ifstream palfile(filename, palfile.binary);
 	if (!palfile.is_open())
-		MainScreen->ShowInternalError("Decompressed palette file not found");
+		MainScreen.ShowInternalError("Decompressed palette file not found");
 
 	paletteLines = std::filesystem::file_size(filename) / (PALETTE_ENTRIES_PER_LINE * sizeof(uint16_t));
 
 	if (paletteLines > 4)
 		paletteLines = 4;
 	else if (paletteLines == 0)
-		MainScreen->ShowError("Palette file too small: it must contain at least one palette line");
+		MainScreen.ShowError("Palette file too small: it must contain at least one palette line");
 
-	palette = new uint16_t[paletteLines][PALETTE_ENTRIES_PER_LINE];
+	palette.resize(paletteLines);
 	for (int line=0; line < paletteLines; ++line)
 	{
 		for (int entry=0; entry < PALETTE_ENTRIES_PER_LINE; ++entry)
@@ -104,7 +102,7 @@ void Graphics::ReadTiles(const std::filesystem::path &filename)
 {
 	std::ifstream tilefile(filename, tilefile.binary);
 	if (!tilefile.is_open())
-		MainScreen->ShowInternalError("Decompressed art file not found");
+		MainScreen.ShowInternalError("Decompressed art file not found");
 
 	// Here, we turn the tiles into a tile atlas, divided into four quadrants.
 	// Each quadrant is for a different palette line.
@@ -113,7 +111,7 @@ void Graphics::ReadTiles(const std::filesystem::path &filename)
 	SDL_Surface *surface = SDL_CreateRGBSurface(0, this->atlas_quadrant_dimension * 2, this->atlas_quadrant_dimension * 2, 16, 0x0F00, 0x00F0, 0x000F, 0xF000);
 
 	if (surface == nullptr)
-		MainScreen->ShowInternalError("Cannot make SDL Surface from tiles\n\n", SDL_GetError());
+		MainScreen.ShowInternalError("Cannot make SDL Surface from tiles\n\n", SDL_GetError());
 
 	for (int tile=0; tile < tileAmount; ++tile)
 	{
@@ -148,10 +146,10 @@ void Graphics::ReadTiles(const std::filesystem::path &filename)
 		}
 	}
 
-	this->tile_atlas = SDL_CreateTextureFromSurface(MainScreen->renderer, surface);
+	this->tile_atlas = SDL_CreateTextureFromSurface(MainScreen.renderer, surface);
 
 	if (this->tile_atlas == nullptr)
-		MainScreen->ShowInternalError("Cannot make SDL Texture from tiles\n\n", SDL_GetError());
+		MainScreen.ShowInternalError("Cannot make SDL Texture from tiles\n\n", SDL_GetError());
 
 	SDL_FreeSurface(surface);
 
@@ -161,9 +159,9 @@ void Graphics::ReadTiles(const std::filesystem::path &filename)
 
 void Graphics::DrawTileFromAtlas(int tile_index, int x, int y, int palette_line, bool x_flip, bool y_flip)
 {
-	MainScreen->MarkDisplayChanged();
+	MainScreen.MarkDisplayChanged();
 
-	SDL_SetRenderTarget(MainScreen->renderer, MainScreen->texture);
+	SDL_SetRenderTarget(MainScreen.renderer, MainScreen.texture);
 
 	// Construct source rectangle
 	SDL_Rect src_rect;
@@ -193,37 +191,37 @@ void Graphics::DrawTileFromAtlas(int tile_index, int x, int y, int palette_line,
 		flip |= SDL_FLIP_VERTICAL;
 
 	// Finally render
-	SDL_RenderCopyEx(MainScreen->renderer, this->tile_atlas, &src_rect, &dst_rect, 0.0, nullptr, (SDL_RendererFlip)flip);
+	SDL_RenderCopyEx(MainScreen.renderer, this->tile_atlas, &src_rect, &dst_rect, 0.0, nullptr, (SDL_RendererFlip)flip);
 }
 
 void Graphics::ClearMap(void)
 {
-	MainScreen->MarkDisplayChanged();
+	MainScreen.MarkDisplayChanged();
 
-	SDL_SetRenderTarget(MainScreen->renderer, MainScreen->texture);
+	SDL_SetRenderTarget(MainScreen.renderer, MainScreen.texture);
 
 	SDL_Rect RectTemp;
 	RectTemp.x = 0;
 	RectTemp.y = 0;
 	RectTemp.w = selXMin-1;
 	RectTemp.h = SCREEN_HEIGHT;
-	SDL_SetRenderDrawColor(MainScreen->renderer, MainScreen->background_colour.r, MainScreen->background_colour.g, MainScreen->background_colour.b, 0xFF);
-	SDL_RenderFillRect(MainScreen->renderer, &RectTemp);
+	SDL_SetRenderDrawColor(MainScreen.renderer, MainScreen.background_colour.r, MainScreen.background_colour.g, MainScreen.background_colour.b, 0xFF);
+	SDL_RenderFillRect(MainScreen.renderer, &RectTemp);
 }
 
 void Graphics::ClearSelector(void)
 {
-	MainScreen->MarkDisplayChanged();
+	MainScreen.MarkDisplayChanged();
 
-	SDL_SetRenderTarget(MainScreen->renderer, MainScreen->texture);
+	SDL_SetRenderTarget(MainScreen.renderer, MainScreen.texture);
 
 	SDL_Rect RectTemp;
 	RectTemp.x = selXMin;
 	RectTemp.y = 0;
 	RectTemp.w = 8*selectorWidth;
 	RectTemp.h = SCREEN_HEIGHT;
-	SDL_SetRenderDrawColor(MainScreen->renderer, MainScreen->background_colour.r, MainScreen->background_colour.g, MainScreen->background_colour.b, 0xFF);
-	SDL_RenderFillRect(MainScreen->renderer, &RectTemp);
+	SDL_SetRenderDrawColor(MainScreen.renderer, MainScreen.background_colour.r, MainScreen.background_colour.g, MainScreen.background_colour.b, 0xFF);
+	SDL_RenderFillRect(MainScreen.renderer, &RectTemp);
 }
 
 void Graphics::DrawSelector(void)
@@ -232,7 +230,7 @@ void Graphics::DrawSelector(void)
 	for (int i = 0; i < tileAmount; ++i)
 		DrawTileFromAtlas(i, selXMin + 8 * (i % selectorWidth), 8 * (i / selectorWidth - selTileYOffset), currentPal, false, false);
 	//SDL_Flip(screen);
-	//MainScreen->ProcessDisplay();
+	//MainScreen.ProcessDisplay();
 }
 
 /* map coords */
@@ -272,7 +270,7 @@ bool Graphics::CheckSelValidPos(int x, int y)
 
 void Graphics::DrawTileNone(int x, int y)
 {
-	DrawTileFullColor(x, y, MainScreen->background_colour.r, MainScreen->background_colour.g, MainScreen->background_colour.b);
+	DrawTileFullColor(x, y, MainScreen.background_colour.r, MainScreen.background_colour.g, MainScreen.background_colour.b);
 }
 
 void Graphics::DrawTileBlank(int x, int y, const Tile *tile)
@@ -282,29 +280,29 @@ void Graphics::DrawTileBlank(int x, int y, const Tile *tile)
 
 void Graphics::DrawTileFullColor(int x, int y, unsigned char red, unsigned char green, unsigned char blue)
 {
-	MainScreen->MarkDisplayChanged();
+	MainScreen.MarkDisplayChanged();
 
-	SDL_SetRenderTarget(MainScreen->renderer, MainScreen->texture);
+	SDL_SetRenderTarget(MainScreen.renderer, MainScreen.texture);
 
 	SDL_Rect RectTemp;
 	RectTemp.x = x * 8;
 	RectTemp.y = y * 8;
 	RectTemp.w = 8;
 	RectTemp.h = 8;
-	SDL_SetRenderDrawColor(MainScreen->renderer, red, green, blue, 0xFF);
-	SDL_RenderFillRect(MainScreen->renderer, &RectTemp);
+	SDL_SetRenderDrawColor(MainScreen.renderer, red, green, blue, 0xFF);
+	SDL_RenderFillRect(MainScreen.renderer, &RectTemp);
 }
 
 void Graphics::DrawTileInvalid(int x, int y)
 {
-	MainScreen->MarkDisplayChanged();
+	MainScreen.MarkDisplayChanged();
 
-	SDL_SetRenderTarget(MainScreen->renderer, MainScreen->texture);
+	SDL_SetRenderTarget(MainScreen.renderer, MainScreen.texture);
 
 	//PosTileToScreen(&x, &y);
-	SDL_SetRenderDrawColor(MainScreen->renderer, 0xE0, 0xB0, 0xD0, 0xFF);
-	SDL_RenderDrawLine(MainScreen->renderer, x * 8, y * 8, x * 8 + 7, y * 8 + 7);
-	SDL_RenderDrawLine(MainScreen->renderer, x * 8, y * 8 + 7, x * 8 + 7, y * 8);
+	SDL_SetRenderDrawColor(MainScreen.renderer, 0xE0, 0xB0, 0xD0, 0xFF);
+	SDL_RenderDrawLine(MainScreen.renderer, x * 8, y * 8, x * 8 + 7, y * 8 + 7);
+	SDL_RenderDrawLine(MainScreen.renderer, x * 8, y * 8 + 7, x * 8 + 7, y * 8);
 }
 
 void Graphics::SetCurrentPal(const uint8_t currentPal)
@@ -315,9 +313,9 @@ void Graphics::SetCurrentPal(const uint8_t currentPal)
 /* map coords */
 void Graphics::DrawRect(int x, int y)
 {
-	MainScreen->MarkDisplayChanged();
+	MainScreen.MarkDisplayChanged();
 
-	SDL_SetRenderTarget(MainScreen->renderer, MainScreen->texture);
+	SDL_SetRenderTarget(MainScreen.renderer, MainScreen.texture);
 
 	PosTileToScreen(&x, &y);
 	SDL_Rect rect;
@@ -325,16 +323,16 @@ void Graphics::DrawRect(int x, int y)
 	rect.y = y;
 	rect.w = 8;
 	rect.h = 8;
-	SDL_SetRenderDrawColor(MainScreen->renderer, 0xE0, 0xB0, 0xD0, 0xFF);
-	SDL_RenderDrawRect(MainScreen->renderer, &rect);
+	SDL_SetRenderDrawColor(MainScreen.renderer, 0xE0, 0xB0, 0xD0, 0xFF);
+	SDL_RenderDrawRect(MainScreen.renderer, &rect);
 }
 
 /* map coords */
 void Graphics::DrawFreeRect(int x, int y, int xSize, int ySize)
 {
-	MainScreen->MarkDisplayChanged();
+	MainScreen.MarkDisplayChanged();
 
-	SDL_SetRenderTarget(MainScreen->renderer, MainScreen->texture);
+	SDL_SetRenderTarget(MainScreen.renderer, MainScreen.texture);
 
 	PosTileToScreen(&x, &y);
 	SDL_Rect rect;
@@ -342,8 +340,8 @@ void Graphics::DrawFreeRect(int x, int y, int xSize, int ySize)
 	rect.y = y;
 	rect.w = xSize * 8;
 	rect.h = ySize * 8;
-	SDL_SetRenderDrawColor(MainScreen->renderer, 0xE0, 0xB0, 0xD0, 0xFF);
-	SDL_RenderDrawRect(MainScreen->renderer, &rect);
+	SDL_SetRenderDrawColor(MainScreen.renderer, 0xE0, 0xB0, 0xD0, 0xFF);
+	SDL_RenderDrawRect(MainScreen.renderer, &rect);
 }
 
 void Graphics::PosScreenToTile(int *x, int *y)

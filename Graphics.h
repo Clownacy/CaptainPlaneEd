@@ -20,7 +20,9 @@
 
 #pragma once
 
+#include <array>
 #include <filesystem>
+#include <vector>
 #include <stddef.h>
 #include <stdint.h>
 
@@ -30,7 +32,9 @@
 class Graphics
 {
 private:
-    uint16_t (*palette)[16];
+    static constexpr unsigned int PALETTE_ENTRIES_PER_LINE = 16;
+
+    std::vector<std::array<uint16_t, PALETTE_ENTRIES_PER_LINE>> palette;
     SDL_Texture *tile_atlas;
     size_t atlas_quadrant_dimension;
     uint8_t paletteLines;

@@ -36,6 +36,7 @@ public:
     ResourceMap map;
     ResourcePal pal;
     ProjectData(const std::filesystem::path &prjtxt);
+    ProjectData(const std::filesystem::path &prjtxt, const std::filesystem::path &art_path, const std::filesystem::path &map_path, const std::filesystem::path &pal_path);
 
 private:
     void AssignInfo(infoType type, const char *content, const std::filesystem::path &directory);

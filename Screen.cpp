@@ -162,8 +162,7 @@ void Screen::ProcessDisplay(void)
 						if (!file_utilities.FileExists(path))
 							return false;
 
-						delete CurProject;
-						CurProject = new Project(path);
+						CurProject.emplace(path);
 
 						//Process initial display
 						Clear();
@@ -172,13 +171,12 @@ void Screen::ProcessDisplay(void)
 					});
 				}
 
-				if (ImGui::MenuItem("Save", nullptr, false, CurProject != nullptr))
+				if (ImGui::MenuItem("Save", nullptr, false, CurProject.has_value()))
 					CurProject->Save();
 
-				if (ImGui::MenuItem("Close", nullptr, false, CurProject != nullptr))
+				if (ImGui::MenuItem("Close", nullptr, false, CurProject.has_value()))
 				{
-					delete CurProject;
-					CurProject = nullptr;	// Deleting an object does not null this pointer, so we have to do it ourselves
+					CurProject = std::nullopt;
 					Clear();
 				}
 
@@ -205,9 +203,9 @@ void Screen::ProcessDisplay(void)
 					background_colour.g = colour_channels[1] * 255.0f;
 					background_colour.b = colour_channels[2] * 255.0f;
 
-					MainScreen->Clear();
+					MainScreen.Clear();
 
-					if (CurProject != NULL)
+					if (CurProject.has_value())
 						CurProject->Redraw();
 				}
 
@@ -218,12 +216,12 @@ void Screen::ProcessDisplay(void)
 					char string_buffer[] = "Palette line 1";
 					string_buffer[sizeof(string_buffer) - 2] = '1' + i;
 
-					const auto current_palette_line = CurProject == nullptr ? 0 : CurProject->GfxStuff->GetCurrentPal();
+					const auto current_palette_line = !CurProject.has_value() ? 0 : CurProject->GfxStuff.GetCurrentPal();
 
-					if (ImGui::MenuItem(string_buffer, nullptr, current_palette_line == i, CurProject != nullptr))
+					if (ImGui::MenuItem(string_buffer, nullptr, current_palette_line == i, CurProject.has_value()))
 					{
-						CurProject->LevelMap->SetPalCurrent(i);
-						CurProject->GfxStuff->DrawSelector();
+						CurProject->LevelMap.SetPalCurrent(i);
+						CurProject->GfxStuff.DrawSelector();
 					}
 				}
 
@@ -247,7 +245,7 @@ void Screen::ProcessDisplay(void)
 		const ImVec2 cursor = ImGui::GetCursorPos();
 		ImGui::InvisibleButton("Magical editor focus detector", size_of_display_region, ImGuiButtonFlags_MouseButtonLeft | ImGuiButtonFlags_MouseButtonRight);
 
-		if (CurProject != nullptr)
+		if (CurProject.has_value())
 		{
 			const auto &io = ImGui::GetIO();
 			const ImVec2 origin(canvas_p0.x, canvas_p0.y); // Lock scrolled origin
@@ -258,10 +256,10 @@ void Screen::ProcessDisplay(void)
 			if (ImGui::IsItemHovered())
 			{
 				if (left_mouse_button_down)
-					CurProject->LevelMap->CheckSetTile(x, y);
+					CurProject->LevelMap.CheckSetTile(x, y);
 
-				CurProject->LevelMap->RefreshTileScreen(previous_mouse_x, previous_mouse_y, true);
-				CurProject->LevelMap->DrawSelectedTile(x, y);
+				CurProject->LevelMap.RefreshTileScreen(previous_mouse_x, previous_mouse_y, true);
+				CurProject->LevelMap.DrawSelectedTile(x, y);
 
 				previous_mouse_x = x;
 				previous_mouse_y = y;
@@ -274,22 +272,22 @@ void Screen::ProcessDisplay(void)
 
 				if (left_clicked || right_clicked)
 				{
-					CurProject->SelectionRect->Unselect();
+					CurProject->SelectionRect.Unselect();
 
 					//Checks if within selector bounds and selects tile
-					CurProject->LevelMap->CheckClickTile(x, y);
+					CurProject->LevelMap.CheckClickTile(x, y);
 
 					if (left_clicked)
 					{
 						//Checks if valid map position and sets tile
-						CurProject->LevelMap->CheckSetTile(x, y);
+						CurProject->LevelMap.CheckSetTile(x, y);
 						left_mouse_button_down = true;
 					}
 					else if (right_clicked)
 					{
 						//Checks if valid map position and selects tile
-						CurProject->LevelMap->CheckSelectTile(x, y);
-						CurProject->SelectionRect->SelInit(x, y);
+						CurProject->LevelMap.CheckSelectTile(x, y);
+						CurProject->SelectionRect.SelInit(x, y);
 						right_mouse_button_down = true;
 					}
 				}
@@ -303,8 +301,8 @@ void Screen::ProcessDisplay(void)
 				right_mouse_button_down = false;
 
 				//Checks if valid map position and selects tile
-				CurProject->LevelMap->CheckSelectTile(x, y);
-				CurProject->SelectionRect->SelFinalize(x, y);
+				CurProject->LevelMap.CheckSelectTile(x, y);
+				CurProject->SelectionRect.SelFinalize(x, y);
 			}
 		}
 
@@ -396,11 +394,11 @@ void Screen::ShowInformation(const char *message)
 
 void Screen::ShowInformation(const char *message_part1, const char *message_part2)
 {
-	// TODO: Use SDL_asprintf.
-	char *whole_message = new char[strlen(message_part1)+strlen(message_part2)+1];
-	sprintf(whole_message, "%s%s", message_part1, message_part2);
-	this->ShowInformation(whole_message);
-	delete[] whole_message;
+	std::string whole_message;
+	whole_message.reserve(strlen(message_part1) + strlen(message_part2));
+	whole_message += message_part1;
+	whole_message += message_part2;
+	this->ShowInformation(whole_message.c_str());
 }
 
 void Screen::ShowWarning(const char *message)

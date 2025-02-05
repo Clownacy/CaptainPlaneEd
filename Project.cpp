@@ -31,45 +31,29 @@ static const std::filesystem::path FILE_ART_TEMP = "tempart.bin";
 static const std::filesystem::path FILE_PAL_TEMP = "temppal.bin";
 
 Project::Project(const std::filesystem::path &parameter_filepath)
+	: PrjData(parameter_filepath, FILE_ART_TEMP, FILE_MAP_TEMP, FILE_PAL_TEMP)
+	, GfxStuff(this->PrjData.map.xSize, this->PrjData.tileOffset, this->PrjData.art.tileAmount)
+	, LevelMap(this->PrjData.map.xSize, this->PrjData.map.ySize, this->GfxStuff)
+	, SelectionRect(this->GfxStuff, this->LevelMap)
+	, CopyRect(SelRect(this->GfxStuff, this->LevelMap))
 {
-	this->PrjData = new ProjectData(parameter_filepath);
-	this->PrjData->art.Load(FILE_ART_TEMP);
-	this->PrjData->map.Load(FILE_MAP_TEMP);
-	this->PrjData->pal.Load(FILE_PAL_TEMP);
+	this->GfxStuff.ReadPalette(FILE_PAL_TEMP);
+	this->GfxStuff.ReadTiles(FILE_ART_TEMP);
 
-	this->GfxStuff = new Graphics(this->PrjData->map.xSize, this->PrjData->tileOffset, this->PrjData->art.tileAmount);
-
-	this->LevelMap = new LevMap(this->PrjData->map.xSize, this->PrjData->map.ySize, this->GfxStuff);
-
-	this->GfxStuff->ReadPalette(FILE_PAL_TEMP);
-	this->GfxStuff->ReadTiles(FILE_ART_TEMP);
-
-	this->LevelMap->LoadMap(FILE_MAP_TEMP);
-
-	this->SelectionRect = new SelRect(this->GfxStuff, this->LevelMap);
-	this->CopyRect = new SelRect(this->GfxStuff, this->LevelMap);
-}
-
-Project::~Project(void)
-{
-	delete this->PrjData;
-	delete this->GfxStuff;
-	delete this->LevelMap;
-	delete this->SelectionRect;
-	delete this->CopyRect;
+	this->LevelMap.LoadMap(FILE_MAP_TEMP);
 }
 
 void Project::Save(void)
 {
-	this->LevelMap->SaveMap(FILE_MAP_TEMP);
-	this->PrjData->map.Save(FILE_MAP_TEMP, this->PrjData->map.saveName);
-	MainScreen->ShowInformation("Save complete");
+	this->LevelMap.SaveMap(FILE_MAP_TEMP);
+	this->PrjData.map.Save(FILE_MAP_TEMP, this->PrjData.map.saveName);
+	MainScreen.ShowInformation("Save complete");
 }
 
 void Project::Redraw(void)
 {
-	this->LevelMap->DrawMap();
-	this->GfxStuff->DrawSelector();
-	this->SelectionRect->SelDrawRect();
-	this->LevelMap->DrawCurrentTile();
+	this->LevelMap.DrawMap();
+	this->GfxStuff.DrawSelector();
+	this->SelectionRect.SelDrawRect();
+	this->LevelMap.DrawCurrentTile();
 }

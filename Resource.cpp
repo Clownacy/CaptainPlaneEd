@@ -136,7 +136,7 @@ void Resource::CompressFile(const std::filesystem::path &srcfile, const std::fil
 			rename(srcfile, dstfile);
 			break;
 		case comprType::KID_CHAMELEON:
-			MainScreen->ShowWarning("Cannot save Kid Chameleon-compressed files.");
+			MainScreen.ShowWarning("Cannot save Kid Chameleon-compressed files.");
 			break;
 		case comprType::ENIGMA:
 		case comprType::KOSINSKI:
@@ -194,14 +194,14 @@ ResourceArt::ResourceArt(void)
 void ResourceArt::Load(const std::filesystem::path &filename)
 {
 	if (this->compression == comprType::INVALID)
-		MainScreen->ShowError("Invalid art compression format: should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Moduled Kosinski'\n'Nemesis'\n'Kid Chameleon'\n'Comper'\n'Saxman'");
+		MainScreen.ShowError("Invalid art compression format: should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Moduled Kosinski'\n'Nemesis'\n'Kid Chameleon'\n'Comper'\n'Saxman'");
 
 	long decompressed_length = DecompressToFile(filename);
 
 	if (decompressed_length == -2)
-		MainScreen->ShowError("Could not find art file. Are you sure the path is correct?");
+		MainScreen.ShowError("Could not find art file. Are you sure the path is correct?");
 	else if (decompressed_length < 0)
-		MainScreen->ShowError("Could not decompress art file. Are you sure the compression is correct?");
+		MainScreen.ShowError("Could not decompress art file. Are you sure the compression is correct?");
 
 	this->tileAmount = decompressed_length/0x20;
 }
@@ -215,7 +215,7 @@ ResourceMap::ResourceMap(void)
 void ResourceMap::Load(const std::filesystem::path &filename)
 {
 	if (this->compression == comprType::INVALID || this->compression == comprType::KID_CHAMELEON)
-		MainScreen->ShowError("Invalid map compression format: should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Moduled Kosinski'\n'Nemesis'\n'Comper'\n'Saxman'");
+		MainScreen.ShowError("Invalid map compression format: should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Moduled Kosinski'\n'Nemesis'\n'Comper'\n'Saxman'");
 
 	long decompressed_length = DecompressToFile(filename);
 
@@ -224,17 +224,17 @@ void ResourceMap::Load(const std::filesystem::path &filename)
 		//file non-existant, blank template created
 		decompressed_length =  2 * this->xSize * this->ySize;
 		CheckCreateBlankFile(this->name.string().c_str(), filename.string().c_str(), this->offset, decompressed_length);
-		MainScreen->ShowInformation("No map file found; created blank template");
+		MainScreen.ShowInformation("No map file found; created blank template");
 	}
 	else if (decompressed_length < 0)
 	{
 		//file is existant but could not be decompressed
-		MainScreen->ShowError("Could not decompress map file. Are you sure the compression is correct?");
+		MainScreen.ShowError("Could not decompress map file. Are you sure the compression is correct?");
 	}
 
 	if (decompressed_length < 2 * this->xSize * this->ySize)
 	{
-		MainScreen->ShowWarning("Specified size exceeds map size.\nField has been trimmed vertically.");
+		MainScreen.ShowWarning("Specified size exceeds map size.\nField has been trimmed vertically.");
 		this->ySize = (decompressed_length / this->xSize) / 2;
 		if (this->ySize == 0)
 			exit(1);
@@ -248,7 +248,7 @@ void ResourceMap::Load(const std::filesystem::path &filename)
 		}
 		else
 		{
-			MainScreen->ShowInformation("This tool cannot overwrite a ROM; plane map will be saved to " FILE_MAP_DEFAULT);
+			MainScreen.ShowInformation("This tool cannot overwrite a ROM; plane map will be saved to " FILE_MAP_DEFAULT);
 			this->saveName = FILE_MAP_DEFAULT; //write to default file
 		}
 	}
@@ -264,14 +264,14 @@ ResourcePal::ResourcePal(void)
 void ResourcePal::Load(const std::filesystem::path &filename)
 {
 	if (this->compression == comprType::INVALID)
-		MainScreen->ShowError("Invalid palette compression format; should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Moduled Kosinski'\n'Nemesis'\n'Kid Chameleon'\n'Comper'\n'Saxman'");
+		MainScreen.ShowError("Invalid palette compression format; should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Moduled Kosinski'\n'Nemesis'\n'Kid Chameleon'\n'Comper'\n'Saxman'");
 
 	long decompressed_length = DecompressToFile(filename);
 
 	if (decompressed_length == -2)
-		MainScreen->ShowError("Could not find palette file. Are you sure the path is correct?");
+		MainScreen.ShowError("Could not find palette file. Are you sure the path is correct?");
 	else if (decompressed_length < 0)
-		MainScreen->ShowError("Could not decompress palette file. Are you sure the compression is correct?");
+		MainScreen.ShowError("Could not decompress palette file. Are you sure the compression is correct?");
 
 	// Create blank palette file
 	std::ofstream palfilenew("temp.bin", std::ios::out | std::ios::binary);

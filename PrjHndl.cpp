@@ -46,6 +46,14 @@ ProjectData::ProjectData(const std::filesystem::path &prjtxt)
 	}
 }
 
+ProjectData::ProjectData(const std::filesystem::path &prjtxt, const std::filesystem::path &art_path, const std::filesystem::path &map_path, const std::filesystem::path &pal_path)
+	: ProjectData(prjtxt)
+{
+	art.Load(art_path);
+	map.Load(map_path);
+	pal.Load(pal_path);
+}
+
 void ProjectData::AssignInfo(infoType type, const char *content, const std::filesystem::path &directory) {
 	switch (type)
 	{
@@ -92,7 +100,7 @@ void ProjectData::AssignInfo(infoType type, const char *content, const std::file
 		case infoType::PALETTE_DESTINATION_OFFSET:
 			pal.destination_offset = strtol(content, nullptr, 0);
 			if (pal.destination_offset >= 0x80)
-				MainScreen->ShowError("Palette Destination Offset cannot be higher than 0x7F (16th entry of 4th palette line; the last palette entry)");
+				MainScreen.ShowError("Palette Destination Offset cannot be higher than 0x7F (16th entry of 4th palette line; the last palette entry)");
 			break;
 		case infoType::X_SIZE:
 			map.xSize = strtol(content, nullptr, 0);
