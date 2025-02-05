@@ -269,19 +269,16 @@ void ResourcePal::Load(const std::filesystem::path &filename)
 		MainScreen.ShowError("Could not decompress palette file. Are you sure the compression is correct?");
 
 	// Create blank palette file
-	std::ofstream palfilenew("temp.bin", std::ios::out | std::ios::binary);
+	std::stringstream palfilenew(std::ios::binary);
 	for (int i=0; i < 0x80; ++i)
 		palfilenew.put(0x0E);
 	palfilenew.seekp(this->destination_offset);
 
 	// Insert the loaded palette
-	std::ifstream palfileold(filename, std::ios::in | std::ios::binary);
+	std::fstream palfileold(filename, std::ios::in | std::ios::out | std::ios::binary);
 	char byte;
 	while (palfileold.get(byte))
 		palfilenew.put(byte);
 
-	palfileold.close();
-	palfilenew.close();
-
-	std::filesystem::rename("temp.bin", filename);
+	palfileold << palfilenew.rdbuf();
 }
