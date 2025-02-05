@@ -29,12 +29,11 @@ class Resource
 {
 public:
 	std::filesystem::path name;
-	int offset;
-	int length;
-	comprType compression;
-	int kosinski_module_size;
+	int offset = 0;
+	int length = 0;
+	comprType compression = comprType::INVALID;
+	int kosinski_module_size = 0x1000;
 
-	Resource(void);
 	virtual void Load(const std::filesystem::path &filename) = 0;
 	void Save(std::istream &stream);
 
@@ -46,27 +45,25 @@ protected:
 class ResourceArt : public Resource
 {
 public:
-	int tileAmount;
+	int tileAmount = 0;
 
-	ResourceArt(void);
 	void Load(const std::filesystem::path &filename);
 };
 
 class ResourceMap : public Resource
 {
 public:
-	int xSize;
-	int ySize;
+	int xSize = 0;
+	int ySize = 0;
 	std::filesystem::path saveName;
 
-	ResourceMap(void);
 	void Load(const std::filesystem::path &filename);
 };
 
 class ResourcePal : public Resource
 {
 public:
-	int destination_offset;
+	int destination_offset = 0;
 
 	ResourcePal(void);
 	void Load(const std::filesystem::path &filename);

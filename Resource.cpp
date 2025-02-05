@@ -39,14 +39,6 @@
 
 #define FILE_MAP_DEFAULT "MapDefault.bin"
 
-Resource::Resource(void)
-{
-	this->offset = 0;
-	this->length = 0;
-	this->compression = comprType::INVALID;
-	this->kosinski_module_size = 0x1000;
-}
-
 void Resource::Save(std::istream &stream)
 {
 	Compress(stream);
@@ -181,11 +173,6 @@ void Resource::Compress(std::istream &srcfile_stream)
 	}
 }
 
-ResourceArt::ResourceArt(void)
-{
-	this->tileAmount = 0;
-}
-
 void ResourceArt::Load(const std::filesystem::path &filename)
 {
 	if (this->compression == comprType::INVALID)
@@ -199,12 +186,6 @@ void ResourceArt::Load(const std::filesystem::path &filename)
 		MainScreen.ShowError("Could not decompress art file. Are you sure the compression is correct?");
 
 	this->tileAmount = decompressed_length/0x20;
-}
-
-ResourceMap::ResourceMap(void)
-{
-	this->xSize = 0;
-	this->ySize = 0;
 }
 
 void ResourceMap::Load(const std::filesystem::path &filename)
@@ -251,7 +232,6 @@ void ResourceMap::Load(const std::filesystem::path &filename)
 
 ResourcePal::ResourcePal(void)
 {
-	this->destination_offset = 0;
 	// For backwards compatibility, palette is assumed to be uncompressed by default
 	this->compression = comprType::NONE;
 }
