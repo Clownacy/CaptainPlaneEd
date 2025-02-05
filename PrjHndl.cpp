@@ -23,7 +23,6 @@
 #include <cassert>
 #include <string.h>
 #include <fstream>
-#include <unistd.h>
 
 #include "Common.h"
 #include "TxtRead.h"
