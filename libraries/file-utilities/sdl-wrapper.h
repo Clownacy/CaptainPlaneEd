@@ -20,6 +20,27 @@ SDL_WRAPPER_MAKE_RAII_POINTER(Renderer, SDL_Renderer, SDL_DestroyRenderer);
 SDL_WRAPPER_MAKE_RAII_POINTER(Texture,  SDL_Texture,  SDL_DestroyTexture );
 SDL_WRAPPER_MAKE_RAII_POINTER(RWops,    SDL_RWops,    SDL_RWclose        );
 
+template<auto Function, typename... Args>
+auto PathFunction(const char* const path, Args &&...args)
+{
+	return Function(path, std::forward<Args>(args)...);
+};
+
+template<auto Function, typename... Args>
+auto PathFunction(const std::string &path, Args &&...args)
+{
+	return Function(path.c_str(), std::forward<Args>(args)...);
+};
+
+template<auto Function, typename... Args>
+auto PathFunction(const std::filesystem::path &path, Args &&...args)
+{
+	return Function(reinterpret_cast<const char*>(path.u8string().c_str()), std::forward<Args>(args)...);
+};
+
+template<typename T>
+RWops RWFromFile(const T &path, const char* const mode) { return RWops(PathFunction<SDL_RWFromFile>(path, mode)); }
+
 }
 
 #endif /* SDL_WRAPPER_H */

@@ -20,6 +20,7 @@
 
 #include "LevMap.h"
 
+#include <fstream>
 #include <stdint.h>
 
 #include "Common.h"
@@ -43,29 +44,28 @@ LevMap::LevMap(uint8_t xSize, uint8_t ySize, Graphics *GfxStuff)
 	this->GfxStuff = GfxStuff;
 }
 
-void LevMap::LoadMap(const char *filename)
+void LevMap::LoadMap(const std::filesystem::path &filename)
 {
-	FILE* mapfile = fopen(filename, "rb");
-	if (mapfile == nullptr)
+	std::ifstream mapfile(filename, mapfile.binary);
+	if (!mapfile.is_open())
 		MainScreen->ShowInternalError("Decompressed map file not found");
 
 	for (int y = 0; y < ySize; ++y)
 		for (int x = 0; x < xSize; ++x)
 			this->MapData[y][x].ReadTile(mapfile);
-	fclose(mapfile);
-	remove(filename);
+	mapfile.close();
+	std::filesystem::remove(filename);
 }
 
-void LevMap::SaveMap(const char *filename)
+void LevMap::SaveMap(const std::filesystem::path &filename)
 {
-	FILE* mapfile = fopen(filename, "wb");
-	if (mapfile == nullptr)
+	std::ofstream mapfile(filename, mapfile.binary);
+	if (!mapfile.is_open())
 		MainScreen->ShowInternalError("Unable to create map file for saving");
 
 	for (int y = 0; y < ySize; ++y)
 		for (int x = 0; x < xSize; ++x)
 			MapData[y][x].WriteTile(mapfile);
-	fclose(mapfile);
 }
 
 void LevMap::DrawMap(void)

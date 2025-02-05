@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include <filesystem>
 #include <stdint.h>
 
 #include "Graphics.h"
@@ -37,8 +38,8 @@ private:
     friend class SelRect;
 public:
     LevMap(uint8_t xSize, uint8_t ySize, Graphics *GfxStuff);
-    void LoadMap(const char *filename);
-    void SaveMap(const char *filename);
+    void LoadMap(const std::filesystem::path &filename);
+    void SaveMap(const std::filesystem::path &filename);
     void DrawMap(void);
     void DrawMapSection(const int xStart, const int yStart, const int xSize, const int ySize);
     void DrawCurrentTile(void);

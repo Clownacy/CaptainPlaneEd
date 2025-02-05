@@ -158,7 +158,7 @@ void Screen::ProcessDisplay(void)
 			{
 				if (ImGui::MenuItem("Open"))
 				{
-					file_utilities.CreateOpenFileDialog(window, "Open project file", [this](const char *path){
+					file_utilities.CreateOpenFileDialog(window, "Open project file", [this](const std::filesystem::path &path){
 						if (!file_utilities.FileExists(path))
 							return false;
 

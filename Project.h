@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include <filesystem>
+
 #include "LevMap.h"
 #include "PrjHndl.h"
 #include "Screen.h"
@@ -34,7 +36,7 @@ public:
 	SelRect *SelectionRect;
 	SelRect *CopyRect;
 
-	Project(const char *parameter_filepath);
+	Project(const std::filesystem::path &parameter_filepath);
 	~Project(void);
 	void Save(void);
 	void Redraw(void);

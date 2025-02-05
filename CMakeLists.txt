@@ -65,6 +65,10 @@ add_executable(CaptainPlaneEd WIN32
 	"libraries/imgui/backends/imgui_impl_sdlrenderer2.h"
 )
 
+set_target_properties(CaptainPlaneEd PROPERTIES
+	CXX_STANDARD 20
+)
+
 target_include_directories(CaptainPlaneEd PRIVATE "libraries/imgui")
 
 find_package(SDL2)

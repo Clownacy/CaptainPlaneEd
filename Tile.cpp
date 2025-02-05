@@ -21,7 +21,6 @@
 #include "Tile.h"
 
 #include <stdint.h>
-#include <stdio.h>
 
 Tile::Tile(void)
 {
@@ -41,17 +40,19 @@ Tile::Tile(const Tile *tile)
 	this->priority = tile->priority;
 }
 
-void Tile::ReadTile(FILE *file)
+void Tile::ReadTile(std::istream &file)
 {
-	uint16_t tile = (fgetc(file) << 8) | fgetc(file);
+	uint16_t tile_upper = file.get();
+	uint16_t tile_lower = file.get();
+	uint16_t tile = (tile_upper << 8) | tile_lower;
 	LoadFromRawTile(tile);
 }
 
-void Tile::WriteTile(FILE *file)
+void Tile::WriteTile(std::ostream &file)
 {
 	uint16_t tile = GetRawTile();
-	fputc(tile >> 8, file);
-	fputc(tile, file);
+	file.put(tile >> 8);
+	file.put(tile);
 }
 
 void Tile::LoadFromRawTile(uint16_t tile)

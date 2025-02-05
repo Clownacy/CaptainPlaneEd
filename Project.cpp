@@ -26,11 +26,11 @@
 #include "Screen.h"
 #include "SelRect.h"
 
-static const char* const FILE_MAP_TEMP = "tempmap.bin";
-static const char* const FILE_ART_TEMP = "tempart.bin";
-static const char* const FILE_PAL_TEMP = "temppal.bin";
+static const std::filesystem::path FILE_MAP_TEMP = "tempmap.bin";
+static const std::filesystem::path FILE_ART_TEMP = "tempart.bin";
+static const std::filesystem::path FILE_PAL_TEMP = "temppal.bin";
 
-Project::Project(const char *parameter_filepath)
+Project::Project(const std::filesystem::path &parameter_filepath)
 {
 	this->PrjData = new ProjectData(parameter_filepath);
 	this->PrjData->art.Load(FILE_ART_TEMP);

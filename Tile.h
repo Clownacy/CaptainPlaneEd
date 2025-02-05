@@ -20,8 +20,8 @@
 
 #pragma once
 
+#include <iostream>
 #include <stdint.h>
-#include <stdio.h>
 
 class Tile
 {
@@ -34,8 +34,8 @@ public:
 
     Tile(void);
     Tile(const Tile* const tile);
-    void ReadTile(FILE* file);
-    void WriteTile(FILE* file);
+    void ReadTile(std::istream &file);
+    void WriteTile(std::ostream &file);
     void ClearTile(void);
     void SetPal(const uint8_t paletteLine);
     void SetID(const int ID);

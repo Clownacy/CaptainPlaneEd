@@ -20,10 +20,10 @@
 
 #ifdef _WIN32
 // Adapted from SDL2.
-#define StringToUTF8W(S) SDL_iconv_string("UTF-8", "UTF-16LE", reinterpret_cast<const char*>(S), (SDL_wcslen(S) + 1) * sizeof(WCHAR))
+#define StringToUTF8W(S) reinterpret_cast<char8_t*>(SDL_iconv_string("UTF-8", "UTF-16LE", reinterpret_cast<const char*>(S), (SDL_wcslen(S) + 1) * sizeof(WCHAR)))
 #define UTF8ToStringW(S) reinterpret_cast<WCHAR*>(SDL_iconv_string("UTF-16LE", "UTF-8", reinterpret_cast<const char*>(S), SDL_strlen(S) + 1))
 #define StringToUTF8A(S) SDL_iconv_string("UTF-8", "ASCII", reinterpret_cast<const char*>(S), (SDL_strlen(S) + 1))
-#define UTF8ToStringA(S) SDL_iconv_string("ASCII", "UTF-8", reinterpret_cast<const char*>(S), SDL_strlen(S) + 1)
+#define UTF8ToStringA(S) reinterpret_cast<char8_t*>(SDL_iconv_string("ASCII", "UTF-8", reinterpret_cast<const char*>(S), SDL_strlen(S) + 1))
 #ifdef UNICODE
 #define StringToUTF8 StringToUTF8W
 #define UTF8ToString UTF8ToStringW
@@ -87,7 +87,7 @@ void FileUtilities::CreateFileDialog(SDL_Window* const window, const char* const
 
 		if (file_selected)
 		{
-			char* const path_utf8 = StringToUTF8(&path_buffer[0]);
+			const auto path_utf8 = StringToUTF8(&path_buffer[0]);
 
 			if (path_utf8 == nullptr || !callback(path_utf8))
 				success = false;
@@ -398,14 +398,14 @@ void FileUtilities::DisplayFileDialog(char *&drag_and_drop_filename)
 	}
 }
 
-bool FileUtilities::FileExists(const char* const filename)
+bool FileUtilities::FileExists(const std::filesystem::path &filename)
 {
-	return SDL::RWops(SDL_RWFromFile(filename, "rb")) != nullptr;
+	return SDL::RWFromFile(filename, "rb") != nullptr;
 }
 
-bool FileUtilities::LoadFileToBuffer(std::vector<unsigned char> &file_buffer, const char *filename)
+bool FileUtilities::LoadFileToBuffer(std::vector<unsigned char> &file_buffer, const std::filesystem::path &filename)
 {
-	SDL::RWops file = SDL::RWops(SDL_RWFromFile(filename, "rb"));
+	SDL::RWops file = SDL::RWFromFile(filename, "rb");
 
 	if (file == nullptr)
 	{
@@ -469,9 +469,9 @@ void FileUtilities::LoadFile(SDL_Window* const window, const char* const title, 
 		DebugLog("FileUtilities::LoadFile: Failed to allocate memory.");
 	}
 #else
-	CreateOpenFileDialog(window, title, [callback](const char* const path)
+	CreateOpenFileDialog(window, title, [callback](const std::filesystem::path &path)
 	{
-		SDL::RWops file = SDL::RWops(SDL_RWFromFile(path, "rb"));
+		SDL::RWops file = SDL::RWFromFile(path, "rb");
 
 		if (file == nullptr)
 			return false;
@@ -493,11 +493,11 @@ void FileUtilities::SaveFile(SDL_Window* const window, const char* const title, 
 		return true;
 	});
 #else
-	CreateSaveFileDialog(window, title, [callback](const char* const path)
+	CreateSaveFileDialog(window, title, [callback](const std::filesystem::path &path)
 	{
 		const auto save_file = [path](const void* const data, const std::size_t data_size)
 		{
-			const SDL::RWops file = SDL::RWops(SDL_RWFromFile(path, "wb"));
+			const SDL::RWops file = SDL::RWFromFile(path, "wb");
 
 			if (file == nullptr)
 				return false;

@@ -20,6 +20,7 @@
 
 #include "Graphics.h"
 
+#include <fstream>
 #include <math.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -65,15 +66,13 @@ Graphics::~Graphics(void)
 		SDL_DestroyTexture(tile_atlas);
 }
 
-void Graphics::ReadPalette(const char *filename)
+void Graphics::ReadPalette(const std::filesystem::path &filename)
 {
-	FILE *palfile = fopen(filename,"rb");
-	if (palfile == nullptr)
+	std::ifstream palfile(filename, palfile.binary);
+	if (!palfile.is_open())
 		MainScreen->ShowInternalError("Decompressed palette file not found");
 
-	fseek(palfile, 0, SEEK_END);
-	paletteLines = ftell(palfile) / (PALETTE_ENTRIES_PER_LINE * sizeof(uint16_t));
-	rewind(palfile);
+	paletteLines = std::filesystem::file_size(filename) / (PALETTE_ENTRIES_PER_LINE * sizeof(uint16_t));
 
 	if (paletteLines > 4)
 		paletteLines = 4;
@@ -86,7 +85,9 @@ void Graphics::ReadPalette(const char *filename)
 		for (int entry=0; entry < PALETTE_ENTRIES_PER_LINE; ++entry)
 		{
 			// Convert BGR to RGB
-			const uint16_t palette_entry = (fgetc(palfile) << 8) | fgetc(palfile);
+			const uint16_t palette_entry_upper = palfile.get();
+			const uint16_t palette_entry_lower = palfile.get();
+			const uint16_t palette_entry = (palette_entry_upper << 8) | palette_entry_lower;
 			const uint16_t blue = (palette_entry & 0x0F00) >> 8;
 			const uint16_t green = palette_entry & 0x00F0;
 			const uint16_t red = (palette_entry & 0x000F) << 8;
@@ -95,14 +96,14 @@ void Graphics::ReadPalette(const char *filename)
 		}
 	}
 
-	fclose(palfile);
-	remove(filename);
+	palfile.close();
+	std::filesystem::remove(filename);
 }
 
-void Graphics::ReadTiles(const char *filename)
+void Graphics::ReadTiles(const std::filesystem::path &filename)
 {
-	FILE *tilefile = fopen(filename,"rb");
-	if (tilefile == nullptr)
+	std::ifstream tilefile(filename, tilefile.binary);
+	if (!tilefile.is_open())
 		MainScreen->ShowInternalError("Decompressed art file not found");
 
 	// Here, we turn the tiles into a tile atlas, divided into four quadrants.
@@ -131,7 +132,7 @@ void Graphics::ReadTiles(const char *filename)
 		{
 			for (size_t x = 0; x < 8; x += 2)
 			{
-				const unsigned char byte = fgetc(tilefile);
+				const unsigned char byte = tilefile.get();
 				const unsigned char nibble1 = (byte >> 4) & 0xF;
 				const unsigned char nibble2 = byte & 0xF;
 
@@ -154,8 +155,8 @@ void Graphics::ReadTiles(const char *filename)
 
 	SDL_FreeSurface(surface);
 
-	fclose(tilefile);
-	remove(filename);
+	tilefile.close();
+	std::filesystem::remove(filename);
 }
 
 void Graphics::DrawTileFromAtlas(int tile_index, int x, int y, int palette_line, bool x_flip, bool y_flip)

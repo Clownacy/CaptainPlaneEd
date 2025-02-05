@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include <filesystem>
 #include <stddef.h>
 #include <stdint.h>
 
@@ -47,8 +48,8 @@ private:
 public:
     Graphics(uint16_t xSize, uint16_t tileOffset, uint16_t tileAmount);
     ~Graphics(void);
-    void ReadPalette(const char *filename);
-    void ReadTiles(const char *filename);
+    void ReadPalette(const std::filesystem::path &filename);
+    void ReadTiles(const std::filesystem::path &filename);
     void DrawTileFromAtlas(int tile_index, int x, int y, int palette_line, bool x_flip, bool y_flip);
     void ClearMap(void);
     void ClearSelector(void);
