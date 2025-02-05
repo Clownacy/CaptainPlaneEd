@@ -44,7 +44,7 @@ Screen::Screen(void) : file_utilities([this](const char* const format, std::va_l
 
 	atexit(SDL_Quit); // TODO: Do this in the destructor?
 
-	this->window = SDL_CreateWindow("Captain PlaneEd v1.2", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
+	this->window = SDL_CreateWindow("Captain PlaneEd v1.2.0.1", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
 	if (this->window == nullptr)
 		this->ShowInternalError("Unable to init SDL Window\n\n%s", SDL_GetError());
 
