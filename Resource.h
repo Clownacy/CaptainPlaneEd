@@ -35,11 +35,11 @@ public:
 
 	Resource(void);
 	virtual void Load(const std::filesystem::path &filename) = 0;
-	void Save(const std::filesystem::path &filename, const std::filesystem::path &dstfilename);
+	void Save(const std::filesystem::path &filename);
 
 protected:
 	long DecompressToFile(const std::filesystem::path &dstfile);
-	void CompressFile(const std::filesystem::path &srcfile, const std::filesystem::path &dstfile);
+	void CompressFromFile(const std::filesystem::path &srcfile);
 };
 
 class ResourceArt : public Resource

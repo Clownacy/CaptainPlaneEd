@@ -46,7 +46,8 @@ Project::Project(const std::filesystem::path &parameter_filepath)
 void Project::Save(void)
 {
 	this->LevelMap.SaveMap(FILE_MAP_TEMP);
-	this->PrjData.map.Save(FILE_MAP_TEMP, this->PrjData.map.saveName);
+	this->PrjData.map.Save(FILE_MAP_TEMP);
+	std::filesystem::remove(FILE_MAP_TEMP);
 	MainScreen.ShowInformation("Save complete");
 }
 
