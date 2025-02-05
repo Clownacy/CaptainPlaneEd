@@ -200,7 +200,7 @@ int main(int argc, char **argv)
 								break;
 
 							case '=':
-							case '´':
+							case '\xB4': // ´
 								if (CurProject.has_value())
 								{
 									CurProject->LevelMap.SelectTileCur();
@@ -310,7 +310,7 @@ int main(int argc, char **argv)
 								break;
 
 							case '[':
-							case 'ü':
+							case '\xFC': // ü
 								if (CurProject.has_value())
 								{
 									CurProject->GfxStuff.DecScreenOffset();
@@ -320,7 +320,7 @@ int main(int argc, char **argv)
 								break;
 
 							case '\'':
-							case 'ä':
+							case '\xE4': // ä
 								if (CurProject.has_value())
 								{
 									CurProject->GfxStuff.IncScreenOffset();
@@ -330,7 +330,7 @@ int main(int argc, char **argv)
 								break;
 
 							case ';':
-							case 'ö':
+							case '\xF6': // ö
 								if (CurProject.has_value())
 								{
 									CurProject->GfxStuff.DecScreenXOffset();
