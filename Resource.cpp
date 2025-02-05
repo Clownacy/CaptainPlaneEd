@@ -283,6 +283,5 @@ void ResourcePal::Load(const std::filesystem::path &filename)
 	palfileold.close();
 	palfilenew.close();
 
-	remove(filename);
-	rename("temp.bin", filename);
+	std::filesystem::rename("temp.bin", filename);
 }
