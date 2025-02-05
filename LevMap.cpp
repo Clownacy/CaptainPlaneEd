@@ -57,12 +57,8 @@ void LevMap::LoadMap(const std::filesystem::path &filename)
 	std::filesystem::remove(filename);
 }
 
-void LevMap::SaveMap(const std::filesystem::path &filename)
+void LevMap::SaveMap(std::ostream &mapfile)
 {
-	std::ofstream mapfile(filename, mapfile.binary);
-	if (!mapfile.is_open())
-		MainScreen.ShowInternalError("Unable to create map file for saving");
-
 	for (int y = 0; y < ySize; ++y)
 		for (int x = 0; x < xSize; ++x)
 			MapData[y][x].WriteTile(mapfile);

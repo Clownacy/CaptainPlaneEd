@@ -20,6 +20,8 @@
 
 #include "Project.h"
 
+#include <sstream>
+
 #include "Common.h"
 #include "LevMap.h"
 #include "PrjHndl.h"
@@ -45,8 +47,9 @@ Project::Project(const std::filesystem::path &parameter_filepath)
 
 void Project::Save(void)
 {
-	this->LevelMap.SaveMap(FILE_MAP_TEMP);
-	this->PrjData.map.Save(FILE_MAP_TEMP);
+	std::stringstream mapfile(mapfile.binary);
+	this->LevelMap.SaveMap(mapfile);
+	this->PrjData.map.Save(mapfile);
 	std::filesystem::remove(FILE_MAP_TEMP);
 	MainScreen.ShowInformation("Save complete");
 }

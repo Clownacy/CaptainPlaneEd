@@ -21,6 +21,7 @@
 #pragma once
 
 #include <filesystem>
+#include <istream>
 
 #include "TxtRead.h"
 
@@ -35,11 +36,11 @@ public:
 
 	Resource(void);
 	virtual void Load(const std::filesystem::path &filename) = 0;
-	void Save(const std::filesystem::path &filename);
+	void Save(std::istream &stream);
 
 protected:
 	long DecompressToFile(const std::filesystem::path &dstfile);
-	void CompressFromFile(const std::filesystem::path &srcfile);
+	void Compress(std::istream &stream);
 };
 
 class ResourceArt : public Resource

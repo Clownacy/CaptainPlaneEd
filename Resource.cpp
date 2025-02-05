@@ -47,10 +47,9 @@ Resource::Resource(void)
 	this->kosinski_module_size = 0x1000;
 }
 
-void Resource::Save(const std::filesystem::path &filename)
+void Resource::Save(std::istream &stream)
 {
-	CompressFromFile(filename);
-	std::filesystem::remove(filename);
+	Compress(stream);
 }
 
 long Resource::DecompressToFile(const std::filesystem::path &dstfile)
@@ -123,8 +122,10 @@ long Resource::DecompressToFile(const std::filesystem::path &dstfile)
 	return decompressed_length;
 }
 
-void Resource::CompressFromFile(const std::filesystem::path &srcfile)
+void Resource::Compress(std::istream &srcfile_stream)
 {
+	std::ofstream dstfile_stream(this->name, std::ios::binary);
+
 	switch (this->compression)
 	{
 		case comprType::COMPR_TYPE_AMOUNT:
@@ -132,7 +133,7 @@ void Resource::CompressFromFile(const std::filesystem::path &srcfile)
 			assert(false);
 			break;
 		case comprType::NONE:
-			std::filesystem::rename(srcfile, this->name);
+			dstfile_stream << srcfile_stream.rdbuf();
 			break;
 		case comprType::KID_CHAMELEON:
 			MainScreen.ShowWarning("Cannot save Kid Chameleon-compressed files.");
@@ -144,11 +145,6 @@ void Resource::CompressFromFile(const std::filesystem::path &srcfile)
 		case comprType::COMPER:
 		case comprType::SAXMAN:
 		case comprType::ROCKET:
-			std::ifstream srcfile_stream(srcfile, std::ios::in | std::ios::binary);
-			if (!srcfile_stream.is_open())
-				break;
-
-			std::ofstream dstfile_stream(this->name, std::ios::out | std::ios::binary | std::ios::trunc);
 
 			switch (this->compression)
 			{
