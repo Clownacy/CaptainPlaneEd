@@ -29,22 +29,12 @@
 #include "TxtRead.h"
 #include "Resource.h"
 
-ProjectData::ProjectData(const char *prjtxt)
+ProjectData::ProjectData(const std::filesystem::path &prjtxt)
 {
 	tileOffset = 0;
 	letterOffset = numberOffset = 0;
 
 	std::ifstream prjfile(prjtxt, std::ios::in);
-
-	// Make working directory from project path
-	std::string prjdir = prjtxt;
-	size_t separator = prjdir.find_last_of("/\\");
-
-	if (separator != std::string::npos)
-	{
-		prjdir[separator] = '\0';
-		chdir(prjdir.c_str());
-	}
 
 	while (!prjfile.eof())
 	{
@@ -52,11 +42,11 @@ ProjectData::ProjectData(const char *prjtxt)
 		prjfile.getline(line, sizeof(line));
 		const infoType info_type = readInfoType(line);
 		if (info_type != infoType::INVALID)
-			AssignInfo(info_type, trimString(line + strcspn(line, ":") + 1));
+			AssignInfo(info_type, trimString(line + strcspn(line, ":") + 1), prjtxt.parent_path());
 	}
 }
 
-void ProjectData::AssignInfo(infoType type, const char *content) {
+void ProjectData::AssignInfo(infoType type, const char *content, const std::filesystem::path &directory) {
 	switch (type)
 	{
 		case infoType::INFO_TYPE_AMOUNT:
@@ -64,13 +54,13 @@ void ProjectData::AssignInfo(infoType type, const char *content) {
 			assert(false);
 			break;
 		case infoType::PALETTE_FILE:
-			strcpy(pal.name, content);
+			pal.name = directory / content;
 			break;
 		case infoType::MAPPING_FILE:
-			strcpy(map.name, content);
+			map.name = directory / content;
 			break;
 		case infoType::ART_FILE:
-			strcpy(art.name, content);
+			art.name = directory / content;
 			break;
 		case infoType::PALETTE_OFFSET:
 			pal.offset = strtol(content, nullptr, 0);
@@ -120,7 +110,7 @@ void ProjectData::AssignInfo(infoType type, const char *content) {
 			numberOffset = strtol(content, nullptr, 0);
 			break;
 		case infoType::SAVE_FILE:
-			strcpy(map.saveName, content);
+			map.saveName = directory / content;
 			break;
 		case infoType::KOSINSKI_MODULE_SIZE:
 			art.kosinski_module_size = strtol(content, nullptr, 0);

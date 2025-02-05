@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include <filesystem>
+
 #include "TxtRead.h"
 #include "Resource.h"
 
@@ -33,8 +35,8 @@ public:
     ResourceArt art;
     ResourceMap map;
     ResourcePal pal;
-    ProjectData(const char *prjtxt);
+    ProjectData(const std::filesystem::path &prjtxt);
 
 private:
-    void AssignInfo(infoType type, const char *content);
+    void AssignInfo(infoType type, const char *content, const std::filesystem::path &directory);
 };

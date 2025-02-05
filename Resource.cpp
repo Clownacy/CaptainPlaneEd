@@ -41,20 +41,19 @@
 
 Resource::Resource(void)
 {
-	strcpy(this->name, "");
 	this->offset = 0;
 	this->length = 0;
 	this->compression = comprType::INVALID;
 	this->kosinski_module_size = 0x1000;
 }
 
-void Resource::Save(const char *filename, const char *dstfilename)
+void Resource::Save(const std::filesystem::path &filename, const std::filesystem::path &dstfilename)
 {
 	CompressFile(filename, dstfilename);
 	remove(filename);
 }
 
-long Resource::DecompressToFile(const char *dstfile)
+long Resource::DecompressToFile(const std::filesystem::path &dstfile)
 {
 	int decompressed_length = 0;
 	switch (this->compression)
@@ -64,10 +63,10 @@ long Resource::DecompressToFile(const char *dstfile)
 			assert(false);
 			break;
 		case comprType::NONE:
-			decompressed_length = ReadPlain(this->name, dstfile, this->offset, this->length);
+			decompressed_length = ReadPlain(this->name.string().c_str(), dstfile.string().c_str(), this->offset, this->length);
 			break;
 		case comprType::KID_CHAMELEON:
-			decompressed_length = KidDec(this->name, dstfile, this->offset);
+			decompressed_length = KidDec(this->name.string().c_str(), dstfile.string().c_str(), this->offset);
 			break;
 		case comprType::ENIGMA:
 		case comprType::KOSINSKI:
@@ -124,7 +123,7 @@ long Resource::DecompressToFile(const char *dstfile)
 	return decompressed_length;
 }
 
-void Resource::CompressFile(const char *srcfile, const char *dstfile)
+void Resource::CompressFile(const std::filesystem::path &srcfile, const std::filesystem::path &dstfile)
 {
 	switch (this->compression)
 	{
@@ -192,7 +191,7 @@ ResourceArt::ResourceArt(void)
 	this->tileAmount = 0;
 }
 
-void ResourceArt::Load(const char *filename)
+void ResourceArt::Load(const std::filesystem::path &filename)
 {
 	if (this->compression == comprType::INVALID)
 		MainScreen->ShowError("Invalid art compression format: should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Moduled Kosinski'\n'Nemesis'\n'Kid Chameleon'\n'Comper'\n'Saxman'");
@@ -211,10 +210,9 @@ ResourceMap::ResourceMap(void)
 {
 	this->xSize = 0;
 	this->ySize = 0;
-	strcpy(this->saveName, "");
 }
 
-void ResourceMap::Load(const char *filename)
+void ResourceMap::Load(const std::filesystem::path &filename)
 {
 	if (this->compression == comprType::INVALID || this->compression == comprType::KID_CHAMELEON)
 		MainScreen->ShowError("Invalid map compression format: should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Moduled Kosinski'\n'Nemesis'\n'Comper'\n'Saxman'");
@@ -225,7 +223,7 @@ void ResourceMap::Load(const char *filename)
 	{
 		//file non-existant, blank template created
 		decompressed_length =  2 * this->xSize * this->ySize;
-		CheckCreateBlankFile(this->name, filename, this->offset, decompressed_length);
+		CheckCreateBlankFile(this->name.string().c_str(), filename.string().c_str(), this->offset, decompressed_length);
 		MainScreen->ShowInformation("No map file found; created blank template");
 	}
 	else if (decompressed_length < 0)
@@ -242,16 +240,16 @@ void ResourceMap::Load(const char *filename)
 			exit(1);
 	}
 
-	if (strcmp(this->saveName, "") == 0)
+	if (this->saveName.empty())
 	{
 		if (this->offset == 0)
 		{
-			strcpy(this->saveName, this->name); //overwrite existing map
+			this->saveName = this->name; //overwrite existing map
 		}
 		else
 		{
 			MainScreen->ShowInformation("This tool cannot overwrite a ROM; plane map will be saved to " FILE_MAP_DEFAULT);
-			strcpy(this->saveName, FILE_MAP_DEFAULT); //write to default file
+			this->saveName = FILE_MAP_DEFAULT; //write to default file
 		}
 	}
 }
@@ -263,7 +261,7 @@ ResourcePal::ResourcePal(void)
 	this->compression = comprType::NONE;
 }
 
-void ResourcePal::Load(const char *filename)
+void ResourcePal::Load(const std::filesystem::path &filename)
 {
 	if (this->compression == comprType::INVALID)
 		MainScreen->ShowError("Invalid palette compression format; should be one of the following:\n\n'None'\n'Enigma'\n'Kosinski'\n'Moduled Kosinski'\n'Nemesis'\n'Kid Chameleon'\n'Comper'\n'Saxman'");

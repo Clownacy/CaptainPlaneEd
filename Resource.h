@@ -20,24 +20,26 @@
 
 #pragma once
 
+#include <filesystem>
+
 #include "TxtRead.h"
 
 class Resource
 {
 public:
-	char name[128];
+	std::filesystem::path name;
 	int offset;
 	int length;
 	comprType compression;
 	int kosinski_module_size;
 
 	Resource(void);
-	virtual void Load(const char *filename) = 0;
-	void Save(const char *filename, const char *dstfilename);
+	virtual void Load(const std::filesystem::path &filename) = 0;
+	void Save(const std::filesystem::path &filename, const std::filesystem::path &dstfilename);
 
 protected:
-	long DecompressToFile(const char *dstfile);
-	void CompressFile(const char *srcfile, const char *dstfile);
+	long DecompressToFile(const std::filesystem::path &dstfile);
+	void CompressFile(const std::filesystem::path &srcfile, const std::filesystem::path &dstfile);
 };
 
 class ResourceArt : public Resource
@@ -46,7 +48,7 @@ public:
 	int tileAmount;
 
 	ResourceArt(void);
-	void Load(const char *filename);
+	void Load(const std::filesystem::path &filename);
 };
 
 class ResourceMap : public Resource
@@ -54,10 +56,10 @@ class ResourceMap : public Resource
 public:
 	int xSize;
 	int ySize;
-	char saveName[128];
+	std::filesystem::path saveName;
 
 	ResourceMap(void);
-	void Load(const char *filename);
+	void Load(const std::filesystem::path &filename);
 };
 
 class ResourcePal : public Resource
@@ -66,5 +68,5 @@ public:
 	int destination_offset;
 
 	ResourcePal(void);
-	void Load(const char *filename);
+	void Load(const std::filesystem::path &filename);
 };
