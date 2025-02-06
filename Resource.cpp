@@ -67,7 +67,7 @@ long Resource::DecompressToFile()
 		case comprType::COMPER:
 		case comprType::SAXMAN:
 		case comprType::ROCKET:
-			std::ifstream srcfile_stream(this->name, std::ios::in | std::ios::binary);
+			std::ifstream srcfile_stream(this->name, srcfile_stream.binary);
 			if (!srcfile_stream.is_open())
 			{
 				decompressed_length = -2;
@@ -115,7 +115,7 @@ long Resource::DecompressToFile()
 
 void Resource::Compress(std::istream &srcfile_stream)
 {
-	std::ofstream dstfile_stream(this->name, std::ios::binary);
+	std::ofstream dstfile_stream(this->name, dstfile_stream.binary);
 
 	switch (this->compression)
 	{

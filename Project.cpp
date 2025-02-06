@@ -48,7 +48,7 @@ Project::Project(const std::filesystem::path &parameter_filepath)
 
 void Project::Save(void)
 {
-	std::stringstream mapfile(mapfile.binary);
+	std::stringstream mapfile;
 	this->LevelMap.SaveMap(mapfile);
 	this->PrjData.map.Save(mapfile);
 	MainScreen.ShowInformation("Save complete");
